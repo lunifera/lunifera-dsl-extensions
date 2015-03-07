@@ -32,27 +32,27 @@ class HppGenerator {
 	}
 
 	def CharSequence toContent(LDto dto) '''
-		«(dto.eContainer as LPackage).toCopyRight»
+	«(dto.eContainer as LPackage).toCopyRight»
 
-		#ifndef «dto.toName.toUpperCase»_HPP_
-		#define «dto.toName.toUpperCase»_HPP_
+	#ifndef «dto.toName.toUpperCase»_HPP_
+	#define «dto.toName.toUpperCase»_HPP_
 
-		#include <QObject>
-		#include <qvariant.h>
+	#include <QObject>
+	#include <qvariant.h>
 
-		class «dto.toName»: public QObject {
-		Q_OBJECT
+	class «dto.toName»: public QObject {
+	Q_OBJECT
 
-		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		Q_PROPERTY(«feature.toTypeName» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+	Q_PROPERTY(«feature.toTypeName» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
 		toName»Changed FINAL)
 
-		«ENDFOR»
+	«ENDFOR»
 
-		«FOR feature : dto.allFeatures.filter[isToMany]»
-		Q_PROPERTY(QVariantList «feature.toName» READ «feature.toName» NOTIFY «feature.toName»Changed FINAL)
+	«FOR feature : dto.allFeatures.filter[isToMany]»
+	Q_PROPERTY(QVariantList «feature.toName» READ «feature.toName» NOTIFY «feature.toName»Changed FINAL)
 
-		«ENDFOR»	
+	«ENDFOR»	
 
 	public:
 		MyEntity(QObject *parent = 0);	
