@@ -23,6 +23,10 @@
 	<version>0.9.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<properties>
+		<license.licenseName>apl_v2</license.licenseName>
+	</properties>
+
 	<url>${distribution.site.url}</url>
 	<distributionManagement>
 		<site>

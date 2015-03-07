@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?eclipse version="3.4"?>
 <plugin>
-     <extension-point id="inferrerDelegate" name="Inferrer Delegate" schema="schema/inferrerDelegate.exsd"/>
-     <extension-point id="generatorDelegate" name="Generator Delegate" schema="schema/generatorDelegate.exsd"/>
+   <extension
+         point="org.lunifera.dsl.xtext.lazyresolver.generatorDelegate">
+      <generatorDelegate
+            generatorDelegateClass="org.lunifera.dsl.ext.dtos.cpp.qt.GeneratorDelegate"
+            grammarName="org.lunifera.dsl.dto.xtext.DtoGrammar">
+      </generatorDelegate>
+   </extension>
+
 </plugin>

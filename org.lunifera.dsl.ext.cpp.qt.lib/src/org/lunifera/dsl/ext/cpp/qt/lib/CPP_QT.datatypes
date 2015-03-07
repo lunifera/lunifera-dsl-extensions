@@ -8,7 +8,9 @@
  * Contributors: 
  * 		Florian Pirchner - Initial implementation
  */
-package org.lunifera.dsl.common.datatypes {
+package org.lunifera.dsl.ext.cpp.qt.datatypes {
+	
+	import org.lunifera.dsl.ext.cpp.qt.lib.types.QString;
 	  
 	datatype boolean jvmType java.lang.Boolean as primitive;
 	datatype short jvmType java.lang.Short as primitive;
@@ -28,7 +30,7 @@ package org.lunifera.dsl.common.datatypes {
 	datatype Character jvmType java.lang.Character;
 	datatype Byte jvmType java.lang.Byte;
 
-	datatype String jvmType java.lang.String;
+	datatype QString jvmType QString;
 	datatype Date dateType date;
-	 
+
 }
