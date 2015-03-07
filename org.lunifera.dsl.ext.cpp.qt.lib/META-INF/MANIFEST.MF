@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.lunifera.dsl.ext.cpp.qt.lib
+Bundle-Vendor: Lunifera.org
+Bundle-Version: 0.9.1.qualifier
+Bundle-SymbolicName: org.lunifera.dsl.ext.cpp.qt.lib
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext.xbase.lib;bundle-version="[2.7.3,2.8.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.lunifera.dsl.ext.cpp.qt.lib
