@@ -1,0 +1,7 @@
+package input.contents.services {
+	
+	/* Imports the original entity and dto package */
+	import input.contents.*;
+	import input.contents.dtos.*; 
+	
+}

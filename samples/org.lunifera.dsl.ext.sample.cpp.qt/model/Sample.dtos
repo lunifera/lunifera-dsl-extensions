@@ -1,0 +1,15 @@
+package org.lunifera.dsl.ext.sample.cpp.qt {
+	
+	import org.lunifera.dsl.ext.cpp.qt.datatypes.*;
+	
+	dto MyEntity {
+		var QString name;
+		var int age;
+		ref MyOther[*] others opposite entity; 
+	}
+	
+	dto MyOther {
+		ref MyEntity entity opposite others;
+	}
+	
+}
