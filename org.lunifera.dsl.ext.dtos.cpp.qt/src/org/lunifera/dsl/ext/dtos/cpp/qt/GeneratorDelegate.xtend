@@ -29,23 +29,27 @@ import org.lunifera.dsl.semantic.dto.LDtoModel
 import org.lunifera.dsl.xtext.lazyresolver.api.hook.IGeneratorDelegate
 
 class GeneratorDelegate implements IGeneratorDelegate {
-	
+
 	@Inject
 	HppGenerator hppGenerator
-	
+
 	@Inject
 	CppGenerator cppGenerator
 
 	override generate(Resource input, IFileSystemAccess fsa) {
+		if(input.contents.empty){
+			return
+		}
+		
 		val LDtoModel lModel = input.contents.get(0) as LDtoModel
 		lModel.packages.forEach [
-			types.map[it as LDto].forEach [
+			types.filter[it instanceof LDto].map[it as LDto].forEach [
 				it.generateHppFile(fsa)
 				it.generateCppFile(fsa)
 			]
 		]
 	}
-	
+
 	/**
 	 * Generates the .hpp file for the given dto.
 	 */

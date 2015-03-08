@@ -20,7 +20,6 @@
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
 import com.google.inject.Inject;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -30,7 +29,6 @@ import org.eclipse.xtext.generator.OutputConfiguration;
 import org.eclipse.xtext.xbase.lib.CollectionLiterals;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
-import org.eclipse.xtext.xbase.lib.ListExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppGenerator;
 import org.lunifera.dsl.ext.dtos.cpp.qt.HppGenerator;
@@ -50,25 +48,36 @@ public class GeneratorDelegate implements IGeneratorDelegate {
   
   public void generate(final Resource input, final IFileSystemAccess fsa) {
     EList<EObject> _contents = input.getContents();
-    EObject _get = _contents.get(0);
+    boolean _isEmpty = _contents.isEmpty();
+    if (_isEmpty) {
+      return;
+    }
+    EList<EObject> _contents_1 = input.getContents();
+    EObject _get = _contents_1.get(0);
     final LDtoModel lModel = ((LDtoModel) _get);
     EList<LTypedPackage> _packages = lModel.getPackages();
     final Procedure1<LTypedPackage> _function = new Procedure1<LTypedPackage>() {
       public void apply(final LTypedPackage it) {
         EList<LType> _types = it.getTypes();
-        final Function1<LType, LDto> _function = new Function1<LType, LDto>() {
+        final Function1<LType, Boolean> _function = new Function1<LType, Boolean>() {
+          public Boolean apply(final LType it) {
+            return Boolean.valueOf((it instanceof LDto));
+          }
+        };
+        Iterable<LType> _filter = IterableExtensions.<LType>filter(_types, _function);
+        final Function1<LType, LDto> _function_1 = new Function1<LType, LDto>() {
           public LDto apply(final LType it) {
             return ((LDto) it);
           }
         };
-        List<LDto> _map = ListExtensions.<LType, LDto>map(_types, _function);
-        final Procedure1<LDto> _function_1 = new Procedure1<LDto>() {
+        Iterable<LDto> _map = IterableExtensions.<LType, LDto>map(_filter, _function_1);
+        final Procedure1<LDto> _function_2 = new Procedure1<LDto>() {
           public void apply(final LDto it) {
             GeneratorDelegate.this.generateHppFile(it, fsa);
             GeneratorDelegate.this.generateCppFile(it, fsa);
           }
         };
-        IterableExtensions.<LDto>forEach(_map, _function_1);
+        IterableExtensions.<LDto>forEach(_map, _function_2);
       }
     };
     IterableExtensions.<LTypedPackage>forEach(_packages, _function);
