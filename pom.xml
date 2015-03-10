@@ -27,6 +27,16 @@
 		<license.licenseName>apl_v2</license.licenseName>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>Lunifera Snapshots</id>
+			<url>http://maven.lunifera.org:8086/nexus/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<url>${distribution.site.url}</url>
 	<distributionManagement>
 		<site>
