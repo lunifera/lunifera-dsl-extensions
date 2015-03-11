@@ -39,6 +39,18 @@ class CppExtensions {
 		}
 		return "String"
 	}
+	
+	def String defaultForType(LFeature feature) {
+		switch(feature.toTypeName){
+			case "bool":
+				return "false"
+			case "int":
+				return "0"
+			case "QString":
+				return "\"\""
+		}
+		return "\"\""
+	}
 
 	def boolean isToMany(LFeature feature) {
 		modelExtension.isToMany(feature)

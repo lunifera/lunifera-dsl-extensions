@@ -45,25 +45,44 @@ class CppGenerator {
 	static const QString «feature.toName»ForeignKey = "«feature.toName»";
 	«ENDFOR»
 	
-	«dto.toName»::«dto.toName»(QObject *parent) {}
-	
+/*
+* Default Constructor if «dto.toName» not initialized from QVariantMap
+*/
+	«dto.toName»::«dto.toName»(QObject *parent) :
+		QObject() «FOR feature : dto.allFeatures.filter[!isToMany]», m«feature.toName.toFirstUpper»(«feature.defaultForType») «ENDFOR» {
+			// 
+		}
+
+/*
+* Special Constructor to initialize «dto.toName» from QVariantMap
+* Map got from JsonDataAccess or so
+*/	
 	«dto.toName»::«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map) :
 				QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map) {
-	«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).to«feature.mapToType»();
-	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isToMany]»
+		«ENDFOR»
+		«FOR feature : dto.allFeatures.filter[isToMany]»
 		m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).toList();
-	«ENDFOR»	
+		«ENDFOR»	
 	}
 	
+/*
+* Exports Properties from «dto.toName» as QVariantMap
+* To store Data in JsonDataAccess or so
+*/
 	QVariantMap «dto.toName»::toMap(){
-	«FOR feature : dto.allFeatures»
+		«FOR feature : dto.allFeatures»
 		m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
-	«ENDFOR»
+		«ENDFOR»
 		return m«dto.toName.toFirstUpper»Map;
 	}
-	
+
+/*
+* Exports Properties from «dto.toName» as QVariantMap
+* To send data as payload to Server
+* Makes it possible to use defferent naming conditions
+*/	
 	QVariantMap «dto.toName»::toForeignMap(){
 		QVariantMap foreignMap;
 		«FOR feature : dto.allFeatures»
@@ -96,7 +115,7 @@ class CppGenerator {
 	«ENDFOR»
 	
 	«dto.toName»::~«dto.toName»() {
-	// 
+	// place cleanUp code here
 	}
 	
 	'''

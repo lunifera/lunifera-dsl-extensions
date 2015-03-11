@@ -61,6 +61,30 @@ public class CppExtensions {
     return "String";
   }
   
+  public String defaultForType(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "bool")) {
+        _matched=true;
+        return "false";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "int")) {
+        _matched=true;
+        return "0";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return "\"\"";
+      }
+    }
+    return "\"\"";
+  }
+  
   public boolean isToMany(final LFeature feature) {
     return this.modelExtension.isToMany(feature);
   }
