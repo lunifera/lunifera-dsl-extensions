@@ -16,6 +16,7 @@
  * 
  * Contributor:
  * 		Florian Pirchner - Copied filter and fixed them for lunifera usecase.
+ * 		ekke (Ekkehard Gentz), Rosenheim (Germany)
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
@@ -49,7 +50,6 @@ public class HppGenerator {
     String _copyRight = this._cppExtensions.toCopyRight(((LPackage) _eContainer));
     _builder.append(_copyRight, "");
     _builder.newLineIfNotEmpty();
-    _builder.newLine();
     _builder.append("#ifndef ");
     String _name = this._cppExtensions.toName(dto);
     String _upperCase = _name.toUpperCase();
@@ -71,8 +71,11 @@ public class HppGenerator {
     _builder.append("class ");
     String _name_2 = this._cppExtensions.toName(dto);
     _builder.append(_name_2, "");
-    _builder.append(": public QObject {");
+    _builder.append(": public QObject");
     _builder.newLineIfNotEmpty();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("\t");
     _builder.append("Q_OBJECT");
     _builder.newLine();
     _builder.newLine();
@@ -86,25 +89,25 @@ public class HppGenerator {
       };
       Iterable<? extends LFeature> _filter = IterableExtensions.filter(_allFeatures, _function);
       for(final LFeature feature : _filter) {
+        _builder.append("\t");
         _builder.append("Q_PROPERTY(");
         String _typeName = this._cppExtensions.toTypeName(feature);
-        _builder.append(_typeName, "");
+        _builder.append(_typeName, "\t");
         _builder.append(" ");
         String _name_3 = this._cppExtensions.toName(feature);
-        _builder.append(_name_3, "");
+        _builder.append(_name_3, "\t");
         _builder.append(" READ ");
         String _name_4 = this._cppExtensions.toName(feature);
-        _builder.append(_name_4, "");
+        _builder.append(_name_4, "\t");
         _builder.append(" WRITE set");
         String _name_5 = this._cppExtensions.toName(feature);
         String _firstUpper = StringExtensions.toFirstUpper(_name_5);
-        _builder.append(_firstUpper, "");
+        _builder.append(_firstUpper, "\t");
         _builder.append(" NOTIFY ");
         String _name_6 = this._cppExtensions.toName(feature);
-        _builder.append(_name_6, "");
+        _builder.append(_name_6, "\t");
         _builder.append("Changed FINAL)");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
     _builder.newLine();
@@ -117,25 +120,25 @@ public class HppGenerator {
       };
       Iterable<? extends LFeature> _filter_1 = IterableExtensions.filter(_allFeatures_1, _function_1);
       for(final LFeature feature_1 : _filter_1) {
+        _builder.append("\t");
         _builder.append("Q_PROPERTY(QVariantList ");
         String _name_7 = this._cppExtensions.toName(feature_1);
-        _builder.append(_name_7, "");
+        _builder.append(_name_7, "\t");
         _builder.append(" READ ");
         String _name_8 = this._cppExtensions.toName(feature_1);
-        _builder.append(_name_8, "");
+        _builder.append(_name_8, "\t");
         _builder.append(" NOTIFY ");
         String _name_9 = this._cppExtensions.toName(feature_1);
-        _builder.append(_name_9, "");
+        _builder.append(_name_9, "\t");
         _builder.append("Changed FINAL)");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
     _builder.newLine();
     _builder.append("public:");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("MyEntity(QObject *parent = 0);\t");
+    _builder.append("MyEntity(QObject *parent = 0);");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("MyEntity(QVariantMap ");
@@ -183,7 +186,6 @@ public class HppGenerator {
         _builder.append(_name_13, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
     _builder.newLine();
@@ -202,7 +204,6 @@ public class HppGenerator {
         _builder.append(_name_14, "\t");
         _builder.append("() const;");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
     _builder.newLine();
@@ -214,6 +215,7 @@ public class HppGenerator {
     _builder.append("();");
     _builder.newLineIfNotEmpty();
     _builder.newLine();
+    _builder.append("\t");
     _builder.append("Q_SIGNALS:");
     _builder.newLine();
     _builder.newLine();
@@ -239,11 +241,8 @@ public class HppGenerator {
         _builder.append(_name_17, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
-    _builder.append("\t");
-    _builder.newLine();
     {
       List<? extends LFeature> _allFeatures_5 = dto.getAllFeatures();
       final Function1<LFeature, Boolean> _function_5 = new Function1<LFeature, Boolean>() {
@@ -262,7 +261,6 @@ public class HppGenerator {
         _builder.append(_name_19, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
-        _builder.newLine();
       }
     }
     _builder.newLine();
@@ -294,7 +292,7 @@ public class HppGenerator {
     }
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("Q_DISABLE_COPY(");
+    _builder.append("Q_DISABLE_COPY (");
     String _name_22 = this._cppExtensions.toName(dto);
     String _firstUpper_5 = StringExtensions.toFirstUpper(_name_22);
     _builder.append(_firstUpper_5, "\t");

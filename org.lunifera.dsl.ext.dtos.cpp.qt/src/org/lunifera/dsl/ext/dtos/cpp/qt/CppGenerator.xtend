@@ -16,11 +16,11 @@
  * 
  * Contributor:
  * 		Florian Pirchner - Copied filter and fixed them for lunifera usecase.
+ * 		ekke (Ekkehard Gentz), Rosenheim (Germany)
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt
 
 import org.lunifera.dsl.semantic.dto.LDto
-import org.lunifera.dsl.semantic.common.types.LPackage
 import com.google.inject.Inject
 
 class CppGenerator {
@@ -32,91 +32,100 @@ class CppGenerator {
 	}
 
 	def CharSequence toContent(LDto dto) '''
-	#include "«dto.toName».hpp"
-	#include <QDebug>
-	
-	// keys of QVariantMap used in this APP
-	«FOR feature : dto.allFeatures»
-	static const QString «feature.toName»Key = "«feature.toName»";
-	«ENDFOR»
-	
-	// keys used from Server API etc
-	«FOR feature : dto.allFeatures»
-	static const QString «feature.toName»ForeignKey = "«feature.toName»";
-	«ENDFOR»
-	
-/*
-* Default Constructor if «dto.toName» not initialized from QVariantMap
-*/
-	«dto.toName»::«dto.toName»(QObject *parent) :
-		QObject() «FOR feature : dto.allFeatures.filter[!isToMany]», m«feature.toName.toFirstUpper»(«feature.defaultForType») «ENDFOR» {
-			// 
-		}
+#include "«dto.toName».hpp"
+#include <QDebug>
+
+// keys of QVariantMap used in this APP
+«FOR feature : dto.allFeatures»
+static const QString «feature.toName»Key = "«feature.toName»";
+«ENDFOR»
+
+// keys used from Server API etc
+«FOR feature : dto.allFeatures»
+static const QString «feature.toName»ForeignKey = "«feature.toName»";
+«ENDFOR»
 
 /*
-* Special Constructor to initialize «dto.toName» from QVariantMap
-* Map got from JsonDataAccess or so
-*/	
-	«dto.toName»::«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map) :
-				QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map) {
-		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).to«feature.mapToType»();
-		«ENDFOR»
-		«FOR feature : dto.allFeatures.filter[isToMany]»
-		m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).toList();
-		«ENDFOR»	
-	}
-	
-/*
-* Exports Properties from «dto.toName» as QVariantMap
-* To store Data in JsonDataAccess or so
-*/
-	QVariantMap «dto.toName»::toMap(){
-		«FOR feature : dto.allFeatures»
-		m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
-		«ENDFOR»
-		return m«dto.toName.toFirstUpper»Map;
-	}
+ * Default Constructor if «dto.toName» not initialized from QVariantMap
+ */
+«dto.toName»::«dto.toName»(QObject *parent) :
+        QObject()«FOR feature : dto.allFeatures.filter[!isToMany]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
+{
+	//
+}
 
 /*
-* Exports Properties from «dto.toName» as QVariantMap
-* To send data as payload to Server
-* Makes it possible to use defferent naming conditions
-*/	
-	QVariantMap «dto.toName»::toForeignMap(){
-		QVariantMap foreignMap;
-		«FOR feature : dto.allFeatures»
-		foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
-		«ENDFOR»
-		return foreignMap;
-	}
-	
+ * Special Constructor to initialize «dto.toName» from QVariantMap
+ * Map got from JsonDataAccess or so
+ */
+«dto.toName»::«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map) :
+        QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map)
+{
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
-	«feature.toTypeName» «dto.toName»::«feature.toName»() const {
-		return m«feature.toName.toFirstUpper»;
-	}
-	void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeName» «feature.toName») {
-		if («feature.toName» != m«feature.toName.toFirstUpper») {
-			m«feature.toName.toFirstUpper» = «feature.toName»;
-			emit «feature.toName»Changed(«feature.toName»);
-		}
-	}
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).to«feature.mapToType»();
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany]»
-	QVariantList «dto.toName»::«feature.toName»() const {
-		return m«feature.toName.toFirstUpper»;
-	}
-	void «dto.toName»::set«feature.toName.toFirstUpper»(QVariantList «feature.toName») {
-		if («feature.toName» != m«feature.toName.toFirstUpper») {
-			m«feature.toName.toFirstUpper» = «feature.toName»;
-			emit «feature.toName»Changed(«feature.toName»);
-		}
-	}
-	«ENDFOR»
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).toList();
+	«ENDFOR»	
+}
 	
-	«dto.toName»::~«dto.toName»() {
-	// place cleanUp code here
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * To store Data in JsonDataAccess or so
+ */
+QVariantMap «dto.toName»::toMap()
+{
+	«FOR feature : dto.allFeatures»
+	m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	return m«dto.toName.toFirstUpper»Map;
+}
+
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * To send data as payload to Server
+ * Makes it possible to use defferent naming conditions
+ */
+QVariantMap «dto.toName»::toForeignMap()
+{
+	QVariantMap foreignMap;
+	«FOR feature : dto.allFeatures»
+	foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	return foreignMap;
+}
+	
+«FOR feature : dto.allFeatures.filter[!isToMany]»
+«feature.toTypeName» «dto.toName»::«feature.toName»() const
+{
+	return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeName» «feature.toName»)
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		emit «feature.toName»Changed(«feature.toName»);
 	}
+}
+«ENDFOR»
+«FOR feature : dto.allFeatures.filter[isToMany]»
+QVariantList «dto.toName»::«feature.toName»() const 
+{
+	return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(QVariantList «feature.toName») 
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		emit «feature.toName»Changed(«feature.toName»);
+	}
+}
+«ENDFOR»
+	
+«dto.toName»::~«dto.toName»()
+{
+	// place cleanUp code here
+}
 	
 	'''
 	
