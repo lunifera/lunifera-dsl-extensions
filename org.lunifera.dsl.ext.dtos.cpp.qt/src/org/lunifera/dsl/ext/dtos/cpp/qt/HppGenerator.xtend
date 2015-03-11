@@ -76,8 +76,13 @@ class HppGenerator {
 	
 	Q_SIGNALS:
 	
-		«FOR feature : dto.allFeatures»
+		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		void «feature.toName»Changed(«feature.toTypeName» «feature.toName»);
+
+		«ENDFOR»
+		
+		«FOR feature : dto.allFeatures.filter[isToMany]»
+		void «feature.toName»Changed(QVariantList «feature.toName»);
 
 		«ENDFOR»
 	
@@ -86,7 +91,6 @@ class HppGenerator {
 		QVariantMap m«dto.toName.toFirstUpper»Map;
 		
 		«FOR feature : dto.allFeatures»
-		void «feature.toName»Changed(«feature.toTypeName» «feature.toName»);
 		«feature.toTypeName» m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 	
@@ -96,7 +100,6 @@ class HppGenerator {
 	
 	#endif /* «dto.toName.toUpperCase»_HPP_ */
 	
-	}
 '''
 
 }
