@@ -11,6 +11,7 @@
 package org.lunifera.dsl.ext.cpp.qt.datatypes {
 	
 	import org.lunifera.dsl.ext.cpp.qt.lib.types.QString;
+	import org.lunifera.dsl.ext.cpp.qt.lib.types.bool;
 	  
 	datatype boolean jvmType java.lang.Boolean as primitive;
 	datatype short jvmType java.lang.Short as primitive;
@@ -31,6 +32,7 @@ package org.lunifera.dsl.ext.cpp.qt.datatypes {
 	datatype Byte jvmType java.lang.Byte;
 
 	datatype QString jvmType QString;
+	datatype bool jvmType bool;
 	datatype Date dateType date;
 
 }
