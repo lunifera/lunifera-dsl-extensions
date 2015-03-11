@@ -39,6 +39,9 @@ class HppGenerator {
 
 	#include <QObject>
 	#include <qvariant.h>
+	«FOR reference : dto.references»
+	#include "«reference.toTypeName».hpp"
+	«ENDFOR»
 
 	class «dto.toName»: public QObject
 	{
@@ -50,7 +53,7 @@ class HppGenerator {
 		«ENDFOR»
 
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		Q_PROPERTY(QVariantList «feature.toName» READ «feature.toName» NOTIFY «feature.toName»Changed FINAL)
+		Q_PROPERTY(QVariantList «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ENDFOR»	
 
 	public:
@@ -67,6 +70,7 @@ class HppGenerator {
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		QVariantList «feature.toName»() const;
+		void set«feature.toName.toFirstUpper»(QVariantList «feature.toName»);
 		«ENDFOR»
 	
 		virtual ~«dto.toName.toFirstUpper»();
@@ -84,8 +88,11 @@ class HppGenerator {
 	
 		QVariantMap m«dto.toName.toFirstUpper»Map;
 		
-		«FOR feature : dto.allFeatures»
+		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«feature.toTypeName» m«feature.toName.toFirstUpper»;
+		«ENDFOR»
+		«FOR feature : dto.allFeatures.filter[isToMany]»
+		QVariantList m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 	
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)

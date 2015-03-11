@@ -62,10 +62,14 @@ static const QString «feature.toName»ForeignKey = "«feature.toName»";
         QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map)
 {
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
-	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).to«feature.mapToType»();
+	«IF dto.toName.endsWith("DTO")»
+	m«feature.toName.toFirstUpper» = «feature.toTypeName»(m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»());
+	«ELSE» 
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+	«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany]»
-	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).toList();
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
 	«ENDFOR»	
 }
 	

@@ -78,7 +78,11 @@ public class CppExtensions {
         return "String";
       }
     }
-    return "String";
+    boolean _isToMany = this.isToMany(feature);
+    if (_isToMany) {
+      return "List";
+    }
+    return "Map";
   }
   
   public String defaultForType(final LFeature feature) {
@@ -102,7 +106,7 @@ public class CppExtensions {
         return "\"\"";
       }
     }
-    return "\"\"";
+    return "";
   }
   
   public boolean isToMany(final LFeature feature) {

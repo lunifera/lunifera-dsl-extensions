@@ -57,7 +57,10 @@ class CppExtensions {
 			case "QString":
 				return "String"
 		}
-		return "String"
+		if(feature.isToMany){
+			return "List"
+		} 
+		return "Map"
 	}
 	
 	def String defaultForType(LFeature feature) {
@@ -69,7 +72,7 @@ class CppExtensions {
 			case "QString":
 				return "\"\""
 		}
-		return "\"\""
+		return ""
 	}
 
 	def boolean isToMany(LFeature feature) {
