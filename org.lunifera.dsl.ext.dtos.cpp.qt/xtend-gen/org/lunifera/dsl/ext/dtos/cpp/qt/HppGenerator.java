@@ -138,12 +138,16 @@ public class HppGenerator {
     _builder.append("public:");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("MyEntity(QObject *parent = 0);");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("MyEntity(QVariantMap ");
     String _name_10 = this._cppExtensions.toName(dto);
-    String _firstLower = StringExtensions.toFirstLower(_name_10);
+    _builder.append(_name_10, "\t");
+    _builder.append("(QObject *parent = 0);");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
+    String _name_11 = this._cppExtensions.toName(dto);
+    _builder.append(_name_11, "\t");
+    _builder.append("(QVariantMap ");
+    String _name_12 = this._cppExtensions.toName(dto);
+    String _firstLower = StringExtensions.toFirstLower(_name_12);
     _builder.append(_firstLower, "\t");
     _builder.append("Map);");
     _builder.newLineIfNotEmpty();
@@ -169,21 +173,21 @@ public class HppGenerator {
         String _typeName_1 = this._cppExtensions.toTypeName(feature_2);
         _builder.append(_typeName_1, "\t");
         _builder.append(" ");
-        String _name_11 = this._cppExtensions.toName(feature_2);
-        _builder.append(_name_11, "\t");
+        String _name_13 = this._cppExtensions.toName(feature_2);
+        _builder.append(_name_13, "\t");
         _builder.append("() const;");
         _builder.newLineIfNotEmpty();
         _builder.append("\t");
         _builder.append("void set");
-        String _name_12 = this._cppExtensions.toName(feature_2);
-        String _firstUpper_1 = StringExtensions.toFirstUpper(_name_12);
+        String _name_14 = this._cppExtensions.toName(feature_2);
+        String _firstUpper_1 = StringExtensions.toFirstUpper(_name_14);
         _builder.append(_firstUpper_1, "\t");
         _builder.append("(");
         String _typeName_2 = this._cppExtensions.toTypeName(feature_2);
         _builder.append(_typeName_2, "\t");
         _builder.append(" ");
-        String _name_13 = this._cppExtensions.toName(feature_2);
-        _builder.append(_name_13, "\t");
+        String _name_15 = this._cppExtensions.toName(feature_2);
+        _builder.append(_name_15, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
       }
@@ -200,8 +204,8 @@ public class HppGenerator {
       for(final LFeature feature_3 : _filter_3) {
         _builder.append("\t");
         _builder.append("QVariantList ");
-        String _name_14 = this._cppExtensions.toName(feature_3);
-        _builder.append(_name_14, "\t");
+        String _name_16 = this._cppExtensions.toName(feature_3);
+        _builder.append(_name_16, "\t");
         _builder.append("() const;");
         _builder.newLineIfNotEmpty();
       }
@@ -209,8 +213,8 @@ public class HppGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("virtual ~");
-    String _name_15 = this._cppExtensions.toName(dto);
-    String _firstUpper_2 = StringExtensions.toFirstUpper(_name_15);
+    String _name_17 = this._cppExtensions.toName(dto);
+    String _firstUpper_2 = StringExtensions.toFirstUpper(_name_17);
     _builder.append(_firstUpper_2, "\t");
     _builder.append("();");
     _builder.newLineIfNotEmpty();
@@ -231,14 +235,14 @@ public class HppGenerator {
       for(final LFeature feature_4 : _filter_4) {
         _builder.append("\t");
         _builder.append("void ");
-        String _name_16 = this._cppExtensions.toName(feature_4);
-        _builder.append(_name_16, "\t");
+        String _name_18 = this._cppExtensions.toName(feature_4);
+        _builder.append(_name_18, "\t");
         _builder.append("Changed(");
         String _typeName_3 = this._cppExtensions.toTypeName(feature_4);
         _builder.append(_typeName_3, "\t");
         _builder.append(" ");
-        String _name_17 = this._cppExtensions.toName(feature_4);
-        _builder.append(_name_17, "\t");
+        String _name_19 = this._cppExtensions.toName(feature_4);
+        _builder.append(_name_19, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
       }
@@ -254,11 +258,11 @@ public class HppGenerator {
       for(final LFeature feature_5 : _filter_5) {
         _builder.append("\t");
         _builder.append("void ");
-        String _name_18 = this._cppExtensions.toName(feature_5);
-        _builder.append(_name_18, "\t");
+        String _name_20 = this._cppExtensions.toName(feature_5);
+        _builder.append(_name_20, "\t");
         _builder.append("Changed(QVariantList ");
-        String _name_19 = this._cppExtensions.toName(feature_5);
-        _builder.append(_name_19, "\t");
+        String _name_21 = this._cppExtensions.toName(feature_5);
+        _builder.append(_name_21, "\t");
         _builder.append(");");
         _builder.newLineIfNotEmpty();
       }
@@ -269,8 +273,8 @@ public class HppGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("QVariantMap m");
-    String _name_20 = this._cppExtensions.toName(dto);
-    String _firstUpper_3 = StringExtensions.toFirstUpper(_name_20);
+    String _name_22 = this._cppExtensions.toName(dto);
+    String _firstUpper_3 = StringExtensions.toFirstUpper(_name_22);
     _builder.append(_firstUpper_3, "\t");
     _builder.append("Map;");
     _builder.newLineIfNotEmpty();
@@ -283,8 +287,8 @@ public class HppGenerator {
         String _typeName_4 = this._cppExtensions.toTypeName(feature_6);
         _builder.append(_typeName_4, "\t");
         _builder.append(" m");
-        String _name_21 = this._cppExtensions.toName(feature_6);
-        String _firstUpper_4 = StringExtensions.toFirstUpper(_name_21);
+        String _name_23 = this._cppExtensions.toName(feature_6);
+        String _firstUpper_4 = StringExtensions.toFirstUpper(_name_23);
         _builder.append(_firstUpper_4, "\t");
         _builder.append(";");
         _builder.newLineIfNotEmpty();
@@ -293,23 +297,23 @@ public class HppGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("Q_DISABLE_COPY (");
-    String _name_22 = this._cppExtensions.toName(dto);
-    String _firstUpper_5 = StringExtensions.toFirstUpper(_name_22);
+    String _name_24 = this._cppExtensions.toName(dto);
+    String _firstUpper_5 = StringExtensions.toFirstUpper(_name_24);
     _builder.append(_firstUpper_5, "\t");
     _builder.append(")");
     _builder.newLineIfNotEmpty();
     _builder.append("};");
     _builder.newLine();
     _builder.append("Q_DECLARE_METATYPE(");
-    String _name_23 = this._cppExtensions.toName(dto);
-    String _firstUpper_6 = StringExtensions.toFirstUpper(_name_23);
+    String _name_25 = this._cppExtensions.toName(dto);
+    String _firstUpper_6 = StringExtensions.toFirstUpper(_name_25);
     _builder.append(_firstUpper_6, "");
     _builder.append("*)");
     _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.append("#endif /* ");
-    String _name_24 = this._cppExtensions.toName(dto);
-    String _upperCase_2 = _name_24.toUpperCase();
+    String _name_26 = this._cppExtensions.toName(dto);
+    String _upperCase_2 = _name_26.toUpperCase();
     _builder.append(_upperCase_2, "");
     _builder.append("_HPP_ */");
     _builder.newLineIfNotEmpty();

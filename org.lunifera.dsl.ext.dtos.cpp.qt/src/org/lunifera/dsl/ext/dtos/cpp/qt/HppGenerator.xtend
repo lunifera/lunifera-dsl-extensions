@@ -54,8 +54,8 @@ class HppGenerator {
 		«ENDFOR»	
 
 	public:
-		MyEntity(QObject *parent = 0);
-		MyEntity(QVariantMap «dto.toName.toFirstLower»Map);
+		«dto.toName»(QObject *parent = 0);
+		«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map);
 	
 		QVariantMap toMap();
 		QVariantMap toForeignMap();
