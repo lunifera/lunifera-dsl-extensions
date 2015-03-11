@@ -67,7 +67,7 @@ class CppGenerator {
 	QVariantMap «dto.toName»::toForeignMap(){
 		QVariantMap foreignMap;
 		«FOR feature : dto.allFeatures»
-		foreignMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 		«ENDFOR»
 		return foreignMap;
 	}

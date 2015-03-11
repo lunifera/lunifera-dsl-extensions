@@ -217,7 +217,7 @@ public class CppGenerator {
         _builder.append("foreignMap.insert(");
         String _name_24 = this._cppExtensions.toName(feature_5);
         _builder.append(_name_24, "\t");
-        _builder.append("Key, m");
+        _builder.append("ForeignKey, m");
         String _name_25 = this._cppExtensions.toName(feature_5);
         String _firstUpper_8 = StringExtensions.toFirstUpper(_name_25);
         _builder.append(_firstUpper_8, "\t");
