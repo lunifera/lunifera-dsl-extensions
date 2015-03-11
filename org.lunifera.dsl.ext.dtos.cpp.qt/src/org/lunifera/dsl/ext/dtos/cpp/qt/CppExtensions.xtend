@@ -27,6 +27,18 @@ class CppExtensions {
 	def dispatch String toTypeName(LReference ref) {
 		modelExtension.toTypeName(ref as LDtoAbstractReference)
 	}
+	
+	def String mapToType(LFeature feature) {
+		switch(feature.toTypeName){
+			case "bool":
+				return "Bool"
+			case "int":
+				return "Int"
+			case "QString":
+				return "String"
+		}
+		return "String"
+	}
 
 	def boolean isToMany(LFeature feature) {
 		modelExtension.isToMany(feature)

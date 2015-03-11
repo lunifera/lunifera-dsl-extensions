@@ -1,5 +1,6 @@
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
+import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import org.eclipse.emf.ecore.EObject;
@@ -34,6 +35,30 @@ public class CppExtensions {
   
   protected String _toTypeName(final LReference ref) {
     return this.modelExtension.toTypeName(((LDtoAbstractReference) ref));
+  }
+  
+  public String mapToType(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "bool")) {
+        _matched=true;
+        return "Bool";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "int")) {
+        _matched=true;
+        return "Int";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return "String";
+      }
+    }
+    return "String";
   }
   
   public boolean isToMany(final LFeature feature) {
