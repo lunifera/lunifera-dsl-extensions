@@ -22,17 +22,18 @@ package org.lunifera.dsl.ext.dtos.cpp.qt
 
 import com.google.inject.Inject
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.xtext.common.types.JvmCustomAnnotationValue
+import org.eclipse.xtext.xbase.XStringLiteral
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
 import org.lunifera.dsl.semantic.common.types.LFeature
 import org.lunifera.dsl.semantic.common.types.LReference
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
-import org.lunifera.dsl.semantic.common.types.LAnnotationDef
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName
 
 class CppExtensions {
 
@@ -43,16 +44,20 @@ class CppExtensions {
 	def dispatch String toName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
-	
+
 	def dispatch String toName(LAttribute target) {
-//		val anno = target.simpleNameAnno
-//		if(anno != null){
-//			return anno.annotation.
-//		}
+		val value = target.simpleNameAnnoValue
+		if (value != null) {
+			return value
+		}
 		modelExtension.toName(target)
 	}
-	
+
 	def dispatch String toName(LReference target) {
+		val value = target.simpleNameAnnoValue
+		if (value != null) {
+			return value
+		}
 		modelExtension.toName(target)
 	}
 
@@ -73,14 +78,14 @@ class CppExtensions {
 			case "QString":
 				return "String"
 		}
-		if(feature.isToMany){
+		if (feature.isToMany) {
 			return "List"
-		} 
+		}
 		return "Map"
 	}
-	
+
 	def String defaultForType(LFeature feature) {
-		switch(feature.toTypeName){
+		switch (feature.toTypeName) {
 			case "bool":
 				return "false"
 			case "int":
@@ -112,10 +117,16 @@ class CppExtensions {
 		}
 		return ""
 	}
-	
-//	def LAnnotationDef getSimpleNameAnno(LFeature member) {
-//		val annoDef = typeof(SimpleName).getRedefined(member.annotations)
-//		annoDef.annotation.
-//	}
+
+	def String getSimpleNameAnnoValue(LFeature member) {
+		val annoDef = typeof(SimpleName).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
 
 }
