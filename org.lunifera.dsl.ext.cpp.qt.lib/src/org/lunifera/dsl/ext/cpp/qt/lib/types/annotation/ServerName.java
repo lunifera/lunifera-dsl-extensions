@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ FIELD, METHOD })
 @Retention(RUNTIME)
-public @interface SimpleName {
+public @interface ServerName {
 
 	String value() default "";
 }

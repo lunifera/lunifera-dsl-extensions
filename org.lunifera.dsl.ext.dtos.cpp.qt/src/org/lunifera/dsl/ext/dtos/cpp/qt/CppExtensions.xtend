@@ -27,13 +27,14 @@ import org.eclipse.xtext.xbase.XStringLiteral
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
 import org.lunifera.dsl.semantic.common.types.LFeature
 import org.lunifera.dsl.semantic.common.types.LReference
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
+import org.lunifera.dsl.semantic.dto.LDto
 
 class CppExtensions {
 
@@ -45,20 +46,20 @@ class CppExtensions {
 		modelExtension.toName(target)
 	}
 	
-	def dispatch String toAliasOrName(LAnnotationTarget target) {
+	def dispatch String toServerName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toAliasOrName(LAttribute target) {
-		val value = target.aliasValue
+	def dispatch String toServerName(LAttribute target) {
+		val value = target.serverNameValue
 		if (value != null) {
 			return value
 		}
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toAliasOrName(LReference target) {
-		val value = target.aliasValue
+	def dispatch String toServerName(LReference target) {
+		val value = target.serverNameValue
 		if (value != null) {
 			return value
 		}
@@ -121,16 +122,34 @@ class CppExtensions {
 		}
 		return ""
 	}
+	
+	def toDtoDocu(LDto element) {
+		var docu = element.documentation
+		if (!docu.nullOrEmpty) {
+			var docus = docu.split('\n')
+			if (docus.length > 1) {
+				return '''
+				/**
+				«FOR line : docus»
+					«" * "»«line»
+				«ENDFOR»
+				 */'''.toString
+			} else if (docus.length == 1) {
+				return '''/** «docu» */'''.toString
+			}
+		}
+		return ""
+	}
 
-	def boolean hasAlias(LFeature feature) {
-		if (feature.aliasValue == null){
+	def boolean hasServerName(LFeature feature) {
+		if (feature.serverNameValue == null){
 			return false
 		}
 		return true
 	}
 
-	def String getAliasValue(LFeature member) {
-		val annoDef = typeof(SimpleName).getRedefined(member.resolvedAnnotations)
+	def String getServerNameValue(LFeature member) {
+		val annoDef = typeof(ServerName).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

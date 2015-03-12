@@ -45,7 +45,7 @@ static const QString «feature.toName»Key = "«feature.toName»";
 
 // keys used from Server API etc
 «FOR feature : dto.allFeatures»
-static const QString «feature.toName»ForeignKey = "«feature.toAliasOrName»";
+static const QString «feature.toName»ForeignKey = "«feature.toServerName»";
 «ENDFOR»
 
 /*

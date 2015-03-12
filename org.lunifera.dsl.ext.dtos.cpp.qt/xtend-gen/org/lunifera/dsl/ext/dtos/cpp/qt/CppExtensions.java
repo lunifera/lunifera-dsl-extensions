@@ -36,12 +36,13 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName;
 import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
 import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.common.types.LReference;
+import org.lunifera.dsl.semantic.dto.LDto;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
 
@@ -62,14 +63,14 @@ public class CppExtensions {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toAliasOrName(final LAnnotationTarget target) {
+  protected String _toServerName(final LAnnotationTarget target) {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toAliasOrName(final LAttribute target) {
+  protected String _toServerName(final LAttribute target) {
     String _xblockexpression = null;
     {
-      final String value = this.getAliasValue(target);
+      final String value = this.getServerNameValue(target);
       boolean _notEquals = (!Objects.equal(value, null));
       if (_notEquals) {
         return value;
@@ -79,10 +80,10 @@ public class CppExtensions {
     return _xblockexpression;
   }
   
-  protected String _toAliasOrName(final LReference target) {
+  protected String _toServerName(final LReference target) {
     String _xblockexpression = null;
     {
-      final String value = this.getAliasValue(target);
+      final String value = this.getServerNameValue(target);
       boolean _notEquals = (!Objects.equal(value, null));
       if (_notEquals) {
         return value;
@@ -193,18 +194,55 @@ public class CppExtensions {
     return "";
   }
   
-  public boolean hasAlias(final LFeature feature) {
-    String _aliasValue = this.getAliasValue(feature);
-    boolean _equals = Objects.equal(_aliasValue, null);
+  public String toDtoDocu(final LDto element) {
+    String docu = this._jvmTypesBuilder.getDocumentation(element);
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(docu);
+    boolean _not = (!_isNullOrEmpty);
+    if (_not) {
+      String[] docus = docu.split("\n");
+      int _length = docus.length;
+      boolean _greaterThan = (_length > 1);
+      if (_greaterThan) {
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("/**");
+        _builder.newLine();
+        {
+          for(final String line : docus) {
+            _builder.append(" * ", "");
+            _builder.append(line, "");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+        _builder.append(" ");
+        _builder.append("*/");
+        return _builder.toString();
+      } else {
+        int _length_1 = docus.length;
+        boolean _equals = (_length_1 == 1);
+        if (_equals) {
+          StringConcatenation _builder_1 = new StringConcatenation();
+          _builder_1.append("/** ");
+          _builder_1.append(docu, "");
+          _builder_1.append(" */");
+          return _builder_1.toString();
+        }
+      }
+    }
+    return "";
+  }
+  
+  public boolean hasServerName(final LFeature feature) {
+    String _serverNameValue = this.getServerNameValue(feature);
+    boolean _equals = Objects.equal(_serverNameValue, null);
     if (_equals) {
       return false;
     }
     return true;
   }
   
-  public String getAliasValue(final LFeature member) {
+  public String getServerNameValue(final LFeature member) {
     EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
-    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(SimpleName.class, _resolvedAnnotations);
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(ServerName.class, _resolvedAnnotations);
     boolean _notEquals = (!Objects.equal(annoDef, null));
     if (_notEquals) {
       XAnnotation _annotation = annoDef.getAnnotation();
@@ -220,13 +258,13 @@ public class CppExtensions {
     }
   }
   
-  public String toAliasOrName(final LAnnotationTarget target) {
+  public String toServerName(final LAnnotationTarget target) {
     if (target instanceof LAttribute) {
-      return _toAliasOrName((LAttribute)target);
+      return _toServerName((LAttribute)target);
     } else if (target instanceof LReference) {
-      return _toAliasOrName((LReference)target);
+      return _toServerName((LReference)target);
     } else if (target != null) {
-      return _toAliasOrName(target);
+      return _toServerName(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

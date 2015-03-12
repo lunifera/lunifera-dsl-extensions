@@ -81,8 +81,8 @@ public class CppGenerator {
         String _name_3 = this._cppExtensions.toName(feature_1);
         _builder.append(_name_3, "");
         _builder.append("ForeignKey = \"");
-        String _aliasOrName = this._cppExtensions.toAliasOrName(feature_1);
-        _builder.append(_aliasOrName, "");
+        String _serverName = this._cppExtensions.toServerName(feature_1);
+        _builder.append(_serverName, "");
         _builder.append("\";");
         _builder.newLineIfNotEmpty();
       }
