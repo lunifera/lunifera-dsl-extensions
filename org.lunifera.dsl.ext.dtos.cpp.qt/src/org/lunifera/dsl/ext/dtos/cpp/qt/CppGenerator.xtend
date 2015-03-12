@@ -118,7 +118,6 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeName» �
 }
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isToMany]»
-// TODO ekke
 «feature.foo»
 QVariantList «dto.toName»::«feature.toName»() const 
 {
@@ -140,15 +139,16 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QVariantList «feature.t
 	
 	'''
 
-	def dispatch void foo(LDtoAbstractAttribute att) {
-		// do att
-	}
+	def dispatch foo(LDtoAbstractAttribute att) '''
+	// ATT
+	'''
+		
 
-	def dispatch void foo(LDtoAbstractReference ref) {
-		// do ref
-	}
+	def dispatch foo(LDtoAbstractReference ref) '''
+	// do ref
+	'''
 
-	def dispatch void foo(LFeature feature) {
-		// just a helper for max superclass
-	}
+	def dispatch foo(LFeature feature) '''
+	// just a helper for max superclass
+	'''
 }

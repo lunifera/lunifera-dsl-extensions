@@ -452,9 +452,8 @@ public class CppGenerator {
       };
       Iterable<? extends LFeature> _filter_4 = IterableExtensions.filter(_allFeatures_8, _function_4);
       for(final LFeature feature_8 : _filter_4) {
-        _builder.append("// TODO ekke");
-        _builder.newLine();
-        this.foo(feature_8);
+        CharSequence _foo = this.foo(feature_8);
+        _builder.append(_foo, "");
         _builder.newLineIfNotEmpty();
         _builder.append("QVariantList ");
         String _name_47 = this._cppExtensions.toName(dto);
@@ -546,25 +545,34 @@ public class CppGenerator {
     return _builder;
   }
   
-  protected void _foo(final LDtoAbstractAttribute att) {
+  protected CharSequence _foo(final LDtoAbstractAttribute att) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("// ATT");
+    _builder.newLine();
+    return _builder;
   }
   
-  protected void _foo(final LDtoAbstractReference ref) {
+  protected CharSequence _foo(final LDtoAbstractReference ref) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("// do ref");
+    _builder.newLine();
+    return _builder;
   }
   
-  protected void _foo(final LFeature feature) {
+  protected CharSequence _foo(final LFeature feature) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("// just a helper for max superclass");
+    _builder.newLine();
+    return _builder;
   }
   
-  public void foo(final LFeature att) {
+  public CharSequence foo(final LFeature att) {
     if (att instanceof LDtoAbstractAttribute) {
-      _foo((LDtoAbstractAttribute)att);
-      return;
+      return _foo((LDtoAbstractAttribute)att);
     } else if (att instanceof LDtoAbstractReference) {
-      _foo((LDtoAbstractReference)att);
-      return;
+      return _foo((LDtoAbstractReference)att);
     } else if (att != null) {
-      _foo(att);
-      return;
+      return _foo(att);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());
