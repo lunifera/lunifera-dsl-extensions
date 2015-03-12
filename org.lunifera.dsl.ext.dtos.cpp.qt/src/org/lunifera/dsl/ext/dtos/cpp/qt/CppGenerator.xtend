@@ -16,11 +16,12 @@
  * 
  * Contributor:
  * 		Florian Pirchner - Copied filter and fixed them for lunifera usecase.
+ * 		ekke (Ekkehard Gentz), Rosenheim (Germany)
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt
 
-import com.google.inject.Inject
 import org.lunifera.dsl.semantic.dto.LDto
+import com.google.inject.Inject
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.common.types.LFeature
@@ -34,87 +35,120 @@ class CppGenerator {
 	}
 
 	def CharSequence toContent(LDto dto) '''
-		#include "«dto.toName».hpp"
-		#include <QDebug>
-		
-		// keys of QVariantMap used in this APP
-		«FOR feature : dto.allFeatures»
-			static const QString «feature.toName»Key = "«feature.toName»";
-		«ENDFOR»
-		
-		// keys used from Server API etc
-		«FOR feature : dto.allFeatures»
-			static const QString «feature.toName»ForeignKey = "«feature.toName»";
-		«ENDFOR»
-		
-		«dto.toName»::«dto.toName»(QObject *parent) {}
-		
-		«dto.toName»::«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map) :
-					QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map) {
-		«FOR feature : dto.allFeatures.filter[!isToMany]»
-			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).to«feature.mapToType»();
-		«ENDFOR»
-		«FOR feature : dto.allFeatures.filter[isToMany]»
-			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.Key(«feature.toName»Key).toList();
-		«ENDFOR»	
-		}
-		
-		QVariantMap «dto.toName»::toMap(){
-		«FOR feature : dto.allFeatures»
-			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
-		«ENDFOR»
-			return m«dto.toName.toFirstUpper»Map;
-		}
-		
-		QVariantMap «dto.toName»::toForeignMap(){
-			QVariantMap foreignMap;
-			«FOR feature : dto.allFeatures»
-				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
-			«ENDFOR»
-			return foreignMap;
-		}
-		
-		«FOR feature : dto.allFeatures.filter[!isToMany]»
-			«feature.toTypeName» «dto.toName»::«feature.toName»() const {
-				return m«feature.toName.toFirstUpper»;
-			}
-			void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeName» «feature.toName») {
-				if («feature.toName» != m«feature.toName.toFirstUpper») {
-					m«feature.toName.toFirstUpper» = «feature.toName»;
-					emit «feature.toName»Changed(«feature.toName»);
-				}
-			}
-		«ENDFOR»
-		«FOR feature : dto.allFeatures.filter[isToMany]»
-			// TODO ekke
-			«feature.foo»
-			QVariantList «dto.toName»::«feature.toName»() const {
-				return m«feature.toName.toFirstUpper»;
-			}
-			void «dto.toName»::set«feature.toName.toFirstUpper»(QVariantList «feature.toName») {
-				if («feature.toName» != m«feature.toName.toFirstUpper») {
-					m«feature.toName.toFirstUpper» = «feature.toName»;
-					emit «feature.toName»Changed(«feature.toName»);
-				}
-			}
-		«ENDFOR»
-		
-		«dto.toName»::~«dto.toName»() {
-		// 
-		}
-		
+#include "«dto.toName».hpp"
+#include <QDebug>
+
+// keys of QVariantMap used in this APP
+«FOR feature : dto.allFeatures»
+static const QString «feature.toName»Key = "«feature.toName»";
+«ENDFOR»
+
+// keys used from Server API etc
+«FOR feature : dto.allFeatures»
+static const QString «feature.toName»ForeignKey = "«feature.toName»";
+«ENDFOR»
+
+/*
+ * Default Constructor if «dto.toName» not initialized from QVariantMap
+ */
+«dto.toName»::«dto.toName»(QObject *parent) :
+        QObject()«FOR feature : dto.allFeatures.filter[!isToMany]», m«feature.toName.toFirstUpper»(«feature.
+		defaultForType»)«ENDFOR»
+{
+	//
+}
+
+/*
+ * Special Constructor to initialize «dto.toName» from QVariantMap
+ * Map got from JsonDataAccess or so
+ */
+«dto.toName»::«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map) :
+        QObject(), m«dto.toName.toFirstUpper»Map(«dto.toName.toFirstLower»Map)
+{
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+	«IF dto.toName.endsWith("DTO")»
+	m«feature.toName.toFirstUpper» = «feature.toTypeName»(m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.
+		mapToType»());
+	«ELSE» 
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+	«ENDIF»
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany]»
+	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
+	«ENDFOR»	
+}
+	
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * To store Data in JsonDataAccess or so
+ */
+QVariantMap «dto.toName»::toMap()
+{
+	«FOR feature : dto.allFeatures»
+	m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	return m«dto.toName.toFirstUpper»Map;
+}
+
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * To send data as payload to Server
+ * Makes it possible to use defferent naming conditions
+ */
+QVariantMap «dto.toName»::toForeignMap()
+{
+	QVariantMap foreignMap;
+	«FOR feature : dto.allFeatures»
+	foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	return foreignMap;
+}
+	
+«FOR feature : dto.allFeatures.filter[!isToMany]»
+«feature.toTypeName» «dto.toName»::«feature.toName»() const
+{
+	return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeName» «feature.toName»)
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		emit «feature.toName»Changed(«feature.toName»);
+	}
+}
+«ENDFOR»
+«FOR feature : dto.allFeatures.filter[isToMany]»
+// TODO ekke
+«feature.foo»
+QVariantList «dto.toName»::«feature.toName»() const 
+{
+	return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(QVariantList «feature.toName») 
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		emit «feature.toName»Changed(«feature.toName»);
+	}
+}
+«ENDFOR»
+	
+«dto.toName»::~«dto.toName»()
+{
+	// place cleanUp code here
+}
+	
 	'''
 
 	def dispatch void foo(LDtoAbstractAttribute att) {
-		// doo foo for att
+		// do att
 	}
 
 	def dispatch void foo(LDtoAbstractReference ref) {
-		// doo ref
-	}
-	
-	def dispatch void foo(LFeature att) {
-		// just a helper for the highest superclass
+		// do ref
 	}
 
+	def dispatch void foo(LFeature feature) {
+		// just a helper for max superclass
+	}
 }
