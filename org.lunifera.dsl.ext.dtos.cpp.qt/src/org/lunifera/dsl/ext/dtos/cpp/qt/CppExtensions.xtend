@@ -41,20 +41,24 @@ class CppExtensions {
 	@Inject DtoModelExtensions modelExtension
 	@Inject extension AnnotationExtension
 
-	def dispatch String toName(LAnnotationTarget target) {
+	def String toName(LAnnotationTarget target) {
+		modelExtension.toName(target)
+	}
+	
+	def dispatch String toAliasOrName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toName(LAttribute target) {
-		val value = target.simpleNameAnnoValue
+	def dispatch String toAliasOrName(LAttribute target) {
+		val value = target.aliasValue
 		if (value != null) {
 			return value
 		}
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toName(LReference target) {
-		val value = target.simpleNameAnnoValue
+	def dispatch String toAliasOrName(LReference target) {
+		val value = target.aliasValue
 		if (value != null) {
 			return value
 		}
@@ -118,7 +122,14 @@ class CppExtensions {
 		return ""
 	}
 
-	def String getSimpleNameAnnoValue(LFeature member) {
+	def boolean hasAlias(LFeature feature) {
+		if (feature.aliasValue == null){
+			return false
+		}
+		return true
+	}
+
+	def String getAliasValue(LFeature member) {
 		val annoDef = typeof(SimpleName).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;

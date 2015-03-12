@@ -23,13 +23,21 @@ package org.lunifera.dsl.ext.dtos.cpp.qt;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import java.util.Arrays;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
+import org.eclipse.xtext.common.types.JvmAnnotationValue;
+import org.eclipse.xtext.common.types.JvmCustomAnnotationValue;
+import org.eclipse.xtext.xbase.XExpression;
+import org.eclipse.xtext.xbase.XStringLiteral;
+import org.eclipse.xtext.xbase.annotations.xAnnotations.XAnnotation;
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName;
+import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
 import org.lunifera.dsl.semantic.common.types.LFeature;
@@ -50,16 +58,38 @@ public class CppExtensions {
   @Extension
   private AnnotationExtension _annotationExtension;
   
-  protected String _toName(final LAnnotationTarget target) {
+  public String toName(final LAnnotationTarget target) {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toName(final LAttribute target) {
+  protected String _toAliasOrName(final LAnnotationTarget target) {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toName(final LReference target) {
-    return this.modelExtension.toName(target);
+  protected String _toAliasOrName(final LAttribute target) {
+    String _xblockexpression = null;
+    {
+      final String value = this.getAliasValue(target);
+      boolean _notEquals = (!Objects.equal(value, null));
+      if (_notEquals) {
+        return value;
+      }
+      _xblockexpression = this.modelExtension.toName(target);
+    }
+    return _xblockexpression;
+  }
+  
+  protected String _toAliasOrName(final LReference target) {
+    String _xblockexpression = null;
+    {
+      final String value = this.getAliasValue(target);
+      boolean _notEquals = (!Objects.equal(value, null));
+      if (_notEquals) {
+        return value;
+      }
+      _xblockexpression = this.modelExtension.toName(target);
+    }
+    return _xblockexpression;
   }
   
   protected String _toTypeName(final LAttribute att) {
@@ -163,13 +193,40 @@ public class CppExtensions {
     return "";
   }
   
-  public String toName(final LAnnotationTarget target) {
+  public boolean hasAlias(final LFeature feature) {
+    String _aliasValue = this.getAliasValue(feature);
+    boolean _equals = Objects.equal(_aliasValue, null);
+    if (_equals) {
+      return false;
+    }
+    return true;
+  }
+  
+  public String getAliasValue(final LFeature member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(SimpleName.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
+  }
+  
+  public String toAliasOrName(final LAnnotationTarget target) {
     if (target instanceof LAttribute) {
-      return _toName((LAttribute)target);
+      return _toAliasOrName((LAttribute)target);
     } else if (target instanceof LReference) {
-      return _toName((LReference)target);
+      return _toAliasOrName((LReference)target);
     } else if (target != null) {
-      return _toName(target);
+      return _toAliasOrName(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());
