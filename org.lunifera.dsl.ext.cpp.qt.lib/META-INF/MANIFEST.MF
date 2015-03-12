@@ -7,4 +7,5 @@ Bundle-SymbolicName: org.lunifera.dsl.ext.cpp.qt.lib
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.xbase.lib;bundle-version="[2.7.3,2.8.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.lunifera.dsl.ext.cpp.qt.lib.types
+Export-Package: org.lunifera.dsl.ext.cpp.qt.lib.types,
+ org.lunifera.dsl.ext.cpp.qt.lib.types.annotation

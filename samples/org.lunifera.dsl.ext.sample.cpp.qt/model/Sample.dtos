@@ -1,9 +1,12 @@
 package org.lunifera.dsl.ext.sample.cpp.qt {
 	
 	import org.lunifera.dsl.ext.cpp.qt.datatypes.*;
+	import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.*;
 	
 	dto MyEntity {
+		@SimpleName("nme")
 		var QString name;
+		
 		var int age;
 		ref MyOther[*] others opposite entity; 
 	}

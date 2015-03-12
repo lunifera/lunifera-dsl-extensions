@@ -20,6 +20,7 @@
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
 import com.google.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Extension;
@@ -29,6 +30,8 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppExtensions;
 import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.dto.LDto;
+import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
+import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
 
 @SuppressWarnings("all")
 public class CppGenerator {
@@ -320,6 +323,10 @@ public class CppGenerator {
       };
       Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_7, _function_3);
       for(final LFeature feature_7 : _filter_3) {
+        _builder.append("// TODO ekke");
+        _builder.newLine();
+        this.foo(feature_7);
+        _builder.newLineIfNotEmpty();
         _builder.append("QVariantList ");
         String _name_38 = this._cppExtensions.toName(dto);
         _builder.append(_name_38, "");
@@ -399,5 +406,30 @@ public class CppGenerator {
     _builder.newLine();
     _builder.newLine();
     return _builder;
+  }
+  
+  protected void _foo(final LDtoAbstractAttribute att) {
+  }
+  
+  protected void _foo(final LDtoAbstractReference ref) {
+  }
+  
+  protected void _foo(final LFeature att) {
+  }
+  
+  public void foo(final LFeature att) {
+    if (att instanceof LDtoAbstractAttribute) {
+      _foo((LDtoAbstractAttribute)att);
+      return;
+    } else if (att instanceof LDtoAbstractReference) {
+      _foo((LDtoAbstractReference)att);
+      return;
+    } else if (att != null) {
+      _foo(att);
+      return;
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(att).toString());
+    }
   }
 }

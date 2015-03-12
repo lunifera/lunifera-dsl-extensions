@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import org.lunifera.dsl.dto.lib.MappingContext;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.QString;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SimpleName;
 import org.lunifera.dsl.ext.sample.cpp.qt.MyOther;
 import org.lunifera.runtime.common.annotations.Dispose;
 import org.lunifera.runtime.common.annotations.DomainReference;
@@ -18,6 +19,7 @@ public class MyEntity implements Serializable, PropertyChangeListener {
   @Dispose
   private boolean disposed;
   
+  @SimpleName("nme")
   private QString name;
   
   private int age;

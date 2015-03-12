@@ -8,6 +8,7 @@ import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
+import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
@@ -25,7 +26,19 @@ public class CppExtensions {
   @Inject
   private DtoModelExtensions modelExtension;
   
-  public String toName(final LAnnotationTarget target) {
+  @Inject
+  @Extension
+  private AnnotationExtension _annotationExtension;
+  
+  protected String _toName(final LAnnotationTarget target) {
+    return this.modelExtension.toName(target);
+  }
+  
+  protected String _toName(final LAttribute target) {
+    return this.modelExtension.toName(target);
+  }
+  
+  protected String _toName(final LReference target) {
     return this.modelExtension.toName(target);
   }
   
@@ -100,6 +113,19 @@ public class CppExtensions {
       }
     }
     return "";
+  }
+  
+  public String toName(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _toName((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _toName((LReference)target);
+    } else if (target != null) {
+      return _toName(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
   }
   
   public String toTypeName(final LFeature att) {
