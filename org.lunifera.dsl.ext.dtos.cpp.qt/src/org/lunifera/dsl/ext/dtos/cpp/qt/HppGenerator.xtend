@@ -48,7 +48,7 @@ class HppGenerator {
 		Q_OBJECT
 
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		Q_PROPERTY(«feature.toTypeName» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
+		Q_PROPERTY(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
 		toName»Changed FINAL)
 		«ENDFOR»
 
@@ -58,14 +58,15 @@ class HppGenerator {
 
 	public:
 		«dto.toName»(QObject *parent = 0);
-		«dto.toName»(QVariantMap «dto.toName.toFirstLower»Map);
+		
+		void initFromMap(QVariantMap «dto.toName.toFirstLower»Map);
 	
 		QVariantMap toMap();
 		QVariantMap toForeignMap();
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«feature.toTypeName» «feature.toName»() const;
-		void set«feature.toName.toFirstUpper»(«feature.toTypeName» «feature.toName»);
+		«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»() const;
+		void set«feature.toName.toFirstUpper»(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»);
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
@@ -78,7 +79,7 @@ class HppGenerator {
 		Q_SIGNALS:
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		void «feature.toName»Changed(«feature.toTypeName» «feature.toName»);
+		void «feature.toName»Changed(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»);
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		void «feature.toName»Changed(QVariantList «feature.toName»);
@@ -89,7 +90,7 @@ class HppGenerator {
 		QVariantMap m«dto.toName.toFirstUpper»Map;
 		
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«feature.toTypeName» m«feature.toName.toFirstUpper»;
+		«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		QVariantList m«feature.toName.toFirstUpper»;
