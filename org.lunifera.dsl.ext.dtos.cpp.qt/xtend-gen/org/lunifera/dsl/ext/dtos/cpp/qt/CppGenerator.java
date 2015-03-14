@@ -34,6 +34,7 @@ import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.dto.LDto;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
+import org.lunifera.dsl.semantic.dto.LDtoReference;
 
 @SuppressWarnings("all")
 public class CppGenerator {
@@ -672,6 +673,9 @@ public class CppGenerator {
       };
       Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_7, _function_3);
       for(final LFeature feature_7 : _filter_3) {
+        CharSequence _foo = this.foo(feature_7);
+        _builder.append(_foo, "");
+        _builder.newLineIfNotEmpty();
         String _typeOrQObject = this._cppExtensions.toTypeOrQObject(feature_7);
         _builder.append(_typeOrQObject, "");
         _builder.append(" ");
@@ -755,8 +759,8 @@ public class CppGenerator {
       };
       Iterable<? extends LFeature> _filter_4 = IterableExtensions.filter(_allFeatures_8, _function_4);
       for(final LFeature feature_8 : _filter_4) {
-        CharSequence _foo = this.foo(feature_8);
-        _builder.append(_foo, "");
+        CharSequence _foo_1 = this.foo(feature_8);
+        _builder.append(_foo_1, "");
         _builder.append(" ");
         _builder.newLineIfNotEmpty();
         _builder.append("QVariantList ");
@@ -890,6 +894,33 @@ public class CppGenerator {
     return _builder;
   }
   
+  protected CharSequence _foo(final LDtoReference ref) {
+    StringConcatenation _builder = new StringConcatenation();
+    _builder.append("// do DTO ref ");
+    _builder.newLine();
+    {
+      LDtoReference _opposite = ref.getOpposite();
+      boolean _notEquals = (!Objects.equal(_opposite, null));
+      if (_notEquals) {
+        _builder.append("// Opposite: ");
+        LDtoReference _opposite_1 = ref.getOpposite();
+        String _name = this._cppExtensions.toName(_opposite_1);
+        _builder.append(_name, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      boolean _isLazy = ref.isLazy();
+      if (_isLazy) {
+        _builder.append("// Lazy: ");
+        String _name_1 = this._cppExtensions.toName(ref);
+        _builder.append(_name_1, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    return _builder;
+  }
+  
   protected CharSequence _foo(final LFeature feature) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("// just a helper for max superclass ");
@@ -897,16 +928,18 @@ public class CppGenerator {
     return _builder;
   }
   
-  public CharSequence foo(final LFeature att) {
-    if (att instanceof LDtoAbstractAttribute) {
-      return _foo((LDtoAbstractAttribute)att);
-    } else if (att instanceof LDtoAbstractReference) {
-      return _foo((LDtoAbstractReference)att);
-    } else if (att != null) {
-      return _foo(att);
+  public CharSequence foo(final LFeature ref) {
+    if (ref instanceof LDtoReference) {
+      return _foo((LDtoReference)ref);
+    } else if (ref instanceof LDtoAbstractAttribute) {
+      return _foo((LDtoAbstractAttribute)ref);
+    } else if (ref instanceof LDtoAbstractReference) {
+      return _foo((LDtoAbstractReference)ref);
+    } else if (ref != null) {
+      return _foo(ref);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(att).toString());
+        Arrays.<Object>asList(ref).toString());
     }
   }
 }

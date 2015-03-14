@@ -136,6 +136,16 @@ class CppExtensions {
 		return ""
 	}
 	
+	def boolean isQueueObject(LDto element) {
+		var docu = element.documentation
+		if (!docu.nullOrEmpty) {
+			if(docu == "QUEUE"){
+				return true
+			}
+		}
+		return false
+	}
+	
 	def toDtoDocu(LDto element) {
 		var docu = element.documentation
 		if (!docu.nullOrEmpty) {

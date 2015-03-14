@@ -24,6 +24,7 @@ import org.lunifera.dsl.semantic.dto.LDto
 import com.google.inject.Inject
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
+import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.semantic.common.types.LFeature
 
 class CppGenerator {
@@ -163,6 +164,7 @@ QVariantMap «dto.toName»::toForeignMap()
 }
 	
 «FOR feature : dto.allFeatures.filter[!isToMany]»
+«feature.foo»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
 	return m«feature.toName.toFirstUpper»;
@@ -209,6 +211,16 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «featur
 
 	def dispatch foo(LDtoAbstractReference ref) '''
 		// do ref 
+	'''
+	
+	def dispatch foo(LDtoReference ref) '''
+		// do DTO ref 
+		«IF ref.opposite != null»
+			// Opposite: «ref.opposite.toName»
+		«ENDIF»
+		«IF ref.isLazy»
+			// Lazy: «ref.toName»
+		«ENDIF»
 	'''
 
 	def dispatch foo(LFeature feature) '''

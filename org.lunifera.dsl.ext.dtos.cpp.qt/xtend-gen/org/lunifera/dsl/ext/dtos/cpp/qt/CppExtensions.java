@@ -206,6 +206,19 @@ public class CppExtensions {
     return "";
   }
   
+  public boolean isQueueObject(final LDto element) {
+    String docu = this._jvmTypesBuilder.getDocumentation(element);
+    boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(docu);
+    boolean _not = (!_isNullOrEmpty);
+    if (_not) {
+      boolean _equals = Objects.equal(docu, "QUEUE");
+      if (_equals) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public String toDtoDocu(final LDto element) {
     String docu = this._jvmTypesBuilder.getDocumentation(element);
     boolean _isNullOrEmpty = StringExtensions.isNullOrEmpty(docu);
