@@ -42,7 +42,7 @@ class CppGenerator {
 
 // keys of QVariantMap used in this APP
 «FOR feature : dto.allFeatures»
-	«IF feature.toTypeName.endsWith("DTO") && feature.isContained»
+	«IF feature.isTypeOfDTO && feature.isContained»
 	// no key for «feature.toName»
 	«ELSE»
 	static const QString «feature.toName»Key = "«feature.toName»";	
@@ -51,7 +51,7 @@ class CppGenerator {
 
 // keys used from Server API etc
 «FOR feature : dto.allFeatures»
-	«IF feature.toTypeName.endsWith("DTO") && feature.isContained»
+	«IF feature.isTypeOfDTO && feature.isContained»
 	// no key for «feature.toName»
 	«ELSE»
 	static const QString «feature.toName»ForeignKey = "«feature.toServerName»";	
@@ -62,7 +62,8 @@ class CppGenerator {
  * Default Constructor if «dto.toName» not initialized from QVariantMap
  */
 «dto.toName»::«dto.toName»(QObject *parent) :
-        QObject(parent)«FOR feature : dto.allFeatures.filter[!isToMany]», m«feature.toName.toFirstUpper»(«feature.
+        QObject(parent)«FOR feature : dto.allFeatures.filter[!isToMany && !isTypeOfDTO && !isContained
+        ]», m«feature.toName.toFirstUpper»(«feature.
 		defaultForType»)«ENDFOR»
 {
 	//
@@ -76,10 +77,9 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 {
 	m«dto.toName.toFirstUpper»Map = «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«IF feature.toTypeName.endsWith("DTO")»
+		«IF feature.isTypeOfDTO»
 			«IF feature.isContained»
-			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
-			m«feature.toName.toFirstUpper» = this->parent();
+			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«ENDIF»
@@ -116,7 +116,7 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 QVariantMap «dto.toName»::toMap()
 {
 	«FOR feature : dto.allFeatures»
-		«IF feature.toTypeName.endsWith("DTO")»
+		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
@@ -144,7 +144,7 @@ QVariantMap «dto.toName»::toForeignMap()
 {
 	QVariantMap foreignMap;
 	«FOR feature : dto.allFeatures»
-		«IF feature.toTypeName.endsWith("DTO")»
+		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
@@ -165,6 +165,13 @@ QVariantMap «dto.toName»::toForeignMap()
 	
 «FOR feature : dto.allFeatures.filter[!isToMany]»
 «feature.foo»
+«IF feature.isTypeOfDTO && feature.isContained»
+// No SETTER for «feature.toName.toFirstUpper» - it's the parent
+«feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
+{
+	return this->parent();
+}
+«ELSE»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
 	return m«feature.toName.toFirstUpper»;
@@ -176,6 +183,7 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObjec
 		emit «feature.toName»Changed(«feature.toName»);
 	}
 }
+«ENDIF»
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isToMany]»
 «feature.foo» 

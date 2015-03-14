@@ -86,6 +86,13 @@ class CppExtensions {
 	def dispatch String toTypeName(LReference ref) {
 		modelExtension.toTypeName(ref as LDtoAbstractReference)
 	}
+	
+	def boolean isTypeOfDTO(LFeature feature) {
+		if(feature.toTypeName.endsWith("DTO")){
+			return true
+		}
+		return false
+	}
 
 	def String mapToType(LFeature feature) {
 		switch (feature.toTypeName) {

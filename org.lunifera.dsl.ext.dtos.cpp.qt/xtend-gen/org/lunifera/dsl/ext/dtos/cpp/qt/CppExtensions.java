@@ -113,6 +113,15 @@ public class CppExtensions {
     return this.modelExtension.toTypeName(((LDtoAbstractReference) ref));
   }
   
+  public boolean isTypeOfDTO(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _endsWith = _typeName.endsWith("DTO");
+    if (_endsWith) {
+      return true;
+    }
+    return false;
+  }
+  
   public String mapToType(final LFeature feature) {
     String _typeName = this.toTypeName(feature);
     boolean _matched = false;

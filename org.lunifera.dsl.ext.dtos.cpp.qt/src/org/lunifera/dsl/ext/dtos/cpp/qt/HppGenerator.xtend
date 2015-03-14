@@ -48,8 +48,12 @@ class HppGenerator {
 		Q_OBJECT
 
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDTO && feature.isContained»
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName»)
+		«ELSE»
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
 		toName»Changed FINAL)
+		«ENDIF»
 		«ENDFOR»
 
 		«FOR feature : dto.allFeatures.filter[isToMany]»
@@ -66,7 +70,11 @@ class HppGenerator {
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«feature.toTypeOrQObject» «feature.toName»() const;
+		«IF feature.isTypeOfDTO && feature.isContained»
+		// no SETTER «feature.toName»() is only convenience method to get the parent
+		«ELSE»
 		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
+		«ENDIF»
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
@@ -80,7 +88,11 @@ class HppGenerator {
 		Q_SIGNALS:
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDTO && feature.isContained»
+		// no SIGNAL «feature.toName» is only convenience way to get the parent
+		«ELSE»
 		void «feature.toName»Changed(«feature.toTypeOrQObject» «feature.toName»);
+		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		void «feature.toName»Changed(QList<QObject*> «feature.toName»);
@@ -91,7 +103,11 @@ class HppGenerator {
 		QVariantMap m«dto.toName.toFirstUpper»Map;
 		
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDTO && feature.isContained»
+		// no MEMBER m«feature.toName.toFirstUpper» it's the parent
+		«ELSE»
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
+		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		QList<QObject*> m«feature.toName.toFirstUpper»;
