@@ -37,15 +37,24 @@ class CppGenerator {
 	def CharSequence toContent(LDto dto) '''
 #include "«dto.toName».hpp"
 #include <QDebug>
+#include <quuid.h>
 
 // keys of QVariantMap used in this APP
 «FOR feature : dto.allFeatures»
-static const QString «feature.toName»Key = "«feature.toName»";
+	«IF feature.toTypeName.endsWith("DTO") && feature.isContained»
+	// no key for «feature.toName»
+	«ELSE»
+	static const QString «feature.toName»Key = "«feature.toName»";	
+	«ENDIF»
 «ENDFOR»
 
 // keys used from Server API etc
 «FOR feature : dto.allFeatures»
-static const QString «feature.toName»ForeignKey = "«feature.toServerName»";
+	«IF feature.toTypeName.endsWith("DTO") && feature.isContained»
+	// no key for «feature.toName»
+	«ELSE»
+	static const QString «feature.toName»ForeignKey = "«feature.toServerName»";	
+	«ENDIF»
 «ENDFOR»
 
 /*
@@ -75,6 +84,13 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 			«ENDIF»
 		«ELSE» 
 			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			«IF feature.toName == "uuid"»
+			if (mUuid.isEmpty()) {
+				mUuid = QUuid::createUuid().toString();
+				mUuid = mUuid.right(mUuid.length() - 1);
+				mUuid = mUuid.left(mUuid.length() - 1);
+			}	
+			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany]»
