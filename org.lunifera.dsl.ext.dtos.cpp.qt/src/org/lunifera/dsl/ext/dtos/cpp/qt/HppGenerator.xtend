@@ -48,7 +48,7 @@ class HppGenerator {
 		Q_OBJECT
 
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		Q_PROPERTY(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
 		toName»Changed FINAL)
 		«ENDFOR»
 
@@ -65,8 +65,8 @@ class HppGenerator {
 		QVariantMap toForeignMap();
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»() const;
-		void set«feature.toName.toFirstUpper»(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»);
+		«feature.toTypeOrQObject» «feature.toName»() const;
+		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
@@ -79,7 +79,7 @@ class HppGenerator {
 		Q_SIGNALS:
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		void «feature.toName»Changed(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»);
+		void «feature.toName»Changed(«feature.toTypeOrQObject» «feature.toName»);
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		void «feature.toName»Changed(QVariantList «feature.toName»);
@@ -90,7 +90,7 @@ class HppGenerator {
 		QVariantMap m«dto.toName.toFirstUpper»Map;
 		
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» m«feature.toName.toFirstUpper»;
+		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		QVariantList m«feature.toName.toFirstUpper»;

@@ -93,6 +93,18 @@ public class CppExtensions {
     return _xblockexpression;
   }
   
+  protected boolean _isContained(final LAnnotationTarget target) {
+    return false;
+  }
+  
+  protected boolean _isContained(final LAttribute target) {
+    return false;
+  }
+  
+  protected boolean _isContained(final LReference target) {
+    return target.isCascading();
+  }
+  
   protected String _toTypeName(final LAttribute att) {
     return this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
   }
@@ -240,6 +252,29 @@ public class CppExtensions {
     return true;
   }
   
+  public String toTypeOrQObject(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _endsWith = _typeName.endsWith("DTO");
+    if (_endsWith) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("QObject*");
+      return _builder.toString();
+    }
+    return this.toTypeName(feature);
+  }
+  
+  public String toMapOrList(final LFeature feature) {
+    boolean _isToMany = this.isToMany(feature);
+    if (_isToMany) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("List");
+      return _builder.toString();
+    }
+    StringConcatenation _builder_1 = new StringConcatenation();
+    _builder_1.append("Map");
+    return _builder_1.toString();
+  }
+  
   public String getServerNameValue(final LFeature member) {
     EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
     final LAnnotationDef annoDef = this._annotationExtension.getRedefined(ServerName.class, _resolvedAnnotations);
@@ -265,6 +300,19 @@ public class CppExtensions {
       return _toServerName((LReference)target);
     } else if (target != null) {
       return _toServerName(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public boolean isContained(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _isContained((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _isContained((LReference)target);
+    } else if (target != null) {
+      return _isContained(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

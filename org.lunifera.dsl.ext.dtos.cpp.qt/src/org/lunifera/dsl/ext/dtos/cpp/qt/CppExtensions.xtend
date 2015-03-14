@@ -65,6 +65,19 @@ class CppExtensions {
 		}
 		modelExtension.toName(target)
 	}
+	
+	def dispatch boolean isContained(LAnnotationTarget target) {
+		return false
+	}
+
+	def dispatch boolean isContained(LAttribute target) {
+		return false
+	}
+
+	def dispatch boolean isContained(LReference target) {
+		return target.isCascading
+	}
+	
 
 	def dispatch String toTypeName(LAttribute att) {
 		modelExtension.toTypeName(att as LDtoAbstractAttribute)
@@ -146,6 +159,20 @@ class CppExtensions {
 			return false
 		}
 		return true
+	}
+	
+	def toTypeOrQObject(LFeature feature){
+		if (feature.toTypeName.endsWith("DTO")) {
+			return '''QObject*'''.toString
+		}
+		return feature.toTypeName
+	}
+	
+	def toMapOrList(LFeature feature){
+		if (feature.toMany) {
+			return '''List'''.toString
+		}
+		return '''Map'''.toString
 	}
 
 	def String getServerNameValue(LFeature member) {

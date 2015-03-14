@@ -66,15 +66,19 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 {
 	m«dto.toName.toFirstUpper»Map = «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
-	«IF feature.toTypeName.endsWith("DTO")»
-	m«feature.toName.toFirstUpper» = «feature.toTypeName»(m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.
-		mapToType»());
-	«ELSE» 
-	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
-	«ENDIF»
+		«IF feature.toTypeName.endsWith("DTO")»
+			«IF feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			m«feature.toName.toFirstUpper» = this->parent();
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			«ENDIF»
+		«ELSE» 
+			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+		«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany]»
-	m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
+		m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
 	«ENDFOR»	
 }
 	
@@ -85,7 +89,16 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 QVariantMap «dto.toName»::toMap()
 {
 	«FOR feature : dto.allFeatures»
-	m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		«IF feature.toTypeName.endsWith("DTO")»
+			«IF !feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper»)->to«feature.toMapOrList»());
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			«ENDIF»
+		«ELSE» 
+			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		«ENDIF»
 	«ENDFOR»
 	return m«dto.toName.toFirstUpper»Map;
 }
@@ -99,17 +112,26 @@ QVariantMap «dto.toName»::toForeignMap()
 {
 	QVariantMap foreignMap;
 	«FOR feature : dto.allFeatures»
-	foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+		«IF feature.toTypeName.endsWith("DTO")»
+			«IF !feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			foreignMap.insert(«feature.toName»ForeignKey, qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper»)->to«feature.toMapOrList»());
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			«ENDIF»
+		«ELSE» 
+			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+		«ENDIF»	
 	«ENDFOR»
 	return foreignMap;
 }
 	
 «FOR feature : dto.allFeatures.filter[!isToMany]»
-«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «dto.toName»::«feature.toName»() const
+«feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
 	return m«feature.toName.toFirstUpper»;
 }
-void «dto.toName»::set«feature.toName.toFirstUpper»(«IF feature.toTypeName.endsWith("DTO")»QObject*«ELSE»«feature.toTypeName»«ENDIF» «feature.toName»)
+void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»)
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
 		m«feature.toName.toFirstUpper» = «feature.toName»;
