@@ -53,7 +53,7 @@ class HppGenerator {
 		«ENDFOR»
 
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		Q_PROPERTY(QVariantList «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
+		Q_PROPERTY(QList<QObject*> «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ENDFOR»	
 
 	public:
@@ -70,8 +70,9 @@ class HppGenerator {
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		QVariantList «feature.toName»() const;
-		void set«feature.toName.toFirstUpper»(QVariantList «feature.toName»);
+		QVariantList «feature.toName»AsQVariantList();
+		QList<QObject*> «feature.toName»();
+		void set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName»);
 		«ENDFOR»
 	
 		virtual ~«dto.toName.toFirstUpper»();
@@ -82,7 +83,7 @@ class HppGenerator {
 		void «feature.toName»Changed(«feature.toTypeOrQObject» «feature.toName»);
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		void «feature.toName»Changed(QVariantList «feature.toName»);
+		void «feature.toName»Changed(QList<QObject*> «feature.toName»);
 		«ENDFOR»
 	
 	private:
@@ -93,7 +94,7 @@ class HppGenerator {
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		QVariantList m«feature.toName.toFirstUpper»;
+		QList<QObject*> m«feature.toName.toFirstUpper»;
 		«ENDFOR»
 	
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)
