@@ -190,7 +190,9 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObjec
 QVariantList «dto.toName»::«feature.toName»AsQVariantList()
 {
 	QVariantList «feature.toName»List;
-	// TODO
+	for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        «feature.toName»List.append(qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper».at(i))->toMap());
+    }
 	return «feature.toName»List;
 }
 QList<QObject*> «dto.toName»::«feature.toName»()
