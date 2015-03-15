@@ -40,7 +40,9 @@ class HppGenerator {
 	#include <QObject>
 	#include <qvariant.h>
 	«FOR reference : dto.references»
+	«IF !reference.isContained»
 	#include "«reference.toTypeName».hpp"
+	«ENDIF»
 	«ENDFOR»
 
 	class «dto.toName»: public QObject

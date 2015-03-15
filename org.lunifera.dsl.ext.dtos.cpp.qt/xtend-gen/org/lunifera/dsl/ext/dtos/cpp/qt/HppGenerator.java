@@ -71,11 +71,17 @@ public class HppGenerator {
     {
       List<LDtoAbstractReference> _references = dto.getReferences();
       for(final LDtoAbstractReference reference : _references) {
-        _builder.append("#include \"");
-        String _typeName = this._cppExtensions.toTypeName(reference);
-        _builder.append(_typeName, "");
-        _builder.append(".hpp\"");
-        _builder.newLineIfNotEmpty();
+        {
+          boolean _isContained = this._cppExtensions.isContained(reference);
+          boolean _not = (!_isContained);
+          if (_not) {
+            _builder.append("#include \"");
+            String _typeName = this._cppExtensions.toTypeName(reference);
+            _builder.append(_typeName, "");
+            _builder.append(".hpp\"");
+            _builder.newLineIfNotEmpty();
+          }
+        }
       }
     }
     _builder.newLine();
@@ -106,8 +112,8 @@ public class HppGenerator {
           if (!_isTypeOfDTO) {
             _and = false;
           } else {
-            boolean _isContained = this._cppExtensions.isContained(feature);
-            _and = _isContained;
+            boolean _isContained_1 = this._cppExtensions.isContained(feature);
+            _and = _isContained_1;
           }
           if (_and) {
             _builder.append("\t");
@@ -223,8 +229,8 @@ public class HppGenerator {
           if (!_isTypeOfDTO_1) {
             _and_1 = false;
           } else {
-            boolean _isContained_1 = this._cppExtensions.isContained(feature_2);
-            _and_1 = _isContained_1;
+            boolean _isContained_2 = this._cppExtensions.isContained(feature_2);
+            _and_1 = _isContained_2;
           }
           if (_and_1) {
             _builder.append("\t");
@@ -314,8 +320,8 @@ public class HppGenerator {
           if (!_isTypeOfDTO_2) {
             _and_2 = false;
           } else {
-            boolean _isContained_2 = this._cppExtensions.isContained(feature_4);
-            _and_2 = _isContained_2;
+            boolean _isContained_3 = this._cppExtensions.isContained(feature_4);
+            _and_2 = _isContained_3;
           }
           if (_and_2) {
             _builder.append("\t");
@@ -390,8 +396,8 @@ public class HppGenerator {
           if (!_isTypeOfDTO_3) {
             _and_3 = false;
           } else {
-            boolean _isContained_3 = this._cppExtensions.isContained(feature_6);
-            _and_3 = _isContained_3;
+            boolean _isContained_4 = this._cppExtensions.isContained(feature_6);
+            _and_3 = _isContained_4;
           }
           if (_and_3) {
             _builder.append("\t");
