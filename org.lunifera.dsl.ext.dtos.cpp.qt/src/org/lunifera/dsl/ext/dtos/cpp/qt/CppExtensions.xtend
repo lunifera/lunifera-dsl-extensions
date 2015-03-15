@@ -27,14 +27,15 @@ import org.eclipse.xtext.xbase.XStringLiteral
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
+import org.lunifera.dsl.semantic.common.helper.Bounds
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
 import org.lunifera.dsl.semantic.common.types.LFeature
 import org.lunifera.dsl.semantic.common.types.LReference
+import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
-import org.lunifera.dsl.semantic.dto.LDto
 
 class CppExtensions {
 
@@ -45,7 +46,7 @@ class CppExtensions {
 	def String toName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
-	
+
 	def dispatch String toServerName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
@@ -65,7 +66,7 @@ class CppExtensions {
 		}
 		modelExtension.toName(target)
 	}
-	
+
 	def dispatch boolean isContained(LAnnotationTarget target) {
 		return false
 	}
@@ -77,7 +78,6 @@ class CppExtensions {
 	def dispatch boolean isContained(LReference target) {
 		return target.isCascading
 	}
-	
 
 	def dispatch String toTypeName(LAttribute att) {
 		modelExtension.toTypeName(att as LDtoAbstractAttribute)
@@ -86,9 +86,9 @@ class CppExtensions {
 	def dispatch String toTypeName(LReference ref) {
 		modelExtension.toTypeName(ref as LDtoAbstractReference)
 	}
-	
+
 	def boolean isTypeOfDTO(LFeature feature) {
-		if(feature.toTypeName.endsWith("DTO")){
+		if (feature.toTypeName.endsWith("DTO")) {
 			return true
 		}
 		return false
@@ -125,6 +125,10 @@ class CppExtensions {
 		modelExtension.isToMany(feature)
 	}
 
+	def Bounds getBounds(LFeature feature) {
+		modelExtension.getBounds(feature)
+	}
+
 	def toCopyRight(EObject element) {
 		var docu = element.documentation
 		if (!docu.nullOrEmpty) {
@@ -142,17 +146,17 @@ class CppExtensions {
 		}
 		return ""
 	}
-	
+
 	def boolean isQueueObject(LDto element) {
 		var docu = element.documentation
 		if (!docu.nullOrEmpty) {
-			if(docu == "QUEUE"){
+			if (docu == "QUEUE") {
 				return true
 			}
 		}
 		return false
 	}
-	
+
 	def toDtoDocu(LDto element) {
 		var docu = element.documentation
 		if (!docu.nullOrEmpty) {
@@ -172,20 +176,20 @@ class CppExtensions {
 	}
 
 	def boolean hasServerName(LFeature feature) {
-		if (feature.serverNameValue == null){
+		if (feature.serverNameValue == null) {
 			return false
 		}
 		return true
 	}
-	
-	def toTypeOrQObject(LFeature feature){
+
+	def toTypeOrQObject(LFeature feature) {
 		if (feature.toTypeName.endsWith("DTO")) {
 			return '''QObject*'''.toString
 		}
 		return feature.toTypeName
 	}
-	
-	def toMapOrList(LFeature feature){
+
+	def toMapOrList(LFeature feature) {
 		if (feature.toMany) {
 			return '''List'''.toString
 		}
