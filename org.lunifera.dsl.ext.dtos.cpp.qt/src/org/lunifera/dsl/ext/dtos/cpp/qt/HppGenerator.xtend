@@ -42,6 +42,9 @@ class HppGenerator {
 	«FOR reference : dto.references»
 	«IF !reference.isContained»
 	#include "«reference.toTypeName».hpp"
+	«ELSE»
+	// forward declaration to avoid circular dependencies
+	class «reference.toTypeName.toFirstUpper»;
 	«ENDIF»
 	«ENDFOR»
 

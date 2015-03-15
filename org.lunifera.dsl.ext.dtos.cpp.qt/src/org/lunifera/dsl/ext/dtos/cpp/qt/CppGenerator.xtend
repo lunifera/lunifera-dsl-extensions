@@ -39,6 +39,11 @@ class CppGenerator {
 #include "«dto.toName».hpp"
 #include <QDebug>
 #include <quuid.h>
+«FOR reference : dto.references»
+	«IF reference.isContained»
+	#include "«reference.toTypeName».hpp"
+	«ENDIF»
+«ENDFOR»
 
 // keys of QVariantMap used in this APP
 «FOR feature : dto.allFeatures»
@@ -169,7 +174,7 @@ QVariantMap «dto.toName»::toForeignMap()
 // No SETTER for «feature.toName.toFirstUpper» - it's the parent
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
-	return this->parent();
+	return qobject_cast<«feature.toTypeOrQObject»>(parent());
 }
 «ELSE»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
