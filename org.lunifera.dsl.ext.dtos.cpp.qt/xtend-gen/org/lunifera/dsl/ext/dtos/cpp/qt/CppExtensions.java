@@ -37,6 +37,7 @@ import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName;
+import org.lunifera.dsl.semantic.common.helper.Bounds;
 import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
@@ -176,6 +177,20 @@ public class CppExtensions {
   
   public boolean isToMany(final LFeature feature) {
     return this.modelExtension.isToMany(feature);
+  }
+  
+  public Bounds getBounds(final LFeature feature) {
+    return this.modelExtension.getBounds(feature);
+  }
+  
+  public boolean isOptional(final LFeature feature) {
+    Bounds _bounds = this.getBounds(feature);
+    return _bounds.isOptional();
+  }
+  
+  public boolean isMandatory(final LFeature feature) {
+    Bounds _bounds = this.getBounds(feature);
+    return _bounds.isRequired();
   }
   
   public String toCopyRight(final EObject element) {

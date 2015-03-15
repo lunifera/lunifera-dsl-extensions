@@ -128,6 +128,14 @@ class CppExtensions {
 	def Bounds getBounds(LFeature feature) {
 		modelExtension.getBounds(feature)
 	}
+	
+	def boolean isOptional(LFeature feature){
+		return feature.bounds.isOptional;
+	}
+	
+	def boolean isMandatory(LFeature feature){
+		return feature.bounds.isRequired;
+	}
 
 	def toCopyRight(EObject element) {
 		var docu = element.documentation
