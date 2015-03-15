@@ -87,6 +87,15 @@ void «dto.toName»::fillFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName»Key)){
+				QVariantMap «feature.toName»Map;
+				«feature.toName»Map = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toMap();
+				if(!«feature.toName»Map.isEmpty()){
+					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					m«feature.toName.toFirstUpper»->setParent(this);
+					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
+				}
+			}
 			«ENDIF»
 		«ELSE» 
 			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
