@@ -78,7 +78,7 @@ class CppGenerator {
  * initialize «dto.toName» from QVariantMap
  * Map got from JsonDataAccess or so
  */
-void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
+void «dto.toName»::fillFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 {
 	m«dto.toName.toFirstUpper»Map = «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
@@ -108,10 +108,22 @@ void «dto.toName»::initFromMap(QVariantMap «dto.toName.toFirstLower»Map)
 			QVariantMap «feature.toName.toFirstLower»Map;
 			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
 			«feature.toTypeName.toFirstLower»->setParent(this);
-			«feature.toTypeName.toFirstLower»->initFromMap(«feature.toName.toFirstLower»Map);
+			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
 	«ENDFOR»	
+}
+
+void «dto.toName»::prepareNew()
+{
+	mUuid = QUuid::createUuid().toString();
+	mUuid = mUuid.right(mUuid.length() - 1);
+	mUuid = mUuid.left(mUuid.length() - 1);
+}
+
+bool «dto.toName»::isValid()
+{
+	return true;
 }
 	
 /*

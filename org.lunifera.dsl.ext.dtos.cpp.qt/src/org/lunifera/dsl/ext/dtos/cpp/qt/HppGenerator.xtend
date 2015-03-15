@@ -68,7 +68,9 @@ class HppGenerator {
 	public:
 		«dto.toName»(QObject *parent = 0);
 		
-		void initFromMap(QVariantMap «dto.toName.toFirstLower»Map);
+		void fillFromMap(QVariantMap «dto.toName.toFirstLower»Map);
+		void prepareNew();
+		bool isValid();
 	
 		QVariantMap toMap();
 		QVariantMap toForeignMap();
