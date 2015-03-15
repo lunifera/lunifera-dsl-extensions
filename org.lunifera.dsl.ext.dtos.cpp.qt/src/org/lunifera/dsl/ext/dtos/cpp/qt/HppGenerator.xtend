@@ -80,6 +80,7 @@ class HppGenerator {
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
+		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
 		QList<QObject*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName»);

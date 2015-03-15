@@ -192,7 +192,7 @@ class CppExtensions {
 
 	def toTypeOrQObject(LFeature feature) {
 		if (feature.toTypeName.endsWith("DTO")) {
-			return '''QObject*'''.toString
+			return '''«feature.toTypeName»*'''.toString
 		}
 		return feature.toTypeName
 	}

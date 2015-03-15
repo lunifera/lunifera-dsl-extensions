@@ -294,7 +294,9 @@ public class CppExtensions {
     boolean _endsWith = _typeName.endsWith("DTO");
     if (_endsWith) {
       StringConcatenation _builder = new StringConcatenation();
-      _builder.append("QObject*");
+      String _typeName_1 = this.toTypeName(feature);
+      _builder.append(_typeName_1, "");
+      _builder.append("*");
       return _builder.toString();
     }
     return this.toTypeName(feature);

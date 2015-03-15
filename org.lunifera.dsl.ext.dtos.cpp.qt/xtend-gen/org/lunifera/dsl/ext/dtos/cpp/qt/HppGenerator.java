@@ -268,6 +268,9 @@ public class HppGenerator {
       Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_3, _function_3);
       for(final LFeature feature_3 : _filter_3) {
         _builder.append("\t");
+        _builder.append("Q_INVOKABLE");
+        _builder.newLine();
+        _builder.append("\t");
         _builder.append("QVariantList ");
         String _name_19 = this._cppExtensions.toName(feature_3);
         _builder.append(_name_19, "\t");
