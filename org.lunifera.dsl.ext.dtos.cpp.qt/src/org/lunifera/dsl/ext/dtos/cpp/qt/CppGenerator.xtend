@@ -217,6 +217,12 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «featur
 
 	def dispatch foo(LDtoAbstractAttribute att) '''
 		// ATT 
+		«IF att.isOptional»
+			// Optional: «att.toName»
+		«ENDIF»
+		«IF att.isMandatory»
+			// Mandatory: «att.toName»
+		«ENDIF»
 	'''
 
 	def dispatch foo(LDtoAbstractReference ref) '''
@@ -230,6 +236,12 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «featur
 		«ENDIF»
 		«IF ref.isLazy»
 			// Lazy: «ref.toName»
+		«ENDIF»
+		«IF ref.isOptional»
+			// Optional: «ref.toName»
+		«ENDIF»
+		«IF ref.isMandatory»
+			// Mandatory: «ref.toName»
 		«ENDIF»
 	'''
 

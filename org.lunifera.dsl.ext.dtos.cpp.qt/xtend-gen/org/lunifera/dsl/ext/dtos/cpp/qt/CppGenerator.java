@@ -945,6 +945,24 @@ public class CppGenerator {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("// ATT ");
     _builder.newLine();
+    {
+      boolean _isOptional = this._cppExtensions.isOptional(att);
+      if (_isOptional) {
+        _builder.append("// Optional: ");
+        String _name = this._cppExtensions.toName(att);
+        _builder.append(_name, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      boolean _isMandatory = this._cppExtensions.isMandatory(att);
+      if (_isMandatory) {
+        _builder.append("// Mandatory: ");
+        String _name_1 = this._cppExtensions.toName(att);
+        _builder.append(_name_1, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
     return _builder;
   }
   
@@ -976,6 +994,24 @@ public class CppGenerator {
         _builder.append("// Lazy: ");
         String _name_1 = this._cppExtensions.toName(ref);
         _builder.append(_name_1, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      boolean _isOptional = this._cppExtensions.isOptional(ref);
+      if (_isOptional) {
+        _builder.append("// Optional: ");
+        String _name_2 = this._cppExtensions.toName(ref);
+        _builder.append(_name_2, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      boolean _isMandatory = this._cppExtensions.isMandatory(ref);
+      if (_isMandatory) {
+        _builder.append("// Mandatory: ");
+        String _name_3 = this._cppExtensions.toName(ref);
+        _builder.append(_name_3, "");
         _builder.newLineIfNotEmpty();
       }
     }
