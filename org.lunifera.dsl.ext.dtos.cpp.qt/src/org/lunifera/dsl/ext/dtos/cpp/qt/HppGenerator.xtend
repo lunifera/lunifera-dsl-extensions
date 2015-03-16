@@ -87,6 +87,14 @@ class HppGenerator {
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
+		Q_INVOKABLE
+		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		Q_INVOKABLE
+		void removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		Q_INVOKABLE
+		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
+		Q_INVOKABLE
+		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
 		QList<QObject*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName»);
 		«ENDFOR»
@@ -104,6 +112,8 @@ class HppGenerator {
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		void «feature.toName»Changed(QList<QObject*> «feature.toName»);
+		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
 		«ENDFOR»
 	
 	private:
