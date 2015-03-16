@@ -72,8 +72,10 @@ class HppGenerator {
 		void prepareNew();
 		bool isValid();
 	
+		Q_INVOKABLE
 		QVariantMap toMap();
 		QVariantMap toForeignMap();
+		QVariantMap dataToPersist();
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«feature.toTypeOrQObject» «feature.toName»() const;

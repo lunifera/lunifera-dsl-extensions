@@ -214,10 +214,16 @@ public class HppGenerator {
     _builder.newLine();
     _builder.newLine();
     _builder.append("\t");
+    _builder.append("Q_INVOKABLE");
+    _builder.newLine();
+    _builder.append("\t");
     _builder.append("QVariantMap toMap();");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("QVariantMap toForeignMap();");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("QVariantMap dataToPersist();");
     _builder.newLine();
     _builder.newLine();
     {

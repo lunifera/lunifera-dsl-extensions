@@ -144,7 +144,8 @@ bool «dto.toName»::isValid()
 	
 /*
  * Exports Properties from «dto.toName» as QVariantMap
- * To store Data in JsonDataAccess or so
+ * exports ALL data including transient properties
+ * To store persistent Data in JsonDataAccess use dataToPersist()
  */
 QVariantMap «dto.toName»::toMap()
 {
@@ -196,6 +197,37 @@ QVariantMap «dto.toName»::toForeignMap()
 		«ENDIF»	
 	«ENDFOR»
 	return foreignMap;
+}
+
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * transient properties are excluded
+ * To export ALL data use toMap()
+ */
+QVariantMap «dto.toName»::dataToPersist()
+{
+	«FOR feature : dto.allFeatures.filter[!isTransient]»
+		«IF feature.isTypeOfDTO»
+			«IF !feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			«IF feature.isToMany»
+				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+			«ELSE»
+				if(m«feature.toName.toFirstUpper»){
+					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				}
+			«ENDIF»
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			«ENDIF»
+		«ELSE» 
+			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		«ENDIF»
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isTransient]»
+		// excluded: m«feature.toName.toFirstUpper»
+	«ENDFOR»
+	return m«dto.toName.toFirstUpper»Map;
 }
 	
 «FOR feature : dto.allFeatures.filter[!isToMany]»
