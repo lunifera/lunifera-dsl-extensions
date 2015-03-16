@@ -98,7 +98,14 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			}
 			«ENDIF»
 		«ELSE» 
+			«IF feature.isTransient»
+			// m«feature.toName.toFirstUpper» is transient - perhaps not included
+			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)){
+				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			}
+			«ELSE»
 			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			«ENDIF»
 			«IF feature.toName == "uuid"»
 			if (mUuid.isEmpty()) {
 				mUuid = QUuid::createUuid().toString();

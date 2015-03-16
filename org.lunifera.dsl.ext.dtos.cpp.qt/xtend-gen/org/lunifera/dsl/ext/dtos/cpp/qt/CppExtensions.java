@@ -106,6 +106,18 @@ public class CppExtensions {
     return target.isCascading();
   }
   
+  protected boolean _isTransient(final LAnnotationTarget target) {
+    return false;
+  }
+  
+  protected boolean _isTransient(final LAttribute target) {
+    return target.isTransient();
+  }
+  
+  protected boolean _isTransient(final LReference target) {
+    return false;
+  }
+  
   protected String _toTypeName(final LAttribute att) {
     return this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
   }
@@ -352,6 +364,19 @@ public class CppExtensions {
       return _isContained((LReference)target);
     } else if (target != null) {
       return _isContained(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public boolean isTransient(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _isTransient((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _isTransient((LReference)target);
+    } else if (target != null) {
+      return _isTransient(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

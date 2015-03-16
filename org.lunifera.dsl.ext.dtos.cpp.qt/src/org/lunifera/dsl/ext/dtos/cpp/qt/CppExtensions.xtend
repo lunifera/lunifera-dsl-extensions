@@ -78,6 +78,18 @@ class CppExtensions {
 	def dispatch boolean isContained(LReference target) {
 		return target.isCascading
 	}
+	
+	def dispatch boolean isTransient(LAnnotationTarget target) {
+		return false
+	}
+
+	def dispatch boolean isTransient(LAttribute target) {
+		return target.isTransient
+	}
+
+	def dispatch boolean isTransient(LReference target) {
+		return false
+	}
 
 	def dispatch String toTypeName(LAttribute att) {
 		modelExtension.toTypeName(att as LDtoAbstractAttribute)
