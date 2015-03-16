@@ -126,7 +126,11 @@ class CppExtensions {
 			case "bool":
 				return "false"
 			case "int":
-				return "0"
+				if(feature.isMandatory){
+					return "-1"
+				} else {
+					return "0"
+				}
 			case "QString":
 				return "\"\""
 		}
@@ -147,6 +151,27 @@ class CppExtensions {
 	
 	def boolean isMandatory(LFeature feature){
 		return feature.bounds.isRequired;
+	}
+	
+	def toValidate(LFeature feature){
+		switch (feature.toTypeName) {
+			case "int":
+				return '''
+				if(m«feature.toName.toFirstUpper» == -1){
+					return false;
+				}
+				'''.toString
+			case "QString":
+				return '''
+				if(m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty())
+				{
+					return false;
+				}
+				'''.toString
+		}
+		return '''
+		// missing validation for m«feature.toName.toFirstUpper»
+		'''.toString
 	}
 
 	def toCopyRight(EObject element) {

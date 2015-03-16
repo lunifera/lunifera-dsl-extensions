@@ -145,7 +145,17 @@ void «dto.toName»::prepareNew()
 bool «dto.toName»::isValid()
 {
 	«FOR feature : dto.allFeatures.filter[isMandatory]»
-	// m«feature.toName.toFirstUpper»
+		«IF feature.isToMany»
+		if(m«feature.toName.toFirstUpper».size() == 0){
+			return false;
+		}
+		«ELSEIF feature.typeOfDTO»
+		if(!m«feature.toName.toFirstUpper») {
+			return false;
+		}
+		«ELSE»
+		«feature.toValidate»
+		«ENDIF»
 	«ENDFOR»
 	return true;
 }

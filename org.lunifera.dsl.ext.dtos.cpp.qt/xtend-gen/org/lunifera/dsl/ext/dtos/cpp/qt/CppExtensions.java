@@ -176,7 +176,12 @@ public class CppExtensions {
     if (!_matched) {
       if (Objects.equal(_typeName, "int")) {
         _matched=true;
-        return "0";
+        boolean _isMandatory = this.isMandatory(feature);
+        if (_isMandatory) {
+          return "-1";
+        } else {
+          return "0";
+        }
       }
     }
     if (!_matched) {
@@ -204,6 +209,60 @@ public class CppExtensions {
   public boolean isMandatory(final LFeature feature) {
     Bounds _bounds = this.getBounds(feature);
     return _bounds.isRequired();
+  }
+  
+  public String toValidate(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "int")) {
+        _matched=true;
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("if(m");
+        String _name = this.toName(feature);
+        String _firstUpper = StringExtensions.toFirstUpper(_name);
+        _builder.append(_firstUpper, "");
+        _builder.append(" == -1){");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t");
+        _builder.append("return false;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        return _builder.toString();
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        StringConcatenation _builder_1 = new StringConcatenation();
+        _builder_1.append("if(m");
+        String _name_1 = this.toName(feature);
+        String _firstUpper_1 = StringExtensions.toFirstUpper(_name_1);
+        _builder_1.append(_firstUpper_1, "");
+        _builder_1.append(".isNull() || m");
+        String _name_2 = this.toName(feature);
+        String _firstUpper_2 = StringExtensions.toFirstUpper(_name_2);
+        _builder_1.append(_firstUpper_2, "");
+        _builder_1.append(".isEmpty())");
+        _builder_1.newLineIfNotEmpty();
+        _builder_1.append("{");
+        _builder_1.newLine();
+        _builder_1.append("\t");
+        _builder_1.append("return false;");
+        _builder_1.newLine();
+        _builder_1.append("}");
+        _builder_1.newLine();
+        return _builder_1.toString();
+      }
+    }
+    StringConcatenation _builder_2 = new StringConcatenation();
+    _builder_2.append("// missing validation for m");
+    String _name_3 = this.toName(feature);
+    String _firstUpper_3 = StringExtensions.toFirstUpper(_name_3);
+    _builder_2.append(_firstUpper_3, "");
+    _builder_2.newLineIfNotEmpty();
+    return _builder_2.toString();
   }
   
   public String toCopyRight(final EObject element) {
