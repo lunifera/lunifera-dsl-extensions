@@ -147,10 +147,11 @@ QVariantMap «dto.toName»::toMap()
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
 				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
-				«ELSE»
-				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, qobject_cast<«feature.toTypeName»*>(m«feature.toName.
-		toFirstUpper»)->to«feature.toMapOrList»());
-				«ENDIF»
+			«ELSE»
+				if(m«feature.toName.toFirstUpper»){
+					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				}
+			«ENDIF»
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
@@ -175,10 +176,11 @@ QVariantMap «dto.toName»::toForeignMap()
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
 			foreignMap.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
-				«ELSE»
-			foreignMap.insert(«feature.toName»ForeignKey, qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper»)->to«feature.
-		toMapOrList»());
-				«ENDIF»
+			«ELSE»
+			if(m«feature.toName.toFirstUpper»){
+				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+			}
+			«ENDIF»
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
