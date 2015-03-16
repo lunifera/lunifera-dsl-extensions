@@ -81,6 +81,9 @@ class HppGenerator {
 		// no SETTER «feature.toName»() is only convenience method to get the parent
 		«ELSE»
 		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
+		«IF feature.isTypeOfDTO»
+		void delete«feature.toName.toFirstUpper»();
+		«ENDIF»
 		«ENDIF»
 		«ENDFOR»
 	
@@ -108,6 +111,9 @@ class HppGenerator {
 		// no SIGNAL «feature.toName» is only convenience way to get the parent
 		«ELSE»
 		void «feature.toName»Changed(«feature.toTypeOrQObject» «feature.toName»);
+		«IF feature.isTypeOfDTO»
+		void «feature.toName.toFirstLower»Deleted(QString uuid);
+		«ENDIF»
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»

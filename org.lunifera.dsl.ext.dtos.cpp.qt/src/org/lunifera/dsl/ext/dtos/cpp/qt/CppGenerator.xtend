@@ -205,10 +205,28 @@ QVariantMap «dto.toName»::toForeignMap()
 void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»)
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		«IF feature.isTypeOfDTO»
+		if (m«feature.toName.toFirstUpper»){
+			m«feature.toName.toFirstUpper»->deleteLater();
+		}
 		m«feature.toName.toFirstUpper» = «feature.toName»;
+		m«feature.toName.toFirstUpper»->setParent(this);
+		«ELSE»
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		«ENDIF»
 		emit «feature.toName»Changed(«feature.toName»);
 	}
 }
+	«IF feature.isTypeOfDTO»
+	void «dto.toName»::delete«feature.toName.toFirstUpper»()
+{
+	if (m«feature.toName.toFirstUpper»){
+		emit «feature.toName.toFirstLower»Deleted(m«feature.toName.toFirstUpper»->uuid());
+		m«feature.toName.toFirstUpper»->deleteLater();
+		m«feature.toName.toFirstUpper» = 0;
+	}
+}
+	«ENDIF»
 «ENDIF»
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isToMany]»
