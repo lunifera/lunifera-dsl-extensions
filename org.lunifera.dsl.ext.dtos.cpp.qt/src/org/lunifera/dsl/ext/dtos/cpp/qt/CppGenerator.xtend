@@ -284,6 +284,9 @@ void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QStrin
     qDebug() << "uuid not found in «feature.toName.toFirstLower»: " << uuid;
     // TODO signal error
 }
+int «dto.toName»::«feature.toName.toFirstLower»Count(){
+    return m«feature.toName.toFirstUpper».size();
+}
 QList<QObject*> «dto.toName»::«feature.toName»()
 {
 	return m«feature.toName.toFirstUpper»;

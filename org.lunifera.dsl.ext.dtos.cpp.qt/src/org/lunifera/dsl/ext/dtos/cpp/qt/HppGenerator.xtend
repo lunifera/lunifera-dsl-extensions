@@ -101,6 +101,8 @@ class HppGenerator {
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
+		Q_INVOKABLE
+		int «feature.toName.toFirstLower»Count();
 		QList<QObject*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName»);
 		«ENDFOR»
