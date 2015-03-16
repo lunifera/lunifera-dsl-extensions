@@ -74,7 +74,9 @@ class HppGenerator {
 	
 		Q_INVOKABLE
 		QVariantMap toMap();
+		«IF dto.existsServerName»
 		QVariantMap toForeignMap();
+		«ENDIF»
 		QVariantMap dataToPersist();
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»

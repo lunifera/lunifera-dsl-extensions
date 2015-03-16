@@ -201,6 +201,15 @@ class CppExtensions {
 		}
 		return true
 	}
+	
+	def boolean existsServerName(LDto dto){
+		for (feature : dto.allFeatures){
+			if(feature.hasServerName){
+				return true
+			}
+		}
+		return false
+	}
 
 	def toTypeOrQObject(LFeature feature) {
 		if (feature.toTypeName.endsWith("DTO")) {

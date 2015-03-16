@@ -108,34 +108,39 @@ public class CppGenerator {
       }
     }
     _builder.newLine();
-    _builder.append("// keys used from Server API etc");
-    _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_1 = dto.getAllFeatures();
-      for(final LFeature feature_1 : _allFeatures_1) {
+      boolean _existsServerName = this._cppExtensions.existsServerName(dto);
+      if (_existsServerName) {
+        _builder.append("// keys used from Server API etc");
+        _builder.newLine();
         {
-          boolean _and_1 = false;
-          boolean _isTypeOfDTO_1 = this._cppExtensions.isTypeOfDTO(feature_1);
-          if (!_isTypeOfDTO_1) {
-            _and_1 = false;
-          } else {
-            boolean _isContained_2 = this._cppExtensions.isContained(feature_1);
-            _and_1 = _isContained_2;
-          }
-          if (_and_1) {
-            _builder.append("// no key for ");
-            String _name_4 = this._cppExtensions.toName(feature_1);
-            _builder.append(_name_4, "");
-            _builder.newLineIfNotEmpty();
-          } else {
-            _builder.append("static const QString ");
-            String _name_5 = this._cppExtensions.toName(feature_1);
-            _builder.append(_name_5, "");
-            _builder.append("ForeignKey = \"");
-            String _serverName = this._cppExtensions.toServerName(feature_1);
-            _builder.append(_serverName, "");
-            _builder.append("\";\t");
-            _builder.newLineIfNotEmpty();
+          List<? extends LFeature> _allFeatures_1 = dto.getAllFeatures();
+          for(final LFeature feature_1 : _allFeatures_1) {
+            {
+              boolean _and_1 = false;
+              boolean _isTypeOfDTO_1 = this._cppExtensions.isTypeOfDTO(feature_1);
+              if (!_isTypeOfDTO_1) {
+                _and_1 = false;
+              } else {
+                boolean _isContained_2 = this._cppExtensions.isContained(feature_1);
+                _and_1 = _isContained_2;
+              }
+              if (_and_1) {
+                _builder.append("// no key for ");
+                String _name_4 = this._cppExtensions.toName(feature_1);
+                _builder.append(_name_4, "");
+                _builder.newLineIfNotEmpty();
+              } else {
+                _builder.append("static const QString ");
+                String _name_5 = this._cppExtensions.toName(feature_1);
+                _builder.append(_name_5, "");
+                _builder.append("ForeignKey = \"");
+                String _serverName = this._cppExtensions.toServerName(feature_1);
+                _builder.append(_serverName, "");
+                _builder.append("\";\t");
+                _builder.newLineIfNotEmpty();
+              }
+            }
           }
         }
       }
@@ -731,127 +736,132 @@ public class CppGenerator {
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("/*");
-    _builder.newLine();
-    _builder.append(" ");
-    _builder.append("* Exports Properties from ");
-    String _name_67 = this._cppExtensions.toName(dto);
-    _builder.append(_name_67, " ");
-    _builder.append(" as QVariantMap");
-    _builder.newLineIfNotEmpty();
-    _builder.append(" ");
-    _builder.append("* To send data as payload to Server");
-    _builder.newLine();
-    _builder.append(" ");
-    _builder.append("* Makes it possible to use defferent naming conditions");
-    _builder.newLine();
-    _builder.append(" ");
-    _builder.append("*/");
-    _builder.newLine();
-    _builder.append("QVariantMap ");
-    String _name_68 = this._cppExtensions.toName(dto);
-    _builder.append(_name_68, "");
-    _builder.append("::toForeignMap()");
-    _builder.newLineIfNotEmpty();
-    _builder.append("{");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("QVariantMap foreignMap;");
-    _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_6 = dto.getAllFeatures();
-      for(final LFeature feature_6 : _allFeatures_6) {
+      boolean _existsServerName_1 = this._cppExtensions.existsServerName(dto);
+      if (_existsServerName_1) {
+        _builder.append("/*");
+        _builder.newLine();
+        _builder.append(" ");
+        _builder.append("* Exports Properties from ");
+        String _name_67 = this._cppExtensions.toName(dto);
+        _builder.append(_name_67, " ");
+        _builder.append(" as QVariantMap");
+        _builder.newLineIfNotEmpty();
+        _builder.append(" ");
+        _builder.append("* To send data as payload to Server");
+        _builder.newLine();
+        _builder.append(" ");
+        _builder.append("* Makes it possible to use defferent naming conditions");
+        _builder.newLine();
+        _builder.append(" ");
+        _builder.append("*/");
+        _builder.newLine();
+        _builder.append("QVariantMap ");
+        String _name_68 = this._cppExtensions.toName(dto);
+        _builder.append(_name_68, "");
+        _builder.append("::toForeignMap()");
+        _builder.newLineIfNotEmpty();
+        _builder.append("{");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("QVariantMap foreignMap;");
+        _builder.newLine();
         {
-          boolean _isTypeOfDTO_4 = this._cppExtensions.isTypeOfDTO(feature_6);
-          if (_isTypeOfDTO_4) {
+          List<? extends LFeature> _allFeatures_6 = dto.getAllFeatures();
+          for(final LFeature feature_6 : _allFeatures_6) {
             {
-              boolean _isContained_5 = this._cppExtensions.isContained(feature_6);
-              boolean _not_1 = (!_isContained_5);
-              if (_not_1) {
-                _builder.append("\t");
-                _builder.append("// m");
-                String _name_69 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_28 = StringExtensions.toFirstUpper(_name_69);
-                _builder.append(_firstUpper_28, "\t");
-                _builder.append(" points to ");
-                String _typeName_13 = this._cppExtensions.toTypeName(feature_6);
-                _builder.append(_typeName_13, "\t");
-                _builder.append("*");
-                _builder.newLineIfNotEmpty();
+              boolean _isTypeOfDTO_4 = this._cppExtensions.isTypeOfDTO(feature_6);
+              if (_isTypeOfDTO_4) {
                 {
-                  boolean _isToMany_1 = this._cppExtensions.isToMany(feature_6);
-                  if (_isToMany_1) {
+                  boolean _isContained_5 = this._cppExtensions.isContained(feature_6);
+                  boolean _not_1 = (!_isContained_5);
+                  if (_not_1) {
                     _builder.append("\t");
-                    _builder.append("foreignMap.insert(");
-                    String _name_70 = this._cppExtensions.toName(feature_6);
-                    _builder.append(_name_70, "\t");
-                    _builder.append("ForeignKey, ");
-                    String _name_71 = this._cppExtensions.toName(feature_6);
-                    _builder.append(_name_71, "\t");
-                    _builder.append("AsQVariantList());");
+                    _builder.append("// m");
+                    String _name_69 = this._cppExtensions.toName(feature_6);
+                    String _firstUpper_28 = StringExtensions.toFirstUpper(_name_69);
+                    _builder.append(_firstUpper_28, "\t");
+                    _builder.append(" points to ");
+                    String _typeName_13 = this._cppExtensions.toTypeName(feature_6);
+                    _builder.append(_typeName_13, "\t");
+                    _builder.append("*");
                     _builder.newLineIfNotEmpty();
+                    {
+                      boolean _isToMany_1 = this._cppExtensions.isToMany(feature_6);
+                      if (_isToMany_1) {
+                        _builder.append("\t");
+                        _builder.append("foreignMap.insert(");
+                        String _name_70 = this._cppExtensions.toName(feature_6);
+                        _builder.append(_name_70, "\t");
+                        _builder.append("ForeignKey, ");
+                        String _name_71 = this._cppExtensions.toName(feature_6);
+                        _builder.append(_name_71, "\t");
+                        _builder.append("AsQVariantList());");
+                        _builder.newLineIfNotEmpty();
+                      } else {
+                        _builder.append("\t");
+                        _builder.append("if(m");
+                        String _name_72 = this._cppExtensions.toName(feature_6);
+                        String _firstUpper_29 = StringExtensions.toFirstUpper(_name_72);
+                        _builder.append(_firstUpper_29, "\t");
+                        _builder.append("){");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("\t");
+                        _builder.append("foreignMap.insert(");
+                        String _name_73 = this._cppExtensions.toName(feature_6);
+                        _builder.append(_name_73, "\t\t");
+                        _builder.append("ForeignKey, m");
+                        String _name_74 = this._cppExtensions.toName(feature_6);
+                        String _firstUpper_30 = StringExtensions.toFirstUpper(_name_74);
+                        _builder.append(_firstUpper_30, "\t\t");
+                        _builder.append("->to");
+                        String _mapOrList_1 = this._cppExtensions.toMapOrList(feature_6);
+                        _builder.append(_mapOrList_1, "\t\t");
+                        _builder.append("());");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("}");
+                        _builder.newLine();
+                      }
+                    }
                   } else {
                     _builder.append("\t");
-                    _builder.append("if(m");
-                    String _name_72 = this._cppExtensions.toName(feature_6);
-                    String _firstUpper_29 = StringExtensions.toFirstUpper(_name_72);
-                    _builder.append(_firstUpper_29, "\t");
-                    _builder.append("){");
+                    _builder.append("// m");
+                    String _name_75 = this._cppExtensions.toName(feature_6);
+                    String _firstUpper_31 = StringExtensions.toFirstUpper(_name_75);
+                    _builder.append(_firstUpper_31, "\t");
+                    _builder.append(" points to ");
+                    String _typeName_14 = this._cppExtensions.toTypeName(feature_6);
+                    _builder.append(_typeName_14, "\t");
+                    _builder.append("* containing ");
+                    String _name_76 = this._cppExtensions.toName(dto);
+                    _builder.append(_name_76, "\t");
                     _builder.newLineIfNotEmpty();
-                    _builder.append("\t");
-                    _builder.append("\t");
-                    _builder.append("foreignMap.insert(");
-                    String _name_73 = this._cppExtensions.toName(feature_6);
-                    _builder.append(_name_73, "\t\t");
-                    _builder.append("ForeignKey, m");
-                    String _name_74 = this._cppExtensions.toName(feature_6);
-                    String _firstUpper_30 = StringExtensions.toFirstUpper(_name_74);
-                    _builder.append(_firstUpper_30, "\t\t");
-                    _builder.append("->to");
-                    String _mapOrList_1 = this._cppExtensions.toMapOrList(feature_6);
-                    _builder.append(_mapOrList_1, "\t\t");
-                    _builder.append("());");
-                    _builder.newLineIfNotEmpty();
-                    _builder.append("\t");
-                    _builder.append("}");
-                    _builder.newLine();
                   }
                 }
               } else {
                 _builder.append("\t");
-                _builder.append("// m");
-                String _name_75 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_31 = StringExtensions.toFirstUpper(_name_75);
-                _builder.append(_firstUpper_31, "\t");
-                _builder.append(" points to ");
-                String _typeName_14 = this._cppExtensions.toTypeName(feature_6);
-                _builder.append(_typeName_14, "\t");
-                _builder.append("* containing ");
-                String _name_76 = this._cppExtensions.toName(dto);
-                _builder.append(_name_76, "\t");
+                _builder.append("foreignMap.insert(");
+                String _name_77 = this._cppExtensions.toName(feature_6);
+                _builder.append(_name_77, "\t");
+                _builder.append("ForeignKey, m");
+                String _name_78 = this._cppExtensions.toName(feature_6);
+                String _firstUpper_32 = StringExtensions.toFirstUpper(_name_78);
+                _builder.append(_firstUpper_32, "\t");
+                _builder.append(");");
                 _builder.newLineIfNotEmpty();
               }
             }
-          } else {
-            _builder.append("\t");
-            _builder.append("foreignMap.insert(");
-            String _name_77 = this._cppExtensions.toName(feature_6);
-            _builder.append(_name_77, "\t");
-            _builder.append("ForeignKey, m");
-            String _name_78 = this._cppExtensions.toName(feature_6);
-            String _firstUpper_32 = StringExtensions.toFirstUpper(_name_78);
-            _builder.append(_firstUpper_32, "\t");
-            _builder.append(");");
-            _builder.newLineIfNotEmpty();
           }
         }
+        _builder.append("\t");
+        _builder.append("return foreignMap;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
       }
     }
-    _builder.append("\t");
-    _builder.append("return foreignMap;");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
     _builder.newLine();
     _builder.append("/*");
     _builder.newLine();

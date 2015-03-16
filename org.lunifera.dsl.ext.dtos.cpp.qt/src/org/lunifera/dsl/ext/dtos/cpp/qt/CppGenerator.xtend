@@ -54,6 +54,7 @@ class CppGenerator {
 	«ENDIF»
 «ENDFOR»
 
+«IF dto.existsServerName»
 // keys used from Server API etc
 «FOR feature : dto.allFeatures»
 	«IF feature.isTypeOfDTO && feature.isContained»
@@ -62,6 +63,7 @@ class CppGenerator {
 	static const QString «feature.toName»ForeignKey = "«feature.toServerName»";	
 	«ENDIF»
 «ENDFOR»
+«ENDIF»
 
 /*
  * Default Constructor if «dto.toName» not initialized from QVariantMap
@@ -170,6 +172,7 @@ QVariantMap «dto.toName»::toMap()
 	return m«dto.toName.toFirstUpper»Map;
 }
 
+«IF dto.existsServerName»
 /*
  * Exports Properties from «dto.toName» as QVariantMap
  * To send data as payload to Server
@@ -198,6 +201,7 @@ QVariantMap «dto.toName»::toForeignMap()
 	«ENDFOR»
 	return foreignMap;
 }
+«ENDIF»
 
 /*
  * Exports Properties from «dto.toName» as QVariantMap

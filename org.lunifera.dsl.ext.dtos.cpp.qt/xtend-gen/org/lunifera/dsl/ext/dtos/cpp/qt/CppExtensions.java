@@ -23,6 +23,7 @@ package org.lunifera.dsl.ext.dtos.cpp.qt;
 import com.google.common.base.Objects;
 import com.google.inject.Inject;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtend2.lib.StringConcatenation;
@@ -299,6 +300,17 @@ public class CppExtensions {
       return false;
     }
     return true;
+  }
+  
+  public boolean existsServerName(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _hasServerName = this.hasServerName(feature);
+      if (_hasServerName) {
+        return true;
+      }
+    }
+    return false;
   }
   
   public String toTypeOrQObject(final LFeature feature) {
