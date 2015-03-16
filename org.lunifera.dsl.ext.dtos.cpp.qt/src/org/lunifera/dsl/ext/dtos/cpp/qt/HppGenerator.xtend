@@ -82,7 +82,10 @@ class HppGenerator {
 		«ELSE»
 		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
 		«IF feature.isTypeOfDTO»
+		Q_INVOKABLE
 		void delete«feature.toName.toFirstUpper»();
+		Q_INVOKABLE
+		bool has«feature.toName.toFirstUpper»();
 		«ENDIF»
 		«ENDIF»
 		«ENDFOR»

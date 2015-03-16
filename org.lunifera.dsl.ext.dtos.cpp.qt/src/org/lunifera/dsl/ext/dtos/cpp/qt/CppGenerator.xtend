@@ -220,13 +220,20 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObjec
 	}
 }
 	«IF feature.isTypeOfDTO»
-	void «dto.toName»::delete«feature.toName.toFirstUpper»()
+void «dto.toName»::delete«feature.toName.toFirstUpper»()
 {
 	if (m«feature.toName.toFirstUpper»){
 		emit «feature.toName.toFirstLower»Deleted(m«feature.toName.toFirstUpper»->uuid());
 		m«feature.toName.toFirstUpper»->deleteLater();
 		m«feature.toName.toFirstUpper» = 0;
 	}
+}
+bool «dto.toName»::has«feature.toName.toFirstUpper»(){
+    if(m«feature.toName.toFirstUpper»){
+        return true;
+    } else {
+        return false;
+    }
 }
 	«ENDIF»
 «ENDIF»
