@@ -139,8 +139,14 @@ void «dto.toName»::prepareNew()
 	mUuid = mUuid.left(mUuid.length() - 1);
 }
 
+/*
+ * Checks if all mandatory attributes are filled
+ */
 bool «dto.toName»::isValid()
 {
+	«FOR feature : dto.allFeatures.filter[isMandatory]»
+	// m«feature.toName.toFirstUpper»
+	«ENDFOR»
 	return true;
 }
 	
