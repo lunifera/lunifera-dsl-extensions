@@ -78,7 +78,7 @@ class CppGenerator {
  * initialize «dto.toName» from QVariantMap
  * Map got from JsonDataAccess or so
  */
-void «dto.toName»::fillFromMap(QVariantMap «dto.toName.toFirstLower»Map)
+void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map)
 {
 	m«dto.toName.toFirstUpper»Map = «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
@@ -220,6 +220,42 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
         «feature.toName»List.append(qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper».at(i))->toMap());
     }
 	return «feature.toName»List;
+}
+void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+}
+
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        if (m«feature.toName.toFirstUpper».at(i) == «feature.toTypeName.toFirstLower») {
+            m«feature.toName.toFirstUpper».removeAt(i);
+            return;
+        }
+    }
+    qDebug() << "«feature.toTypeName»* not found in «feature.toName.toFirstLower»";
+    // TODO signal error
+}
+
+void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map)
+{
+    «feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+    «feature.toTypeName.toFirstLower»->setParent(this);
+    «feature.toTypeName.toFirstLower»->fillFromMap(«feature.toTypeName.toFirstLower»Map);
+    m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+}
+
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid)
+{
+    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        if (qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper».at(i))->toMap().value(uuidKey).toString() == uuid) {
+            m«feature.toName.toFirstUpper».removeAt(i);
+            return;
+        }
+    }
+    qDebug() << "uuid not found in «feature.toName.toFirstLower»: " << uuid;
+    // TODO signal error
 }
 QList<QObject*> «dto.toName»::«feature.toName»()
 {

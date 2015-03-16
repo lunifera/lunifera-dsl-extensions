@@ -200,7 +200,7 @@ public class HppGenerator {
     _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("void fillFromMap(QVariantMap ");
+    _builder.append("void fillFromMap(const QVariantMap& ");
     String _name_14 = this._cppExtensions.toName(dto);
     String _firstLower = StringExtensions.toFirstLower(_name_14);
     _builder.append(_firstLower, "\t");
