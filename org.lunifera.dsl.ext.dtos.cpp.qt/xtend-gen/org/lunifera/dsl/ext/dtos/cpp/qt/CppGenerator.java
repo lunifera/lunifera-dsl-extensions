@@ -590,7 +590,7 @@ public class CppGenerator {
     _builder.append("/*");
     _builder.newLine();
     _builder.append(" ");
-    _builder.append("* Checks if all mandatory attributes are filled");
+    _builder.append("* Checks if all mandatory attributes, all DomainKeys and uuid\'s are filled");
     _builder.newLine();
     _builder.append(" ");
     _builder.append("*/");
@@ -606,7 +606,23 @@ public class CppGenerator {
       List<? extends LFeature> _allFeatures_5 = dto.getAllFeatures();
       final Function1<LFeature, Boolean> _function_3 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
-          return Boolean.valueOf(CppGenerator.this._cppExtensions.isMandatory(it));
+          boolean _or = false;
+          boolean _or_1 = false;
+          boolean _isMandatory = CppGenerator.this._cppExtensions.isMandatory(it);
+          if (_isMandatory) {
+            _or_1 = true;
+          } else {
+            String _name = CppGenerator.this._cppExtensions.toName(it);
+            boolean _equals = Objects.equal(_name, "uuid");
+            _or_1 = _equals;
+          }
+          if (_or_1) {
+            _or = true;
+          } else {
+            boolean _isDomainKey = CppGenerator.this._cppExtensions.isDomainKey(it);
+            _or = _isDomainKey;
+          }
+          return Boolean.valueOf(_or);
         }
       };
       Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_5, _function_3);
@@ -1733,6 +1749,15 @@ public class CppGenerator {
         _builder.append("// Mandatory: ");
         String _name_1 = this._cppExtensions.toName(att);
         _builder.append(_name_1, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    {
+      boolean _isDomainKey = att.isDomainKey();
+      if (_isDomainKey) {
+        _builder.append("// Domain KEY: ");
+        String _name_2 = this._cppExtensions.toName(att);
+        _builder.append(_name_2, "");
         _builder.newLineIfNotEmpty();
       }
     }

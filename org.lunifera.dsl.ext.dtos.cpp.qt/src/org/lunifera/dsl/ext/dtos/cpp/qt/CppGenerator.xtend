@@ -140,11 +140,11 @@ void «dto.toName»::prepareNew()
 }
 
 /*
- * Checks if all mandatory attributes are filled
+ * Checks if all mandatory attributes, all DomainKeys and uuid's are filled
  */
 bool «dto.toName»::isValid()
 {
-	«FOR feature : dto.allFeatures.filter[isMandatory]»
+	«FOR feature : dto.allFeatures.filter[isMandatory || toName == "uuid" || isDomainKey]»
 		«IF feature.isToMany»
 		if(m«feature.toName.toFirstUpper».size() == 0){
 			return false;
@@ -373,6 +373,9 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «featur
 		«ENDIF»
 		«IF att.isMandatory»
 			// Mandatory: «att.toName»
+		«ENDIF»
+		«IF att.isDomainKey»
+			// Domain KEY: «att.toName»
 		«ENDIF»
 	'''
 

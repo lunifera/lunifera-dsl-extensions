@@ -107,6 +107,18 @@ public class CppExtensions {
     return target.isCascading();
   }
   
+  protected boolean _isDomainKey(final LAnnotationTarget target) {
+    return false;
+  }
+  
+  protected boolean _isDomainKey(final LAttribute target) {
+    return target.isDomainKey();
+  }
+  
+  protected boolean _isDomainKey(final LReference target) {
+    return false;
+  }
+  
   protected boolean _isTransient(final LAnnotationTarget target) {
     return false;
   }
@@ -176,8 +188,15 @@ public class CppExtensions {
     if (!_matched) {
       if (Objects.equal(_typeName, "int")) {
         _matched=true;
+        boolean _or = false;
         boolean _isMandatory = this.isMandatory(feature);
         if (_isMandatory) {
+          _or = true;
+        } else {
+          boolean _isDomainKey = this.isDomainKey(feature);
+          _or = _isDomainKey;
+        }
+        if (_or) {
           return "-1";
         } else {
           return "0";
@@ -435,6 +454,19 @@ public class CppExtensions {
       return _isContained((LReference)target);
     } else if (target != null) {
       return _isContained(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public boolean isDomainKey(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _isDomainKey((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _isDomainKey((LReference)target);
+    } else if (target != null) {
+      return _isDomainKey(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

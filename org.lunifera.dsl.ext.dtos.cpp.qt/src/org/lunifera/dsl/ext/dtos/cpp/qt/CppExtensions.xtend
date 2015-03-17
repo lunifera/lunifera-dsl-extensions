@@ -79,6 +79,18 @@ class CppExtensions {
 		return target.isCascading
 	}
 	
+	def dispatch boolean isDomainKey(LAnnotationTarget target) {
+		return false
+	}
+
+	def dispatch boolean isDomainKey(LAttribute target) {
+		return target.isDomainKey
+	}
+
+	def dispatch boolean isDomainKey(LReference target) {
+		return false
+	}
+	
 	def dispatch boolean isTransient(LAnnotationTarget target) {
 		return false
 	}
@@ -126,7 +138,7 @@ class CppExtensions {
 			case "bool":
 				return "false"
 			case "int":
-				if(feature.isMandatory){
+				if(feature.isMandatory || feature.isDomainKey){
 					return "-1"
 				} else {
 					return "0"
