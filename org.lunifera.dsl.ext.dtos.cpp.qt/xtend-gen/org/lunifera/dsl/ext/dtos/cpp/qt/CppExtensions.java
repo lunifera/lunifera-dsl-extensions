@@ -189,6 +189,23 @@ public class CppExtensions {
     return "Map";
   }
   
+  public String mapToLazyTypeName(final String typeName) {
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(typeName, "int")) {
+        _matched=true;
+        return "Int";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(typeName, "QString")) {
+        _matched=true;
+        return "String";
+      }
+    }
+    return "String";
+  }
+  
   public String defaultForType(final LFeature feature) {
     String _typeName = this.toTypeName(feature);
     boolean _matched = false;
@@ -218,6 +235,23 @@ public class CppExtensions {
     }
     if (!_matched) {
       if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return "\"\"";
+      }
+    }
+    return "";
+  }
+  
+  public String defaultForLazyTypeName(final String typeName) {
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(typeName, "int")) {
+        _matched=true;
+        return "-1";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(typeName, "QString")) {
         _matched=true;
         return "\"\"";
       }
@@ -292,6 +326,55 @@ public class CppExtensions {
     _builder_2.append("// missing validation for m");
     String _name_3 = this.toName(feature);
     String _firstUpper_3 = StringExtensions.toFirstUpper(_name_3);
+    _builder_2.append(_firstUpper_3, "");
+    _builder_2.newLineIfNotEmpty();
+    return _builder_2.toString();
+  }
+  
+  public String toValidateReference(final String referenceTypeName, final String featureName) {
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(referenceTypeName, "int")) {
+        _matched=true;
+        StringConcatenation _builder = new StringConcatenation();
+        _builder.append("if(m");
+        String _firstUpper = StringExtensions.toFirstUpper(featureName);
+        _builder.append(_firstUpper, "");
+        _builder.append(" == -1){");
+        _builder.newLineIfNotEmpty();
+        _builder.append("\t");
+        _builder.append("return false;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        return _builder.toString();
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(referenceTypeName, "QString")) {
+        _matched=true;
+        StringConcatenation _builder_1 = new StringConcatenation();
+        _builder_1.append("if(m");
+        String _firstUpper_1 = StringExtensions.toFirstUpper(featureName);
+        _builder_1.append(_firstUpper_1, "");
+        _builder_1.append(".isNull() || m");
+        String _firstUpper_2 = StringExtensions.toFirstUpper(featureName);
+        _builder_1.append(_firstUpper_2, "");
+        _builder_1.append(".isEmpty())");
+        _builder_1.newLineIfNotEmpty();
+        _builder_1.append("{");
+        _builder_1.newLine();
+        _builder_1.append("\t");
+        _builder_1.append("return false;");
+        _builder_1.newLine();
+        _builder_1.append("}");
+        _builder_1.newLine();
+        return _builder_1.toString();
+      }
+    }
+    StringConcatenation _builder_2 = new StringConcatenation();
+    _builder_2.append("// missing validation for m");
+    String _firstUpper_3 = StringExtensions.toFirstUpper(featureName);
     _builder_2.append(_firstUpper_3, "");
     _builder_2.newLineIfNotEmpty();
     return _builder_2.toString();
@@ -391,6 +474,26 @@ public class CppExtensions {
       return false;
     }
     return true;
+  }
+  
+  protected LFeature _referenceDomainKeyFeature(final LFeature feature) {
+    return feature;
+  }
+  
+  protected LFeature _referenceDomainKeyFeature(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.domainKeyFeature(((LDto) _type));
+  }
+  
+  public LFeature domainKeyFeature(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      if (_isDomainKey) {
+        return feature;
+      }
+    }
+    return null;
   }
   
   protected String _referenceDomainKey(final LFeature feature) {
@@ -571,6 +674,17 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public LFeature referenceDomainKeyFeature(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceDomainKeyFeature((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceDomainKeyFeature(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
     }
   }
   

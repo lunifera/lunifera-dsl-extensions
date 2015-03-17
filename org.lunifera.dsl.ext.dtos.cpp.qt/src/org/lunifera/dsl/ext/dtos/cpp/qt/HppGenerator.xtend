@@ -170,6 +170,8 @@ class HppGenerator {
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDTO && feature.isContained»
 		// no MEMBER m«feature.toName.toFirstUpper» it's the parent
+		«ELSEIF feature.isLazy»
+		«feature.referenceDomainKeyType» m«feature.toName.toFirstUpper»;
 		«ELSE»
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
 		«ENDIF»

@@ -73,6 +73,12 @@ class CppGenerator {
         ]», m«feature.toName.toFirstUpper»(«feature.
 		defaultForType»)«ENDFOR»
 {
+	«IF dto.existsLazy»
+		// lazy references:
+		«FOR feature : dto.allFeatures.filter[isLazy]»
+		m«feature.toName.toFirstUpper» = «feature.referenceDomainKeyType.defaultForLazyTypeName»;
+		«ENDFOR»
+	«ENDIF»
 	//
 }
 
@@ -87,6 +93,15 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 		«IF feature.isTypeOfDTO»
 			«IF feature.isContained»
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
+			«ELSEIF feature.isLazy»
+			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName»Key)){
+				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+				if(m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName»){
+					// SIGNAL to request a pointer to the corresponding DTO
+					emit request«feature.toName.toFirstUpper»AsDTO(m«feature.toName.toFirstUpper»);
+				}
+			}
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName»Key)){
@@ -149,6 +164,9 @@ bool «dto.toName»::isValid()
 		if(m«feature.toName.toFirstUpper».size() == 0){
 			return false;
 		}
+		«ELSEIF feature.isLazy»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		«toValidateReference(feature.referenceDomainKeyFeature.toTypeName, feature.toName)»
 		«ELSEIF feature.typeOfDTO»
 		if(!m«feature.toName.toFirstUpper») {
 			return false;
@@ -167,7 +185,11 @@ bool «dto.toName»::isValid()
  */
 QVariantMap «dto.toName»::toMap()
 {
-	«FOR feature : dto.allFeatures»
+	«FOR feature : dto.allFeatures.filter[isLazy]»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isLazy]»
 		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
@@ -197,7 +219,11 @@ QVariantMap «dto.toName»::toMap()
 QVariantMap «dto.toName»::toForeignMap()
 {
 	QVariantMap foreignMap;
-	«FOR feature : dto.allFeatures»
+	«FOR feature : dto.allFeatures.filter[isLazy]»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isLazy]»
 		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
@@ -226,28 +252,33 @@ QVariantMap «dto.toName»::toForeignMap()
  */
 QVariantMap «dto.toName»::dataToPersist()
 {
-	«FOR feature : dto.allFeatures.filter[!isTransient]»
+	QVariantMap persistMap;
+	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy]»
 		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+				persistMap.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if(m«feature.toName.toFirstUpper»){
-					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 				}
 			«ENDIF»
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
 		«ELSE» 
-			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isTransient]»
 		// excluded: m«feature.toName.toFirstUpper»
 	«ENDFOR»
-	return m«dto.toName.toFirstUpper»Map;
+	return persistMap;
 }
 	
 «FOR feature : dto.allFeatures.filter[!isToMany]»

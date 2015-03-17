@@ -145,6 +145,16 @@ class CppExtensions {
 		}
 		return "Map"
 	}
+	
+	def String mapToLazyTypeName(String typeName){
+		switch (typeName) {
+			case "int":
+				return "Int"
+			case "QString":
+				return "String"
+		}
+		return "String"
+	}
 
 	def String defaultForType(LFeature feature) {
 		switch (feature.toTypeName) {
@@ -156,6 +166,16 @@ class CppExtensions {
 				} else {
 					return "0"
 				}
+			case "QString":
+				return "\"\""
+		}
+		return ""
+	}
+	
+	def String defaultForLazyTypeName(String typeName){
+		switch (typeName) {
+			case "int":
+				return "-1"
 			case "QString":
 				return "\"\""
 		}
@@ -196,6 +216,27 @@ class CppExtensions {
 		}
 		return '''
 		// missing validation for m«feature.toName.toFirstUpper»
+		'''.toString
+	}
+	
+	def toValidateReference(String referenceTypeName, String featureName){
+		switch (referenceTypeName) {
+			case "int":
+				return '''
+				if(m«featureName.toFirstUpper» == -1){
+					return false;
+				}
+				'''.toString
+			case "QString":
+				return '''
+				if(m«featureName.toFirstUpper».isNull() || m«featureName.toFirstUpper».isEmpty())
+				{
+					return false;
+				}
+				'''.toString
+		}
+		return '''
+		// missing validation for m«featureName.toFirstUpper»
 		'''.toString
 	}
 
@@ -250,6 +291,22 @@ class CppExtensions {
 			return false
 		}
 		return true
+	}
+	
+	def dispatch LFeature referenceDomainKeyFeature(LFeature feature){
+		return feature
+	}
+	
+	def dispatch LFeature referenceDomainKeyFeature(LDtoReference reference){
+		return (reference.type as LDto).domainKeyFeature
+	}
+	
+	def LFeature domainKeyFeature(LDto dto){
+		for (feature : dto.allFeatures){
+			if(feature.isDomainKey){
+				return feature
+			}
+		}
 	}
 	
 	def dispatch String referenceDomainKey(LFeature feature){
