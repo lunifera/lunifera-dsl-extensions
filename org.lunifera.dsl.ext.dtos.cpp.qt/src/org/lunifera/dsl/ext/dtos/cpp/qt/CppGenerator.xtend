@@ -280,8 +280,61 @@ QVariantMap «dto.toName»::dataToPersist()
 	«ENDFOR»
 	return persistMap;
 }
-	
-«FOR feature : dto.allFeatures.filter[!isToMany]»
+«FOR feature : dto.allFeatures.filter[!isToMany && isLazy]»
+«feature.foo»
+// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+«feature.referenceDomainKeyType» «dto.toName»::«feature.toName»() const
+{
+	return m«feature.toName.toFirstUpper»;
+}
+«feature.toTypeOrQObject» «dto.toName»::«feature.toName»AsDTO() const
+{
+	return m«feature.toName.toFirstUpper»AsDTO;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»)
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		if («feature.toName» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+            // connected from DTOManager to lookup for DTO
+            emit request«feature.toName.toFirstUpper»AsDTO(«feature.toName»);
+        } else {
+            // reset pointer, don't delete the independent object !
+            m«feature.toName.toFirstUpper»AsDTO = 0;
+            emit «feature.toName»Removed(m«feature.toName.toFirstUpper»);
+        }
+        m«feature.toName.toFirstUpper» = «feature.toName»;
+        emit «feature.toName»Changed(«feature.toName»);
+    }
+}
+void «dto.toName»::remove«feature.toName.toFirstUpper»()
+{
+	set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType.defaultForLazyTypeName»);
+}
+bool «dto.toName»::has«feature.toName.toFirstUpper»(){
+    if(m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName»){
+        return true;
+    } else {
+        return false;
+    }
+}
+bool «dto.toName»::has«feature.toName.toFirstUpper»AsDTO(){
+    if(m«feature.toName.toFirstUpper»AsDTO){
+        return true;
+    } else {
+        return false;
+    }
+}
+// SLOT
+void «dto.toName»::onRequested«feature.toName.toFirstUpper»AsDTO(«feature.toTypeOrQObject» «feature.toTypeName.toFirstLower»)
+{
+    if («feature.toTypeName.toFirstLower») {
+        if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() == m«feature.toName.toFirstUpper») {
+            m«feature.toName.toFirstUpper»AsDTO = «feature.toTypeName.toFirstLower»;
+        }
+    }
+}
+«ENDFOR»
+«FOR feature : dto.allFeatures.filter[!isToMany && !isLazy]»
 «feature.foo»
 «IF feature.isTypeOfDTO && feature.isContained»
 // No SETTER for «feature.toName.toFirstUpper» - it's the parent
