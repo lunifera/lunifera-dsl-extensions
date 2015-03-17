@@ -55,9 +55,12 @@ class HppGenerator {
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDTO && feature.isContained»
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName»)
+		«ELSEIF feature.isLazy»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDTO READ «feature.toName»AsDTO)
 		«ELSE»
-		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.
-		toName»Changed FINAL)
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ENDIF»
 		«ENDFOR»
 
@@ -78,8 +81,20 @@ class HppGenerator {
 		QVariantMap toForeignMap();
 		«ENDIF»
 		QVariantMap dataToPersist();
-	
+
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isLazy»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		«feature.referenceDomainKeyType» «feature.toName»() const;
+		void set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»);
+		«feature.toTypeOrQObject» «feature.toName»AsDTO() const;
+		Q_INVOKABLE
+		void remove«feature.toName.toFirstUpper»();
+		Q_INVOKABLE
+		bool has«feature.toName.toFirstUpper»();
+		Q_INVOKABLE
+		bool has«feature.toName.toFirstUpper»AsDTO();
+		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDTO && feature.isContained»
 		// no SETTER «feature.toName»() is only convenience method to get the parent
@@ -90,6 +105,7 @@ class HppGenerator {
 		void delete«feature.toName.toFirstUpper»();
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»();
+		«ENDIF»
 		«ENDIF»
 		«ENDIF»
 		«ENDFOR»
@@ -116,6 +132,12 @@ class HppGenerator {
 		Q_SIGNALS:
 	
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isLazy»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		void «feature.toName»Changed(«feature.referenceDomainKeyType» «feature.toName»);
+		void «feature.toName»Removed(«feature.referenceDomainKeyType» «feature.toName»);
+		void request«feature.toName.toFirstUpper»AsDTO(«feature.referenceDomainKeyType» «feature.toName»);
+		«ELSE»
 		«IF feature.isTypeOfDTO && feature.isContained»
 		// no SIGNAL «feature.toName» is only convenience way to get the parent
 		«ELSE»
@@ -124,12 +146,22 @@ class HppGenerator {
 		void «feature.toName.toFirstLower»Deleted(QString uuid);
 		«ENDIF»
 		«ENDIF»
+		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		void «feature.toName»Changed(QList<QObject*> «feature.toName»);
 		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
 		«ENDFOR»
+		
+	«IF dto.existsLazy»
+	public slots:
+		«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isLazy»
+		void onRequested«feature.toName.toFirstUpper»AsDTO(«feature.toTypeOrQObject» «feature.toTypeName.toFirstLower»);
+		«ENDIF»
+		«ENDFOR»
+	«ENDIF»
 	
 	private:
 	

@@ -47,6 +47,7 @@ import org.lunifera.dsl.semantic.common.types.LReference;
 import org.lunifera.dsl.semantic.dto.LDto;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
+import org.lunifera.dsl.semantic.dto.LDtoReference;
 
 @SuppressWarnings("all")
 public class CppExtensions {
@@ -129,6 +130,18 @@ public class CppExtensions {
   
   protected boolean _isTransient(final LReference target) {
     return false;
+  }
+  
+  protected boolean _isLazy(final LAnnotationTarget target) {
+    return false;
+  }
+  
+  protected boolean _isLazy(final LAttribute target) {
+    return false;
+  }
+  
+  protected boolean _isLazy(final LReference target) {
+    return target.isLazy();
   }
   
   protected String _toTypeName(final LAttribute att) {
@@ -380,11 +393,62 @@ public class CppExtensions {
     return true;
   }
   
+  protected String _referenceDomainKey(final LFeature feature) {
+    return "";
+  }
+  
+  protected String _referenceDomainKey(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.domainKey(((LDto) _type));
+  }
+  
+  public String domainKey(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      if (_isDomainKey) {
+        return this.toName(feature);
+      }
+    }
+    return "uuid";
+  }
+  
+  protected String _referenceDomainKeyType(final LFeature feature) {
+    return "";
+  }
+  
+  protected String _referenceDomainKeyType(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.domainKeyType(((LDto) _type));
+  }
+  
+  public String domainKeyType(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      if (_isDomainKey) {
+        return this.toTypeName(feature);
+      }
+    }
+    return "QString";
+  }
+  
   public boolean existsServerName(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
       boolean _hasServerName = this.hasServerName(feature);
       if (_hasServerName) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean existsLazy(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isLazy = this.isLazy(feature);
+      if (_isLazy) {
         return true;
       }
     }
@@ -486,6 +550,19 @@ public class CppExtensions {
     }
   }
   
+  public boolean isLazy(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _isLazy((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _isLazy((LReference)target);
+    } else if (target != null) {
+      return _isLazy(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
   public String toTypeName(final LFeature att) {
     if (att instanceof LAttribute) {
       return _toTypeName((LAttribute)att);
@@ -494,6 +571,28 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public String referenceDomainKey(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceDomainKey((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceDomainKey(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public String referenceDomainKeyType(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceDomainKeyType((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceDomainKeyType(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
     }
   }
 }

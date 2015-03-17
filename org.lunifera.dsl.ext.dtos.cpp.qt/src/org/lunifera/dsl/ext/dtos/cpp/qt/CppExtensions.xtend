@@ -36,6 +36,7 @@ import org.lunifera.dsl.semantic.common.types.LReference
 import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
+import org.lunifera.dsl.semantic.dto.LDtoReference
 
 class CppExtensions {
 
@@ -101,6 +102,18 @@ class CppExtensions {
 
 	def dispatch boolean isTransient(LReference target) {
 		return false
+	}
+	
+	def dispatch boolean isLazy(LAnnotationTarget target) {
+		return false
+	}
+
+	def dispatch boolean isLazy(LAttribute target) {
+		return false
+	}
+
+	def dispatch boolean isLazy(LReference target) {
+		return target.isLazy
 	}
 
 	def dispatch String toTypeName(LAttribute att) {
@@ -239,9 +252,52 @@ class CppExtensions {
 		return true
 	}
 	
+	def dispatch String referenceDomainKey(LFeature feature){
+		return ""
+	}
+	
+	def dispatch String referenceDomainKey(LDtoReference reference){
+		return (reference.type as LDto).domainKey
+	}
+	
+	def String domainKey(LDto dto){
+		for (feature : dto.allFeatures){
+			if(feature.isDomainKey){
+				return feature.toName
+			}
+		}
+		return "uuid"
+	}
+	
+	def dispatch String referenceDomainKeyType(LFeature feature){
+		return ""
+	}
+	
+	def dispatch String referenceDomainKeyType(LDtoReference reference){
+		return (reference.type as LDto).domainKeyType
+	}
+	
+	def String domainKeyType(LDto dto){
+		for (feature : dto.allFeatures){
+			if(feature.isDomainKey){
+				return feature.toTypeName
+			}
+		}
+		return "QString"
+	}
+	
 	def boolean existsServerName(LDto dto){
 		for (feature : dto.allFeatures){
 			if(feature.hasServerName){
+				return true
+			}
+		}
+		return false
+	}
+	
+	def boolean existsLazy(LDto dto){
+		for (feature : dto.allFeatures){
+			if(feature.isLazy){
 				return true
 			}
 		}
