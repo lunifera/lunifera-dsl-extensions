@@ -796,7 +796,7 @@ public class HppGenerator {
               _builder.append("\t");
               String _typeOrQObject_11 = this._cppExtensions.toTypeOrQObject(feature_7);
               _builder.append(_typeOrQObject_11, "\t");
-              _builder.append("* m");
+              _builder.append(" m");
               String _name_65 = this._cppExtensions.toName(feature_7);
               String _firstUpper_24 = StringExtensions.toFirstUpper(_name_65);
               _builder.append(_firstUpper_24, "\t");
