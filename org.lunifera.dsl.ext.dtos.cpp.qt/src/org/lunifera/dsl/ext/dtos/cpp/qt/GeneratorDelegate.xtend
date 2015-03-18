@@ -24,6 +24,7 @@ import java.util.Set
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.OutputConfiguration
+import org.lunifera.dsl.semantic.common.types.LTypedPackage
 import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoModel
 import org.lunifera.dsl.xtext.lazyresolver.api.hook.IGeneratorDelegate
@@ -36,17 +37,26 @@ class GeneratorDelegate implements IGeneratorDelegate {
 	@Inject
 	CppGenerator cppGenerator
 
+	@Inject
+	CppManagerGenerator cppManagerGenerator
+
+	@Inject
+	HppManagerGenerator hppManagerGenerator
+
 	override generate(Resource input, IFileSystemAccess fsa) {
-		if(input.contents.empty){
+		if (input.contents.empty) {
 			return
 		}
-		
+
 		val LDtoModel lModel = input.contents.get(0) as LDtoModel
 		lModel.packages.forEach [
 			types.filter[it instanceof LDto].map[it as LDto].forEach [
 				it.generateHppFile(fsa)
 				it.generateCppFile(fsa)
 			]
+			// generate a manager component. Passing in the types package
+			it.generateCppManagerFile(fsa)
+			it.generateHppManagerFile(fsa)
 		]
 	}
 
@@ -82,6 +92,40 @@ class GeneratorDelegate implements IGeneratorDelegate {
 
 	def String toCppFileName(LDto type) {
 		cppGenerator.toFileName(type)
+	}
+
+	/**
+	 * Generates the .hpp file for the given dto.
+	 */
+	def void generateHppManagerFile(LTypedPackage lPackage, IFileSystemAccess fsa) {
+		val fileName = lPackage.toHppManagerFileName
+		fsa.deleteFile(fileName)
+		fsa.generateFile(fileName, "CppQt", lPackage.toHppManagerContent)
+	}
+
+	def CharSequence toHppManagerContent(LTypedPackage lPackage) {
+		hppManagerGenerator.toContent(lPackage)
+	}
+
+	def String toHppManagerFileName(LTypedPackage lPackage) {
+		hppManagerGenerator.toFileName(lPackage)
+	}
+
+	/**
+	 * Generates the .cpp file for the given dto.
+	 */
+	def void generateCppManagerFile(LTypedPackage lPackage, IFileSystemAccess fsa) {
+		val fileName = lPackage.toCppManagerFileName
+		fsa.deleteFile(fileName)
+		fsa.generateFile(fileName, "CppQt", lPackage.toCppManagerContent)
+	}
+
+	def CharSequence toCppManagerContent(LTypedPackage lPackage) {
+		cppManagerGenerator.toContent(lPackage)
+	}
+
+	def String toCppManagerFileName(LTypedPackage lPackage) {
+		cppManagerGenerator.toFileName(lPackage)
 	}
 
 	/** 

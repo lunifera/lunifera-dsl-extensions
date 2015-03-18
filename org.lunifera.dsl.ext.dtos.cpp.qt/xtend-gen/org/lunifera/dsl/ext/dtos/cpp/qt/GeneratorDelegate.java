@@ -31,7 +31,9 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppGenerator;
+import org.lunifera.dsl.ext.dtos.cpp.qt.CppManagerGenerator;
 import org.lunifera.dsl.ext.dtos.cpp.qt.HppGenerator;
+import org.lunifera.dsl.ext.dtos.cpp.qt.HppManagerGenerator;
 import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -45,6 +47,12 @@ public class GeneratorDelegate implements IGeneratorDelegate {
   
   @Inject
   private CppGenerator cppGenerator;
+  
+  @Inject
+  private CppManagerGenerator cppManagerGenerator;
+  
+  @Inject
+  private HppManagerGenerator hppManagerGenerator;
   
   public void generate(final Resource input, final IFileSystemAccess fsa) {
     EList<EObject> _contents = input.getContents();
@@ -78,6 +86,8 @@ public class GeneratorDelegate implements IGeneratorDelegate {
           }
         };
         IterableExtensions.<LDto>forEach(_map, _function_2);
+        GeneratorDelegate.this.generateCppManagerFile(it, fsa);
+        GeneratorDelegate.this.generateHppManagerFile(it, fsa);
       }
     };
     IterableExtensions.<LTypedPackage>forEach(_packages, _function);
@@ -117,6 +127,42 @@ public class GeneratorDelegate implements IGeneratorDelegate {
   
   public String toCppFileName(final LDto type) {
     return this.cppGenerator.toFileName(type);
+  }
+  
+  /**
+   * Generates the .hpp file for the given dto.
+   */
+  public void generateHppManagerFile(final LTypedPackage lPackage, final IFileSystemAccess fsa) {
+    final String fileName = this.toHppManagerFileName(lPackage);
+    fsa.deleteFile(fileName);
+    CharSequence _hppManagerContent = this.toHppManagerContent(lPackage);
+    fsa.generateFile(fileName, "CppQt", _hppManagerContent);
+  }
+  
+  public CharSequence toHppManagerContent(final LTypedPackage lPackage) {
+    return this.hppManagerGenerator.toContent(lPackage);
+  }
+  
+  public String toHppManagerFileName(final LTypedPackage lPackage) {
+    return this.hppManagerGenerator.toFileName(lPackage);
+  }
+  
+  /**
+   * Generates the .cpp file for the given dto.
+   */
+  public void generateCppManagerFile(final LTypedPackage lPackage, final IFileSystemAccess fsa) {
+    final String fileName = this.toCppManagerFileName(lPackage);
+    fsa.deleteFile(fileName);
+    CharSequence _cppManagerContent = this.toCppManagerContent(lPackage);
+    fsa.generateFile(fileName, "CppQt", _cppManagerContent);
+  }
+  
+  public CharSequence toCppManagerContent(final LTypedPackage lPackage) {
+    return this.cppManagerGenerator.toContent(lPackage);
+  }
+  
+  public String toCppManagerFileName(final LTypedPackage lPackage) {
+    return this.cppManagerGenerator.toFileName(lPackage);
   }
   
   /**
