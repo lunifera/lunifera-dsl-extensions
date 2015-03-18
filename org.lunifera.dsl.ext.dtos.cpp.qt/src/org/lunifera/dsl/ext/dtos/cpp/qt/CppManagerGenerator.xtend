@@ -37,10 +37,41 @@ class CppManagerGenerator {
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''
-	
+#include <QObject>
+
+#include "DTOManager.hpp"
+
+#include <bb/data/JsonDataAccess>
+#include  <bb/cascades/GroupDataModel>
+
+static QString dataAssetsPath(const QString& fileName)
+{
+    return QDir::currentPath() + "/app/native/assets/datamodel/" + fileName;
+}
+static QString dataPath(const QString& fileName)
+{
+    return QDir::currentPath() + "/data/" + fileName;
+}
+
+using namespace bb::cascades;
+using namespace bb::data;
+
+DTOManager::DTOManager(QObject *parent) :
+        QObject(parent)
+{
+    // ApplicationUI is parent of DTOManager
+    // DTOManager is parent of all root DTOs
+    // root DTOs are parent of contained DTOs
+
+    // register all DTOs to get access to properties from QML:	
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-		«dto.toName»
+		qmlRegisterType<«dto.toName»>("org.ekkescorner", 1, 0, "«dto.toName»");
 	«ENDFOR»
-	
+}
+
+DTOManager::~DTOManager()
+{
+    // clean up
+}
 	'''
 }

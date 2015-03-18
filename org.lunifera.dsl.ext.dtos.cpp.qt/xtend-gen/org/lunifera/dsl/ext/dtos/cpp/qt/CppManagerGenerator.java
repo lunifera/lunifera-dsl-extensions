@@ -43,6 +43,60 @@ public class CppManagerGenerator {
   
   public CharSequence toContent(final LTypedPackage pkg) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.append("#include <QObject>");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("#include \"DTOManager.hpp\"");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("#include <bb/data/JsonDataAccess>");
+    _builder.newLine();
+    _builder.append("#include  <bb/cascades/GroupDataModel>");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("static QString dataAssetsPath(const QString& fileName)");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("return QDir::currentPath() + \"/app/native/assets/datamodel/\" + fileName;");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    _builder.append("static QString dataPath(const QString& fileName)");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("return QDir::currentPath() + \"/data/\" + fileName;");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("using namespace bb::cascades;");
+    _builder.newLine();
+    _builder.append("using namespace bb::data;");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("DTOManager::DTOManager(QObject *parent) :");
+    _builder.newLine();
+    _builder.append("        ");
+    _builder.append("QObject(parent)");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// ApplicationUI is parent of DTOManager");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// DTOManager is parent of all root DTOs");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// root DTOs are parent of contained DTOs");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// register all DTOs to get access to properties from QML:\t");
     _builder.newLine();
     {
       EList<LType> _types = pkg.getTypes();
@@ -59,11 +113,28 @@ public class CppManagerGenerator {
       };
       Iterable<LDto> _map = IterableExtensions.<LType, LDto>map(_filter, _function_1);
       for(final LDto dto : _map) {
+        _builder.append("\t");
+        _builder.append("qmlRegisterType<");
         String _name = this._cppExtensions.toName(dto);
-        _builder.append(_name, "");
+        _builder.append(_name, "\t");
+        _builder.append(">(\"org.ekkescorner\", 1, 0, \"");
+        String _name_1 = this._cppExtensions.toName(dto);
+        _builder.append(_name_1, "\t");
+        _builder.append("\");");
         _builder.newLineIfNotEmpty();
       }
     }
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("DTOManager::~DTOManager()");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// clean up");
+    _builder.newLine();
+    _builder.append("}");
     _builder.newLine();
     return _builder;
   }

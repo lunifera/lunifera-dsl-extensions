@@ -33,5 +33,27 @@ class HppManagerGenerator {
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''
+#ifndef DTOMANAGER_HPP_
+#define DTOMANAGER_HPP_
+
+#include <qobject.h>
+
+«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+#include "«dto.toName».hpp"
+«ENDFOR»
+
+class DTOManager: public QObject
+{
+Q_OBJECT
+
+public:
+    DTOManager(QObject *parent = 0);
+    virtual ~DTOManager();
+
+private:
+
+};
+
+#endif /* DTOMANAGER_HPP_ */
 		'''
 }
