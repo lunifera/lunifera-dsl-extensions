@@ -21,10 +21,15 @@
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
 import com.google.inject.Inject;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.eclipse.xtext.xbase.lib.Extension;
+import org.eclipse.xtext.xbase.lib.Functions.Function1;
+import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppExtensions;
+import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
+import org.lunifera.dsl.semantic.dto.LDto;
 
 @SuppressWarnings("all")
 public class CppManagerGenerator {
@@ -33,11 +38,33 @@ public class CppManagerGenerator {
   private CppExtensions _cppExtensions;
   
   public String toFileName(final LTypedPackage pkg) {
-    return "Huhu";
+    return "DTOManager.cpp";
   }
   
   public CharSequence toContent(final LTypedPackage pkg) {
     StringConcatenation _builder = new StringConcatenation();
+    _builder.newLine();
+    {
+      EList<LType> _types = pkg.getTypes();
+      final Function1<LType, Boolean> _function = new Function1<LType, Boolean>() {
+        public Boolean apply(final LType it) {
+          return Boolean.valueOf((it instanceof LDto));
+        }
+      };
+      Iterable<LType> _filter = IterableExtensions.<LType>filter(_types, _function);
+      final Function1<LType, LDto> _function_1 = new Function1<LType, LDto>() {
+        public LDto apply(final LType it) {
+          return ((LDto) it);
+        }
+      };
+      Iterable<LDto> _map = IterableExtensions.<LType, LDto>map(_filter, _function_1);
+      for(final LDto dto : _map) {
+        String _name = this._cppExtensions.toName(dto);
+        _builder.append(_name, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.newLine();
     return _builder;
   }
 }

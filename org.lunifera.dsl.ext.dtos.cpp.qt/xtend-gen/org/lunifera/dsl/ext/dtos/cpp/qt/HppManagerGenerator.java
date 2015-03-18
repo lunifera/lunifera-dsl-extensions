@@ -33,7 +33,7 @@ public class HppManagerGenerator {
   private CppExtensions _cppExtensions;
   
   public String toFileName(final LTypedPackage pkg) {
-    return "Haha";
+    return "DTOManager.hpp";
   }
   
   public CharSequence toContent(final LTypedPackage pkg) {

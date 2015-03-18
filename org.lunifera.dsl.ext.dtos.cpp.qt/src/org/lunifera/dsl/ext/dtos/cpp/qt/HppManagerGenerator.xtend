@@ -29,7 +29,7 @@ class HppManagerGenerator {
 	@Inject extension CppExtensions
 
 	def String toFileName(LTypedPackage pkg) {
-		"Haha"
+		"DTOManager.hpp"
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''

@@ -33,9 +33,14 @@ class CppManagerGenerator {
 	@Inject extension CppExtensions
 
 	def String toFileName(LTypedPackage pkg) {
-		"Huhu"
+		"DTOManager.cpp"
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''
+	
+	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+		«dto.toName»
+	«ENDFOR»
+	
 	'''
 }

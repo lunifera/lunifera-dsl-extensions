@@ -2,3 +2,5 @@
 /CppGenerator.java
 /GeneratorDelegate.java
 /HppGenerator.java
+/CppManagerGenerator.java
+/HppManagerGenerator.java
