@@ -50,6 +50,8 @@ Q_OBJECT
 public:
     DTOManager(QObject *parent = 0);
     virtual ~DTOManager();
+    Q_INVOKABLE
+    void init();
 
 private:
 
@@ -61,6 +63,14 @@ private:
     	QList<QObject*> mAll«dto.toName»asTree;
 		«ENDIF»
 	«ENDFOR»
+
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDTO»
+    	void init«dto.toName»();
+		«ENDIF»
+	«ENDFOR»
+
+	QVariantList readCache(QString& fileName);
 };
 
 #endif /* DTOMANAGER_HPP_ */

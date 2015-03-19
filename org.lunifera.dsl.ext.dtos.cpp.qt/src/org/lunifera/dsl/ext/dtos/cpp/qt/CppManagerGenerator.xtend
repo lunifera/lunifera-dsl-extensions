@@ -55,11 +55,11 @@ static QString dataPath(const QString& fileName)
 }
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isTree»
-    	// cache«dto.toName» is tree of  «dto.toName»
-    	// there's also a plain list (in memory only) useful for easy filtering
+// cache«dto.toName» is tree of  «dto.toName»
+// there's also a plain list (in memory only) useful for easy filtering
 		«ENDIF»
     	«IF dto.isRootDTO»
-    	static QString cache«dto.toName» = "cache«dto.toName».json";
+static QString cache«dto.toName» = "cache«dto.toName».json";
 		«ENDIF»
 	«ENDFOR»
 
@@ -71,13 +71,11 @@ DTOManager::DTOManager(QObject *parent) :
 {
     // ApplicationUI is parent of DTOManager
     // DTOManager is parent of all root DTOs
-    // root DTOs are parent of contained DTOs
+    // ROOT DTOs are parent of contained DTOs
+    // ROOT:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDTO»
-    	// ROOT: «dto.toName»
-		«ENDIF»
-    	«IF dto.isTree»
-    	// TREE: «dto.toName»
+    	// «dto.toName»
 		«ENDIF»
 	«ENDFOR»
 
@@ -85,6 +83,73 @@ DTOManager::DTOManager(QObject *parent) :
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 		qmlRegisterType<«dto.toName»>("org.ekkescorner", 1, 0, "«dto.toName»");
 	«ENDFOR»
+}
+
+/*
+ * loads all data from cache.
+ * tip: call from main.qml with delay using QTimer
+ */
+void DTOManager::init()
+{
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDTO»
+    	init«dto.toName»();
+		«ENDIF»
+	«ENDFOR»
+}
+
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDTO»
+/*
+ * reads «dto.toName»'s in from stored cache
+ * creates List of QObject* containing «dto.toName»'s
+ */
+void DTOManager::init«dto.toName»()
+{
+    mAll«dto.toName».clear();
+    QVariantList cacheList;
+    cacheList = readCache(cache«dto.toName»);
+    qDebug() << "read «dto.toName» from cache #" << cacheList.size();
+    for (int i = 0; i < cacheList.size(); ++i) {
+        QVariantMap cacheMap;
+        cacheMap = cacheList.at(i).toMap();
+        «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+        // Important: DTOManager must be parent of all root DTOs
+        «dto.toName.toFirstLower»->setParent(this);
+        «dto.toName.toFirstLower»->fillFromMap(cacheMap);
+        mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    }
+    qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+}
+		«ENDIF»
+	«ENDFOR»
+
+/*
+ * reads data in from stored cache
+ * if no cache found tries to get data from assets/datamodel
+ */
+QVariantList DTOManager::readCache(QString& fileName)
+{
+    JsonDataAccess jda;
+    QVariantList cacheList;
+    QFile dataFile(dataPath(fileName));
+    if (!dataFile.exists()) {
+        QFile assetDataFile(dataAssetsPath(fileName));
+        if (assetDataFile.exists()) {
+            // copy file from assets to data
+            bool copyOk = assetDataFile.copy(dataPath(fileName));
+            if (!copyOk) {
+                qDebug() << "cannot copy dataAssetsPath(fileName) to dataPath(fileName)";
+                // no cache, no assets - empty list
+                return cacheList;
+            }
+        } else {
+            // no cache, no assets - empty list
+            return cacheList;
+        }
+    }
+    cacheList = jda.load(dataPath(fileName)).toList();
+    return cacheList;
 }
 
 DTOManager::~DTOManager()

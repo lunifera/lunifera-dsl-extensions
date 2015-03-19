@@ -94,6 +94,12 @@ public class HppManagerGenerator {
     _builder.append("    ");
     _builder.append("virtual ~DTOManager();");
     _builder.newLine();
+    _builder.append("    ");
+    _builder.append("Q_INVOKABLE");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("void init();");
+    _builder.newLine();
     _builder.newLine();
     _builder.append("private:");
     _builder.newLine();
@@ -137,6 +143,39 @@ public class HppManagerGenerator {
         }
       }
     }
+    _builder.newLine();
+    {
+      EList<LType> _types_2 = pkg.getTypes();
+      final Function1<LType, Boolean> _function_4 = new Function1<LType, Boolean>() {
+        public Boolean apply(final LType it) {
+          return Boolean.valueOf((it instanceof LDto));
+        }
+      };
+      Iterable<LType> _filter_2 = IterableExtensions.<LType>filter(_types_2, _function_4);
+      final Function1<LType, LDto> _function_5 = new Function1<LType, LDto>() {
+        public LDto apply(final LType it) {
+          return ((LDto) it);
+        }
+      };
+      Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
+      for(final LDto dto_2 : _map_2) {
+        {
+          boolean _isRootDTO_1 = this._managerExtensions.isRootDTO(dto_2);
+          if (_isRootDTO_1) {
+            _builder.append("    ");
+            _builder.append("void init");
+            String _name_3 = this._cppExtensions.toName(dto_2);
+            _builder.append(_name_3, "    ");
+            _builder.append("();");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+      }
+    }
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("QVariantList readCache(QString& fileName);");
+    _builder.newLine();
     _builder.append("};");
     _builder.newLine();
     _builder.newLine();
