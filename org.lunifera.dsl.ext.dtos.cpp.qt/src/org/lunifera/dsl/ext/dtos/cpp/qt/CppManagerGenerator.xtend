@@ -31,6 +31,7 @@ import org.lunifera.dsl.semantic.common.types.LTypedPackage
 class CppManagerGenerator {
 
 	@Inject extension CppExtensions
+	@Inject extension ManagerExtensions
 
 	def String toFileName(LTypedPackage pkg) {
 		"DTOManager.cpp"
@@ -62,6 +63,14 @@ DTOManager::DTOManager(QObject *parent) :
     // ApplicationUI is parent of DTOManager
     // DTOManager is parent of all root DTOs
     // root DTOs are parent of contained DTOs
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDTO»
+			// ROOT: «dto.toName»
+		«ENDIF»
+    	«IF dto.isTree»
+			// TREE: «dto.toName»
+		«ENDIF»
+	«ENDFOR»
 
     // register all DTOs to get access to properties from QML:	
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»

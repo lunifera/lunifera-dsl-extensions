@@ -27,6 +27,7 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppExtensions;
+import org.lunifera.dsl.ext.dtos.cpp.qt.ManagerExtensions;
 import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -36,6 +37,10 @@ public class CppManagerGenerator {
   @Inject
   @Extension
   private CppExtensions _cppExtensions;
+  
+  @Inject
+  @Extension
+  private ManagerExtensions _managerExtensions;
   
   public String toFileName(final LTypedPackage pkg) {
     return "DTOManager.cpp";
@@ -94,10 +99,6 @@ public class CppManagerGenerator {
     _builder.append("    ");
     _builder.append("// root DTOs are parent of contained DTOs");
     _builder.newLine();
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("// register all DTOs to get access to properties from QML:\t");
-    _builder.newLine();
     {
       EList<LType> _types = pkg.getTypes();
       final Function1<LType, Boolean> _function = new Function1<LType, Boolean>() {
@@ -113,13 +114,52 @@ public class CppManagerGenerator {
       };
       Iterable<LDto> _map = IterableExtensions.<LType, LDto>map(_filter, _function_1);
       for(final LDto dto : _map) {
+        {
+          boolean _isRootDTO = this._managerExtensions.isRootDTO(dto);
+          if (_isRootDTO) {
+            _builder.append("// ROOT: ");
+            String _name = this._cppExtensions.toName(dto);
+            _builder.append(_name, "");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+        {
+          boolean _isTree = this._managerExtensions.isTree(dto);
+          if (_isTree) {
+            _builder.append("// TREE: ");
+            String _name_1 = this._cppExtensions.toName(dto);
+            _builder.append(_name_1, "");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+      }
+    }
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("// register all DTOs to get access to properties from QML:\t");
+    _builder.newLine();
+    {
+      EList<LType> _types_1 = pkg.getTypes();
+      final Function1<LType, Boolean> _function_2 = new Function1<LType, Boolean>() {
+        public Boolean apply(final LType it) {
+          return Boolean.valueOf((it instanceof LDto));
+        }
+      };
+      Iterable<LType> _filter_1 = IterableExtensions.<LType>filter(_types_1, _function_2);
+      final Function1<LType, LDto> _function_3 = new Function1<LType, LDto>() {
+        public LDto apply(final LType it) {
+          return ((LDto) it);
+        }
+      };
+      Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
+      for(final LDto dto_1 : _map_1) {
         _builder.append("\t");
         _builder.append("qmlRegisterType<");
-        String _name = this._cppExtensions.toName(dto);
-        _builder.append(_name, "\t");
+        String _name_2 = this._cppExtensions.toName(dto_1);
+        _builder.append(_name_2, "\t");
         _builder.append(">(\"org.ekkescorner\", 1, 0, \"");
-        String _name_1 = this._cppExtensions.toName(dto);
-        _builder.append(_name_1, "\t");
+        String _name_3 = this._cppExtensions.toName(dto_1);
+        _builder.append(_name_3, "\t");
         _builder.append("\");");
         _builder.newLineIfNotEmpty();
       }
