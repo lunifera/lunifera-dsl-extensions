@@ -42,6 +42,8 @@ class CppManagerGenerator {
 
 #include "DTOManager.hpp"
 
+#include <bb/cascades/Application>
+#include <bb/cascades/AbstractPane>
 #include <bb/data/JsonDataAccess>
 #include  <bb/cascades/GroupDataModel>
 
@@ -120,6 +122,22 @@ void DTOManager::init«dto.toName»()
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
     }
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+}
+
+void DTOManager::fill«dto.toName»DataModel(QString objectName)
+{
+    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
+            objectName);
+    if(dataModel){
+        QList<QObject*> theList;
+        for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+            theList.append(mAll«dto.toName».at(i));
+        }
+        dataModel->clear();
+        dataModel->insertList(theList);
+    } else {
+        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    }
 }
 		«ENDIF»
 	«ENDFOR»

@@ -53,6 +53,13 @@ public:
     Q_INVOKABLE
     void init();
 
+	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+	«IF dto.isRootDTO»
+	Q_INVOKABLE
+	void fill«dto.toName»DataModel(QString objectName);
+	«ENDIF»
+	«ENDFOR»
+
 private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
