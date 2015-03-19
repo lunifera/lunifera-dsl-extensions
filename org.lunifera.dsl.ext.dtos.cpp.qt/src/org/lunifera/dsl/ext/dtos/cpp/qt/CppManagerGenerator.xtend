@@ -53,6 +53,15 @@ static QString dataPath(const QString& fileName)
 {
     return QDir::currentPath() + "/data/" + fileName;
 }
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isTree»
+    	// cache«dto.toName» is tree of  «dto.toName»
+    	// there's also a plain list (in memory only) useful for easy filtering
+		«ENDIF»
+    	«IF dto.isRootDTO»
+    	static QString cache«dto.toName» = "cache«dto.toName».json";
+		«ENDIF»
+	«ENDFOR»
 
 using namespace bb::cascades;
 using namespace bb::data;
@@ -65,10 +74,10 @@ DTOManager::DTOManager(QObject *parent) :
     // root DTOs are parent of contained DTOs
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDTO»
-			// ROOT: «dto.toName»
+    	// ROOT: «dto.toName»
 		«ENDIF»
     	«IF dto.isTree»
-			// TREE: «dto.toName»
+    	// TREE: «dto.toName»
 		«ENDIF»
 	«ENDFOR»
 

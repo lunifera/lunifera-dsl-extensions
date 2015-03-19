@@ -27,6 +27,7 @@ import org.lunifera.dsl.semantic.dto.LDto
 class HppManagerGenerator {
 
 	@Inject extension CppExtensions
+	@Inject extension ManagerExtensions
 
 	def String toFileName(LTypedPackage pkg) {
 		"DTOManager.hpp"
@@ -52,6 +53,14 @@ public:
 
 private:
 
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDTO»
+    	QList<QObject*> mAll«dto.toName»;
+		«ENDIF»
+    	«IF dto.isTree»
+    	QList<QObject*> mAll«dto.toName»asTree;
+		«ENDIF»
+	«ENDFOR»
 };
 
 #endif /* DTOMANAGER_HPP_ */
