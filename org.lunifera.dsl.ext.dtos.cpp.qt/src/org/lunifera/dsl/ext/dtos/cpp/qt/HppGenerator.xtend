@@ -42,7 +42,8 @@ class HppGenerator {
 	«IF dto.allFeatures.filter[isToMany].size > 0»
 	#include <QDeclarativeListProperty>
 	«ENDIF»
-	«FOR reference : dto.references»
+	
+	«FOR reference : dto.allFeatures.filter[isTypeOfDTO]»
 	«IF !reference.isContained»
 		«IF reference.toTypeName != dto.toName»
 		#include "«reference.toTypeName».hpp"

@@ -405,7 +405,7 @@ void «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeN
         if (m«feature.toName.toFirstUpper».at(i) == «feature.toTypeName.toFirstLower») {
             m«feature.toName.toFirstUpper».removeAt(i);
             emit removedFrom«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»->uuid());
-            «IF feature.isContained»
+            «IF feature.hasOpposite»
             // «feature.toName» are contained - so we must delete them
             «feature.toTypeName.toFirstLower»->deleteLater();
             «ELSE»
@@ -431,12 +431,16 @@ void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QStrin
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
         if ((m«feature.toName.toFirstUpper».at(i))->toMap().value(uuidKey).toString() == uuid) {
+            «IF feature.hasOpposite»
+            «feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+            «feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
             m«feature.toName.toFirstUpper».removeAt(i);
             emit removedFrom«feature.toName.toFirstUpper»(uuid);
-            «IF feature.isContained»
             // «feature.toName» are contained - so we must delete them
             «feature.toTypeName.toFirstLower»->deleteLater();
             «ELSE»
+            m«feature.toName.toFirstUpper».removeAt(i);
+            emit removedFrom«feature.toName.toFirstUpper»(uuid);
             // «feature.toName» are independent - DON'T delete them
             «ENDIF»
             return;
@@ -520,7 +524,7 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
 {
     «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
     if («dto.toName.toFirstLower») {
-        «IF feature.isContained»
+        «IF feature.hasOpposite»
         // «feature.toName» are contained - so we must delete them
         for (int i = 0; i < «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size(); ++i) {
             «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».at(i)->deleteLater();
@@ -546,10 +550,10 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
 		return false
 	}
 	def dispatch boolean hasOpposite(LDtoAbstractReference ref){
-		return ref.hasOpposite
+		return false
 	}
 	def dispatch boolean hasOpposite(LDtoReference ref){
-		return ref.hasOpposite
+		return ref.opposite != null
 	}
 	def dispatch boolean hasOpposite(LFeature feature){
 		return false
