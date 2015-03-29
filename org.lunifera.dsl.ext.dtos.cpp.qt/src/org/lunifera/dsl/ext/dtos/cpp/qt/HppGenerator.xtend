@@ -39,6 +39,7 @@ class HppGenerator {
 
 	#include <QObject>
 	#include <qvariant.h>
+	#include <QDeclarativeListProperty>
 	«FOR reference : dto.references»
 	«IF !reference.isContained»
 	#include "«reference.toTypeName».hpp"
@@ -65,7 +66,8 @@ class HppGenerator {
 		«ENDFOR»
 
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		Q_PROPERTY(QList<QObject*> «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
+		// QDeclarativeListProperty to get easy access from QML
+		Q_PROPERTY(QDeclarativeListProperty<ItemDTO> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
 		«ENDFOR»	
 
 	public:
@@ -77,6 +79,7 @@ class HppGenerator {
 	
 		Q_INVOKABLE
 		QVariantMap toMap();
+		
 		«IF dto.existsServerName»
 		QVariantMap toForeignMap();
 		«ENDIF»
@@ -90,10 +93,13 @@ class HppGenerator {
 		«feature.toTypeOrQObject» «feature.toName»AsDTO() const;
 		Q_INVOKABLE
 		void remove«feature.toName.toFirstUpper»();
+		
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»();
+		
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»AsDTO();
+		
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDTO && feature.isContained»
@@ -103,8 +109,10 @@ class HppGenerator {
 		«IF feature.isTypeOfDTO»
 		Q_INVOKABLE
 		void delete«feature.toName.toFirstUpper»();
+		
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»();
+		
 		«ENDIF»
 		«ENDIF»
 		«ENDIF»
@@ -113,18 +121,27 @@ class HppGenerator {
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
+		
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
+		
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
+		
 		Q_INVOKABLE
 		int «feature.toName.toFirstLower»Count();
-		QList<QObject*> «feature.toName»();
-		void set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName»);
+		
+		 // access from C++ to positions
+		QList<«feature.toTypeName»*> «feature.toName»();
+		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
+		// access from QML to positions
+		 QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
 		«ENDFOR»
 	
 		virtual ~«dto.toName.toFirstUpper»();
@@ -149,7 +166,7 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		void «feature.toName»Changed(QList<QObject*> «feature.toName»);
+		void «feature.toName»Changed(QList<«feature.toTypeName»*> «feature.toName»);
 		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
 		«ENDFOR»
@@ -178,7 +195,14 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		QList<QObject*> m«feature.toName.toFirstUpper»;
+		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
+		// implementation for QDeclarativeListProperty to use
+		// QML functions for List of «feature.toTypeName»*
+		static void appendTo«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List,
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		static int «feature.toName»PropertyCount(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
+		static «feature.toTypeName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List, int pos);
+		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
 		«ENDFOR»
 	
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)

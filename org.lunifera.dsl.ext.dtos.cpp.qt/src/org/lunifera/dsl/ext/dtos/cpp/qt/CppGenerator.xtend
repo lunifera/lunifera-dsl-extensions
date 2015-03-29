@@ -69,9 +69,9 @@ class CppGenerator {
  * Default Constructor if «dto.toName» not initialized from QVariantMap
  */
 «dto.toName»::«dto.toName»(QObject *parent) :
-        QObject(parent)«FOR feature : dto.allFeatures.filter[!isToMany && !isTypeOfDTO && !isContained
-        ]», m«feature.toName.toFirstUpper»(«feature.
-		defaultForType»)«ENDFOR»
+        QObject(parent)«FOR feature : dto.allFeatures.filter [
+		!isToMany && !isTypeOfDTO && !isContained
+	]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
 {
 	«IF dto.existsLazy»
 		// lazy references:
@@ -139,6 +139,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 		m«feature.toName.toFirstUpper».clear();
 		for (int i = 0; i < «feature.toName.toFirstLower»List.size(); ++i) {
 			QVariantMap «feature.toName.toFirstLower»Map;
+			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
 			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
 			«feature.toTypeName.toFirstLower»->setParent(this);
 			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
@@ -325,7 +326,8 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»AsDTO(){
     }
 }
 // SLOT
-void «dto.toName»::onRequested«feature.toName.toFirstUpper»AsDTO(«feature.toTypeOrQObject» «feature.toTypeName.toFirstLower»)
+void «dto.toName»::onRequested«feature.toName.toFirstUpper»AsDTO(«feature.toTypeOrQObject» «feature.toTypeName.
+		toFirstLower»)
 {
     if («feature.toTypeName.toFirstLower») {
         if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() == m«feature.toName.toFirstUpper») {
@@ -387,13 +389,14 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
 {
 	QVariantList «feature.toName»List;
 	for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-        «feature.toName»List.append(qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper».at(i))->toMap());
+        «feature.toName»List.append((m«feature.toName.toFirstUpper».at(i))->toMap());
     }
 	return «feature.toName»List;
 }
 void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+    emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
 }
 
 void «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
@@ -401,6 +404,13 @@ void «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeN
     for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
         if (m«feature.toName.toFirstUpper».at(i) == «feature.toTypeName.toFirstLower») {
             m«feature.toName.toFirstUpper».removeAt(i);
+            emit removedFrom«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»->uuid());
+            «IF feature.isContained»
+            // «feature.toName» are contained - so we must delete them
+            «feature.toTypeName.toFirstLower»->deleteLater();
+            «ELSE»
+            // «feature.toName» are independent - DON'T delete them
+            «ENDIF»
             return;
         }
     }
@@ -414,13 +424,21 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantM
     «feature.toTypeName.toFirstLower»->setParent(this);
     «feature.toTypeName.toFirstLower»->fillFromMap(«feature.toTypeName.toFirstLower»Map);
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+    emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
 }
 
 void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid)
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-        if (qobject_cast<«feature.toTypeName»*>(m«feature.toName.toFirstUpper».at(i))->toMap().value(uuidKey).toString() == uuid) {
+        if ((m«feature.toName.toFirstUpper».at(i))->toMap().value(uuidKey).toString() == uuid) {
             m«feature.toName.toFirstUpper».removeAt(i);
+            emit removedFrom«feature.toName.toFirstUpper»(uuid);
+            «IF feature.isContained»
+            // «feature.toName» are contained - so we must delete them
+            «feature.toTypeName.toFirstLower»->deleteLater();
+            «ELSE»
+            // «feature.toName» are independent - DON'T delete them
+            «ENDIF»
             return;
         }
     }
@@ -430,16 +448,90 @@ void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QStrin
 int «dto.toName»::«feature.toName.toFirstLower»Count(){
     return m«feature.toName.toFirstUpper».size();
 }
-QList<QObject*> «dto.toName»::«feature.toName»()
+QList<«feature.toTypeName»*> «dto.toName»::«feature.toName»()
 {
 	return m«feature.toName.toFirstUpper»;
 }
-void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «feature.toName») 
+void «dto.toName»::set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName») 
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
 		m«feature.toName.toFirstUpper» = «feature.toName»;
 		emit «feature.toName»Changed(«feature.toName»);
 	}
+}
+/**
+ * to access lists from QML we're using QDeclarativeListProperty
+ * and implement methods to append, count and clear
+ * now from QML we can use
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList.length to get the size
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2] to get «feature.toTypeName»* at position 2
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList = [] to clear the list
+ * or get easy access to properties like
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2].myPropertyName
+ */
+QDeclarativeListProperty<«feature.toTypeName»> «dto.toName»::«feature.toName»PropertyList()
+{
+    return QDeclarativeListProperty<«feature.toTypeName»>(this, 0, &«dto.toName»::appendTo«feature.toName.toFirstUpper»Property,
+            &«dto.toName»::«feature.toName»PropertyCount, &«dto.toName»::at«feature.toName.toFirstUpper»Property,
+            &«dto.toName»::clear«feature.toName.toFirstUpper»Property);
+}
+void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.
+		toName»List,
+        «feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    «dto.toName» *«dto.toName.toFirstLower»Object = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower»Object) {
+        «feature.toTypeName.toFirstLower»->setParent(«dto.toName.toFirstLower»Object);
+        «dto.toName.toFirstLower»Object->m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+        emit «dto.toName.toFirstLower»Object->addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
+    } else {
+        qWarning() << "cannot append «feature.toTypeName»* to «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
+}
+int «dto.toName»::«feature.toName»PropertyCount(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List)
+{
+    qDebug() << "«feature.toName»PropertyCount";
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size();
+    } else {
+        qWarning() << "cannot get size «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+«feature.toTypeName»* «dto.toName»::at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.
+		toTypeName»> *«feature.toName»List, int pos)
+{
+    qDebug() << "at«feature.toName.toFirstUpper»Property #" << pos;
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        if («dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size() > pos) {
+            return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».at(pos);
+        }
+        qWarning() << "cannot get «feature.toTypeName»* at pos " << pos << " size is "
+                << «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size();
+    } else {
+        qWarning() << "cannot get «feature.toTypeName»* at pos " << pos << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.
+		toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        «IF feature.isContained»
+        // «feature.toName» are contained - so we must delete them
+        for (int i = 0; i < «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size(); ++i) {
+            «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».at(i)->deleteLater();
+        }
+        «ELSE»
+        // «feature.toName» are independent - DON'T delete them
+        «ENDIF»
+        «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».clear();
+    } else {
+        qWarning() << "cannot clear «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
 }
 «ENDFOR»
 	
@@ -466,7 +558,7 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<QObject*> «featur
 	def dispatch foo(LDtoAbstractReference ref) '''
 		// do ref 
 	'''
-	
+
 	def dispatch foo(LDtoReference ref) '''
 		// do DTO ref 
 		«IF ref.opposite != null»
