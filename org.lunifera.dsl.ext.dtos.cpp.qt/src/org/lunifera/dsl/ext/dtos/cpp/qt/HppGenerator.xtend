@@ -39,10 +39,14 @@ class HppGenerator {
 
 	#include <QObject>
 	#include <qvariant.h>
+	«IF dto.allFeatures.filter[isToMany].size > 0»
 	#include <QDeclarativeListProperty>
+	«ENDIF»
 	«FOR reference : dto.references»
 	«IF !reference.isContained»
-	#include "«reference.toTypeName».hpp"
+		«IF reference.toTypeName != dto.toName»
+		#include "«reference.toTypeName».hpp"
+		«ENDIF»
 	«ELSE»
 	// forward declaration to avoid circular dependencies
 	class «reference.toTypeName.toFirstUpper»;
@@ -67,7 +71,7 @@ class HppGenerator {
 
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		// QDeclarativeListProperty to get easy access from QML
-		Q_PROPERTY(QDeclarativeListProperty<ItemDTO> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
+		Q_PROPERTY(QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
 		«ENDFOR»	
 
 	public:

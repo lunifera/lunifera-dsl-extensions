@@ -2930,6 +2930,22 @@ public class CppGenerator {
     return _builder;
   }
   
+  protected boolean _hasOpposite(final LDtoAbstractAttribute att) {
+    return false;
+  }
+  
+  protected boolean _hasOpposite(final LDtoAbstractReference ref) {
+    return this.hasOpposite(ref);
+  }
+  
+  protected boolean _hasOpposite(final LDtoReference ref) {
+    return this.hasOpposite(ref);
+  }
+  
+  protected boolean _hasOpposite(final LFeature feature) {
+    return false;
+  }
+  
   protected CharSequence _foo(final LDtoAbstractAttribute att) {
     StringConcatenation _builder = new StringConcatenation();
     _builder.append("// ATT ");
@@ -3021,6 +3037,21 @@ public class CppGenerator {
     _builder.append("// just a helper for max superclass ");
     _builder.newLine();
     return _builder;
+  }
+  
+  public boolean hasOpposite(final LFeature ref) {
+    if (ref instanceof LDtoReference) {
+      return _hasOpposite((LDtoReference)ref);
+    } else if (ref instanceof LDtoAbstractAttribute) {
+      return _hasOpposite((LDtoAbstractAttribute)ref);
+    } else if (ref instanceof LDtoAbstractReference) {
+      return _hasOpposite((LDtoAbstractReference)ref);
+    } else if (ref != null) {
+      return _hasOpposite(ref);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(ref).toString());
+    }
   }
   
   public CharSequence foo(final LFeature ref) {

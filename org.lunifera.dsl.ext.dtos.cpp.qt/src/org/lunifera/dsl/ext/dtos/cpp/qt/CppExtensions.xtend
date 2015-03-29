@@ -80,6 +80,10 @@ class CppExtensions {
 		return target.isCascading
 	}
 	
+	def dispatch boolean isContained(LDtoReference target) {
+		return target.isCascading
+	}
+	
 	def dispatch boolean isDomainKey(LAnnotationTarget target) {
 		return false
 	}
