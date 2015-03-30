@@ -400,13 +400,13 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»(){
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isToMany && toTypeName == "QString"]»
 «feature.foo»
-void «dto.toName»::addTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»)
+void «dto.toName»::addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»)
 {
     m«feature.toName.toFirstUpper»StringList.append(«feature.toTypeName.toFirstLower»);
     emit addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName.toFirstLower»);
 }
 
-void «dto.toName»::removeFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»)
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»)
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper»StringList.size(); ++i) {
         if (m«feature.toName.toFirstUpper»StringList.at(i) == «feature.toTypeName.toFirstLower») {
@@ -425,7 +425,7 @@ QStringList «dto.toName»::«feature.toName»StringList()
 {
 	return m«feature.toName.toFirstUpper»StringList;
 }
-void «dto.toName»::set«feature.toName.toFirstUpper»StringList(QStringList& «feature.toName») 
+void «dto.toName»::set«feature.toName.toFirstUpper»StringList(const QStringList& «feature.toName») 
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper»StringList) {
 		m«feature.toName.toFirstUpper»StringList = «feature.toName»;

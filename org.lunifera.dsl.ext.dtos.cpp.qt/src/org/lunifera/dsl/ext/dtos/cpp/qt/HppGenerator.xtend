@@ -149,10 +149,10 @@ class HppGenerator {
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
 		«ELSE»
 		Q_INVOKABLE
-		void addTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
 		
 		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		void removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
 		«ENDIF»
 		
 		Q_INVOKABLE
@@ -169,7 +169,7 @@ class HppGenerator {
 		 QStringList «feature.toName»StringList();
 		 
 		 Q_INVOKABLE
-		 void set«feature.toName.toFirstUpper»StringList(QStringList& «feature.toName»);
+		 void set«feature.toName.toFirstUpper»StringList(const QStringList& «feature.toName»);
 		 «ENDIF»
 		«ENDFOR»
 	
@@ -201,8 +201,8 @@ class HppGenerator {
 		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
 		«ELSE»
 		void «feature.toName»StringListChanged(QStringList «feature.toName»);
-		void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
-		void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
+		void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
 		«ENDIF»
 		«ENDFOR»
 		

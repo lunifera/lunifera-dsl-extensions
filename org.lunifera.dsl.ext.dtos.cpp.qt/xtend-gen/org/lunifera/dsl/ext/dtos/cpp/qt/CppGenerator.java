@@ -2095,7 +2095,7 @@ public class CppGenerator {
         String _name_194 = this._cppExtensions.toName(feature_17);
         String _firstUpper_91 = StringExtensions.toFirstUpper(_name_194);
         _builder.append(_firstUpper_91, "");
-        _builder.append("StringList(");
+        _builder.append("StringList(const ");
         String _typeName_25 = this._cppExtensions.toTypeName(feature_17);
         _builder.append(_typeName_25, "");
         _builder.append("& ");
@@ -2138,7 +2138,7 @@ public class CppGenerator {
         String _name_198 = this._cppExtensions.toName(feature_17);
         String _firstUpper_94 = StringExtensions.toFirstUpper(_name_198);
         _builder.append(_firstUpper_94, "");
-        _builder.append("StringList(");
+        _builder.append("StringList(const ");
         String _typeName_29 = this._cppExtensions.toTypeName(feature_17);
         _builder.append(_typeName_29, "");
         _builder.append("& ");
@@ -2253,7 +2253,7 @@ public class CppGenerator {
         String _name_211 = this._cppExtensions.toName(feature_17);
         String _firstUpper_101 = StringExtensions.toFirstUpper(_name_211);
         _builder.append(_firstUpper_101, "");
-        _builder.append("StringList(QStringList& ");
+        _builder.append("StringList(const QStringList& ");
         String _name_212 = this._cppExtensions.toName(feature_17);
         _builder.append(_name_212, "");
         _builder.append(") ");

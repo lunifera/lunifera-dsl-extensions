@@ -654,7 +654,7 @@ public class HppGenerator {
             String _name_44 = this._cppExtensions.toName(feature_4);
             String _firstUpper_15 = StringExtensions.toFirstUpper(_name_44);
             _builder.append(_firstUpper_15, "\t");
-            _builder.append("StringList(");
+            _builder.append("StringList(const ");
             String _typeName_11 = this._cppExtensions.toTypeName(feature_4);
             _builder.append(_typeName_11, "\t");
             _builder.append("& ");
@@ -673,7 +673,7 @@ public class HppGenerator {
             String _name_45 = this._cppExtensions.toName(feature_4);
             String _firstUpper_16 = StringExtensions.toFirstUpper(_name_45);
             _builder.append(_firstUpper_16, "\t");
-            _builder.append("StringList(");
+            _builder.append("StringList(const ");
             String _typeName_13 = this._cppExtensions.toTypeName(feature_4);
             _builder.append(_typeName_13, "\t");
             _builder.append("& ");
@@ -761,7 +761,7 @@ public class HppGenerator {
             String _name_52 = this._cppExtensions.toName(feature_4);
             String _firstUpper_18 = StringExtensions.toFirstUpper(_name_52);
             _builder.append(_firstUpper_18, "\t");
-            _builder.append("StringList(QStringList& ");
+            _builder.append("StringList(const QStringList& ");
             String _name_53 = this._cppExtensions.toName(feature_4);
             _builder.append(_name_53, "\t");
             _builder.append(");");
@@ -957,7 +957,7 @@ public class HppGenerator {
             _builder.append("StringList(");
             String _typeName_23 = this._cppExtensions.toTypeName(feature_6);
             _builder.append(_typeName_23, "\t");
-            _builder.append("& ");
+            _builder.append(" ");
             String _typeName_24 = this._cppExtensions.toTypeName(feature_6);
             String _firstLower_9 = StringExtensions.toFirstLower(_typeName_24);
             _builder.append(_firstLower_9, "\t");
@@ -971,7 +971,7 @@ public class HppGenerator {
             _builder.append("StringList(");
             String _typeName_25 = this._cppExtensions.toTypeName(feature_6);
             _builder.append(_typeName_25, "\t");
-            _builder.append("& ");
+            _builder.append(" ");
             String _typeName_26 = this._cppExtensions.toTypeName(feature_6);
             String _firstLower_10 = StringExtensions.toFirstLower(_typeName_26);
             _builder.append(_firstLower_10, "\t");
