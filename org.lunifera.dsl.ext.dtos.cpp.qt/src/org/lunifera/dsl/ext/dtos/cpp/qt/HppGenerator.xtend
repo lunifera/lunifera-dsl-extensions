@@ -169,7 +169,7 @@ class HppGenerator {
 		 QStringList «feature.toName»StringList();
 		 
 		 Q_INVOKABLE
-		 void set«feature.toName.toFirstUpper»StringList(QStringList «feature.toName»);
+		 void set«feature.toName.toFirstUpper»StringList(QStringList& «feature.toName»);
 		 «ENDIF»
 		«ENDFOR»
 	
