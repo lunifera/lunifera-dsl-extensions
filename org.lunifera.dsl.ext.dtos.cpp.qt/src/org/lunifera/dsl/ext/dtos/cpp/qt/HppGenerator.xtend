@@ -39,8 +39,11 @@ class HppGenerator {
 
 	#include <QObject>
 	#include <qvariant.h>
-	«IF dto.allFeatures.filter[isToMany].size > 0»
+	«IF dto.allFeatures.filter[isToMany && toTypeName != "QString"].size > 0»
 	#include <QDeclarativeListProperty>
+	«ENDIF»
+	«IF dto.allFeatures.filter[isToMany && toTypeName == "QString"].size > 0»
+	#include <QStringList>
 	«ENDIF»
 	
 	«FOR reference : dto.allFeatures.filter[isTypeOfDTO]»
@@ -70,9 +73,12 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 
-		«FOR feature : dto.allFeatures.filter[isToMany]»
+		«FOR feature : dto.allFeatures.filter[isToMany && toTypeName != "QString"]»
 		// QDeclarativeListProperty to get easy access from QML
 		Q_PROPERTY(QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
+		«ENDFOR»
+		«FOR feature : dto.allFeatures.filter[isToMany && toTypeName == "QString"]»
+		Q_PROPERTY(QStringList «feature.toName»StringList READ «feature.toName»StringList  WRITE set«feature.toName.toFirstUpper»StringList NOTIFY «feature.toName»StringListChanged FINAL)
 		«ENDFOR»	
 
 	public:
@@ -124,9 +130,12 @@ class HppGenerator {
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
+		«IF feature.toTypeName != "QString"»
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
+		«ENDIF»
 		
+		«IF feature.toTypeName != "QString"»
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
@@ -138,15 +147,30 @@ class HppGenerator {
 		
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
+		«ELSE»
+		Q_INVOKABLE
+		void addTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		
+		Q_INVOKABLE
+		void removeFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		«ENDIF»
 		
 		Q_INVOKABLE
 		int «feature.toName.toFirstLower»Count();
 		
+		«IF feature.toTypeName != "QString"»
 		 // access from C++ to positions
 		QList<«feature.toTypeName»*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
 		// access from QML to positions
 		 QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
+		 «ELSE»
+		 Q_INVOKABLE
+		 QStringList «feature.toName»StringList();
+		 
+		 Q_INVOKABLE
+		 void set«feature.toName.toFirstUpper»StringList(QStringList «feature.toName»);
+		 «ENDIF»
 		«ENDFOR»
 	
 		virtual ~«dto.toName.toFirstUpper»();
@@ -171,9 +195,15 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
+		«IF feature.toTypeName != "QString"»
 		void «feature.toName»Changed(QList<«feature.toTypeName»*> «feature.toName»);
 		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
+		«ELSE»
+		void «feature.toName»StringListChanged(QStringList «feature.toName»);
+		void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+		«ENDIF»
 		«ENDFOR»
 		
 	«IF dto.existsLazy»
@@ -200,6 +230,7 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
+		«IF feature.toTypeName != "QString"»
 		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
 		// implementation for QDeclarativeListProperty to use
 		// QML functions for List of «feature.toTypeName»*
@@ -208,6 +239,9 @@ class HppGenerator {
 		static int «feature.toName»PropertyCount(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
 		static «feature.toTypeName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List, int pos);
 		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
+		«ELSE»
+		QStringList m«feature.toName.toFirstUpper»StringList;
+		«ENDIF»
 		«ENDFOR»
 	
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)
