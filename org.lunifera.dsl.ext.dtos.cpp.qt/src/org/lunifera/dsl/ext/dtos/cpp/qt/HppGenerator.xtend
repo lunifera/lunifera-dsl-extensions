@@ -159,10 +159,10 @@ class HppGenerator {
 		int «feature.toName.toFirstLower»Count();
 		
 		«IF feature.toTypeName != "QString"»
-		 // access from C++ to positions
+		 // access from C++ to «feature.toName»
 		QList<«feature.toTypeName»*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
-		// access from QML to positions
+		// access from QML to «feature.toName»
 		 QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
 		 «ELSE»
 		 Q_INVOKABLE
