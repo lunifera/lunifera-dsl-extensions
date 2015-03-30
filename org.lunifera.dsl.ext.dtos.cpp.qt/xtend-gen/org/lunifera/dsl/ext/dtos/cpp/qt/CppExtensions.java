@@ -319,6 +319,39 @@ public class CppExtensions {
     return "";
   }
   
+  public boolean isArrayList(final LFeature feature) {
+    boolean _isToMany = this.isToMany(feature);
+    if (_isToMany) {
+      String _typeName = this.toTypeName(feature);
+      boolean _matched = false;
+      if (!_matched) {
+        if (Objects.equal(_typeName, "int")) {
+          _matched=true;
+          return true;
+        }
+      }
+      if (!_matched) {
+        if (Objects.equal(_typeName, "double")) {
+          _matched=true;
+          return true;
+        }
+      }
+      if (!_matched) {
+        if (Objects.equal(_typeName, "bool")) {
+          _matched=true;
+          return true;
+        }
+      }
+      if (!_matched) {
+        if (Objects.equal(_typeName, "QString")) {
+          _matched=true;
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   public boolean isToMany(final LFeature feature) {
     return this.modelExtension.isToMany(feature);
   }

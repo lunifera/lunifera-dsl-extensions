@@ -221,6 +221,23 @@ class CppExtensions {
 		}
 		return ""
 	}
+	
+	def boolean isArrayList(LFeature feature) {
+		if(feature.isToMany){
+			switch (feature.toTypeName) {
+				case "int":
+					return true
+				case "double":
+					return true
+				case "bool":
+					return true
+				case "QString":
+					return true
+			}
+		}
+		
+		return false
+	}
 
 	def boolean isToMany(LFeature feature) {
 		modelExtension.isToMany(feature)

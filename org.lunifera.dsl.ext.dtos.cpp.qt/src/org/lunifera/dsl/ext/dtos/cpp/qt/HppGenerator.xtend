@@ -73,12 +73,17 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 
-		«FOR feature : dto.allFeatures.filter[isToMany && toTypeName != "QString"]»
+		«FOR feature : dto.allFeatures.filter[isToMany && !isArrayList]»
 		// QDeclarativeListProperty to get easy access from QML
 		Q_PROPERTY(QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
 		«ENDFOR»
-		«FOR feature : dto.allFeatures.filter[isToMany && toTypeName == "QString"]»
+		«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
+		«IF feature.toTypeName == "QString"»
 		Q_PROPERTY(QStringList «feature.toName»StringList READ «feature.toName»StringList  WRITE set«feature.toName.toFirstUpper»StringList NOTIFY «feature.toName»StringListChanged FINAL)
+		«ELSE»
+		// QVariantList to get easy access from QML to «feature.toTypeName» Array
+		Q_PROPERTY(QVariantList «feature.toName»List READ «feature.toName»List  WRITE set«feature.toName.toFirstUpper»List NOTIFY «feature.toName»ListChanged FINAL)
+		«ENDIF»
 		«ENDFOR»	
 
 	public:
@@ -130,12 +135,10 @@ class HppGenerator {
 		«ENDFOR»
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		«IF feature.toTypeName != "QString"»
+		«IF !(feature.isArrayList)»
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
-		«ENDIF»
 		
-		«IF feature.toTypeName != "QString"»
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
@@ -148,28 +151,42 @@ class HppGenerator {
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
 		«ELSE»
-		Q_INVOKABLE
-		void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
-		
-		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+			«IF feature.toTypeName == "QString"»
+			Q_INVOKABLE
+			void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+			
+			Q_INVOKABLE
+			void removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+			«ELSE»
+			Q_INVOKABLE
+			void addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»);
+			
+			Q_INVOKABLE
+			void removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»);
+			«ENDIF»
 		«ENDIF»
 		
 		Q_INVOKABLE
 		int «feature.toName.toFirstLower»Count();
 		
-		«IF feature.toTypeName != "QString"»
+		«IF !(feature.isArrayList)»
 		 // access from C++ to «feature.toName»
 		QList<«feature.toTypeName»*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
 		// access from QML to «feature.toName»
 		 QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
 		 «ELSE»
-		 Q_INVOKABLE
-		 QStringList «feature.toName»StringList();
-		 
-		 Q_INVOKABLE
-		 void set«feature.toName.toFirstUpper»StringList(const QStringList& «feature.toName»);
+		 	«IF feature.toTypeName == "QString"»
+		 	QStringList «feature.toName»StringList();
+		 	void set«feature.toName.toFirstUpper»StringList(const QStringList& «feature.toName»);
+		 	«ELSE»
+		 	// access from C++ to «feature.toName»
+		 	QList<«feature.toTypeName»> «feature.toName»();
+		 	void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»> «feature.toName»);
+		 	// access from QML to «feature.toName» (array of «feature.toTypeName»)
+		 	QVariantList «feature.toName»List();
+		 	void set«feature.toName.toFirstUpper»List(const QVariantList& «feature.toName»);
+		 	«ENDIF»
 		 «ENDIF»
 		«ENDFOR»
 	
@@ -195,14 +212,20 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		«IF feature.toTypeName != "QString"»
+		«IF !(feature.isArrayList)»
 		void «feature.toName»Changed(QList<«feature.toTypeName»*> «feature.toName»);
 		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
 		«ELSE»
-		void «feature.toName»StringListChanged(QStringList «feature.toName»);
-		void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
-		void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
+			«IF feature.toTypeName == "QString"»
+			void «feature.toName»StringListChanged(QStringList «feature.toName»);
+			void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
+			void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
+			«ELSE»
+			void «feature.toName»ListChanged(QVariantList «feature.toName»);
+			void addedTo«feature.toName.toFirstUpper»List(«feature.toTypeName» the«feature.toTypeName.toFirstUpper»);
+			void removedFrom«feature.toName.toFirstUpper»List(«feature.toTypeName» the«feature.toTypeName.toFirstUpper»);
+			«ENDIF»
 		«ENDIF»
 		«ENDFOR»
 		
@@ -230,7 +253,7 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
-		«IF feature.toTypeName != "QString"»
+		«IF !(feature.isArrayList)»
 		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
 		// implementation for QDeclarativeListProperty to use
 		// QML functions for List of «feature.toTypeName»*
@@ -240,7 +263,11 @@ class HppGenerator {
 		static «feature.toTypeName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List, int pos);
 		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
 		«ELSE»
-		QStringList m«feature.toName.toFirstUpper»StringList;
+			«IF feature.toTypeName == "QString"»
+			QStringList m«feature.toName.toFirstUpper»StringList;
+			«ELSE»
+			QList<«feature.toTypeName»> m«feature.toName.toFirstUpper»;
+			«ENDIF»
 		«ENDIF»
 		«ENDFOR»
 	
