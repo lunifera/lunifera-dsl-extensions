@@ -231,6 +231,36 @@ public class CppExtensions {
     return "Map";
   }
   
+  public String mapToSingleType(final LFeature feature) {
+    String _typeName = this.toTypeName(feature);
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "bool")) {
+        _matched=true;
+        return "Bool";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "int")) {
+        _matched=true;
+        return "Int";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "double")) {
+        _matched=true;
+        return "Double";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return "String";
+      }
+    }
+    return "Map";
+  }
+  
   public String mapToLazyTypeName(final String typeName) {
     boolean _matched = false;
     if (!_matched) {

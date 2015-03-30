@@ -179,6 +179,20 @@ class CppExtensions {
 		}
 		return "Map"
 	}
+	
+	def String mapToSingleType(LFeature feature) {
+		switch (feature.toTypeName) {
+			case "bool":
+				return "Bool"
+			case "int":
+				return "Int"
+			case "double":
+				return "Double"
+			case "QString":
+				return "String"
+		}
+		return "Map"
+	}
 
 	def String mapToLazyTypeName(String typeName) {
 		switch (typeName) {

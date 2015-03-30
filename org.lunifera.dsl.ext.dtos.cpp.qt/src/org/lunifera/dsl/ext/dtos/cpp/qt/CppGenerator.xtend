@@ -132,7 +132,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isToMany && toTypeName != "QString"]»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
 		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
 		QVariantList «feature.toName.toFirstLower»List;
 		«feature.toName.toFirstLower»List = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toList();
@@ -146,8 +146,18 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
 	«ENDFOR»	
-	«FOR feature : dto.allFeatures.filter[isToMany && toTypeName == "QString"]»
+	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
+		«IF feature.toTypeName == "QString"»
 		m«feature.toName.toFirstUpper»StringList = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		«ELSE»
+		// m«feature.toName.toFirstUpper» is Array of «feature.toTypeName»
+		QVariantList «feature.toName»List;
+		«feature.toName»List = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName»List.size(); ++i) {
+			m«feature.toName.toFirstUpper».append(«feature.toName»List.at(i).to«feature.mapToSingleType»());
+		}
+		«ENDIF»
 	«ENDFOR»
 }
 
@@ -208,8 +218,12 @@ QVariantMap «dto.toName»::toMap()
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
 		«ELSE» 
-			«IF feature.isToMany && feature.toTypeName == "QString"»
-			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+			«IF feature.isArrayList»
+				«IF feature.toTypeName == "QString"»
+				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«ELSE»
+				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»List());
+				«ENDIF»
 			«ELSE»
 			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
@@ -246,8 +260,12 @@ QVariantMap «dto.toName»::toForeignMap()
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
 		«ELSE» 
-			«IF feature.isToMany && feature.toTypeName == "QString"»
-			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»StringList);
+			«IF feature.isArrayList»
+				«IF feature.toTypeName == "QString"»
+				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»StringList);
+				«ELSE»
+				foreignMap.insert(«feature.toName»ForeignKey, «feature.toName»List());
+				«ENDIF»
 			«ELSE»
 			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 			«ENDIF»
@@ -284,8 +302,12 @@ QVariantMap «dto.toName»::dataToPersist()
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
 			«ENDIF»
 		«ELSE» 
-			«IF feature.isToMany && feature.toTypeName == "QString"»
-			persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+			«IF feature.isArrayList»
+				«IF feature.toTypeName == "QString"»
+				persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«ELSE»
+				persistMap.insert(«feature.toName»Key, «feature.toName»List());
+				«ENDIF»
 			«ELSE»
 			persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
@@ -398,7 +420,7 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»(){
 	«ENDIF»
 «ENDIF»
 «ENDFOR»
-«FOR feature : dto.allFeatures.filter[isToMany && toTypeName == "QString"]»
+«FOR feature : dto.allFeatures.filter[isArrayList && toTypeName == "QString"]»
 «feature.foo»
 void «dto.toName»::addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»)
 {
@@ -433,7 +455,62 @@ void «dto.toName»::set«feature.toName.toFirstUpper»StringList(const QStringL
 	}
 }
 «ENDFOR»
-«FOR feature : dto.allFeatures.filter[isToMany && toTypeName != "QString"]»
+«FOR feature : dto.allFeatures.filter[isArrayList && toTypeName != "QString"]»
+«feature.foo»
+void «dto.toName»::addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»)
+{
+    m«feature.toName.toFirstUpper».append(the«feature.toTypeName.toFirstUpper»);
+    emit addedTo«feature.toName.toFirstUpper»List(the«feature.toTypeName.toFirstUpper»);
+}
+
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»)
+{
+    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        if (m«feature.toName.toFirstUpper».at(i) == the«feature.toTypeName.toFirstUpper») {
+            m«feature.toName.toFirstUpper».removeAt(i);
+            emit removedFrom«feature.toName.toFirstUpper»List(the«feature.toTypeName.toFirstUpper»);
+            return;
+        }
+    }
+    qDebug() << "«feature.toTypeName»& not found in «feature.toName.toFirstLower»";
+    // TODO signal error
+}
+int «dto.toName»::«feature.toName.toFirstLower»Count(){
+    return m«feature.toName.toFirstUpper».size();
+}
+QList<«feature.toTypeName»> «dto.toName»::«feature.toName»()
+{
+    return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»> «feature.toName»)
+{
+    if («feature.toName» != m«feature.toName.toFirstUpper») {
+        m«feature.toName.toFirstUpper» = «feature.toName»;
+        QVariantList variantList;
+        for (int i = 0; i < «feature.toName».size(); ++i) {
+            variantList.append(«feature.toName».at(i));
+        }
+        emit «feature.toName»ListChanged(variantList);
+    }
+}
+// access from QML to values
+QVariantList «dto.toName»::«feature.toName»List()
+{
+	QVariantList variantList;
+    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        variantList.append(m«feature.toName.toFirstUpper».at(i));
+    }
+    return variantList;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»List(const QVariantList& «feature.toName») 
+{
+	m«feature.toName.toFirstUpper».clear();
+    for (int i = 0; i < «feature.toName».size(); ++i) {
+        m«feature.toName.toFirstUpper».append(«feature.toName».at(i).to«feature.mapToSingleType»());
+    }
+}
+«ENDFOR»
+«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
 «feature.foo» 
 QVariantList «dto.toName»::«feature.toName»AsQVariantList()
 {
