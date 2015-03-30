@@ -112,6 +112,23 @@ public class CppExtensions {
     return target.isCascading();
   }
   
+  protected boolean _hasOpposite(final LDtoAbstractAttribute att) {
+    return false;
+  }
+  
+  protected boolean _hasOpposite(final LDtoAbstractReference ref) {
+    return false;
+  }
+  
+  protected boolean _hasOpposite(final LDtoReference ref) {
+    LDtoReference _opposite = ref.getOpposite();
+    return (!Objects.equal(_opposite, null));
+  }
+  
+  protected boolean _hasOpposite(final LFeature feature) {
+    return false;
+  }
+  
   protected boolean _isDomainKey(final LAnnotationTarget target) {
     return false;
   }
@@ -177,17 +194,38 @@ public class CppExtensions {
     if (!_matched) {
       if (Objects.equal(_typeName, "int")) {
         _matched=true;
-        return "Int";
+        boolean _isToMany = this.isToMany(feature);
+        if (_isToMany) {
+          return "List";
+        } else {
+          return "Int";
+        }
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "double")) {
+        _matched=true;
+        boolean _isToMany_1 = this.isToMany(feature);
+        if (_isToMany_1) {
+          return "List";
+        } else {
+          return "Double";
+        }
       }
     }
     if (!_matched) {
       if (Objects.equal(_typeName, "QString")) {
         _matched=true;
-        return "String";
+        boolean _isToMany_2 = this.isToMany(feature);
+        if (_isToMany_2) {
+          return "StringList";
+        } else {
+          return "String";
+        }
       }
     }
-    boolean _isToMany = this.isToMany(feature);
-    if (_isToMany) {
+    boolean _isToMany_3 = this.isToMany(feature);
+    if (_isToMany_3) {
       return "List";
     }
     return "Map";
@@ -234,6 +272,24 @@ public class CppExtensions {
           return "-1";
         } else {
           return "0";
+        }
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "double")) {
+        _matched=true;
+        boolean _or_1 = false;
+        boolean _isMandatory_1 = this.isMandatory(feature);
+        if (_isMandatory_1) {
+          _or_1 = true;
+        } else {
+          boolean _isDomainKey_1 = this.isDomainKey(feature);
+          _or_1 = _isDomainKey_1;
+        }
+        if (_or_1) {
+          return "-1.0";
+        } else {
+          return "0.0";
         }
       }
     }
@@ -303,21 +359,15 @@ public class CppExtensions {
       }
     }
     if (!_matched) {
-      if (Objects.equal(_typeName, "QString")) {
+      if (Objects.equal(_typeName, "double")) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("if(m");
         String _name_1 = this.toName(feature);
         String _firstUpper_1 = StringExtensions.toFirstUpper(_name_1);
         _builder_1.append(_firstUpper_1, "");
-        _builder_1.append(".isNull() || m");
-        String _name_2 = this.toName(feature);
-        String _firstUpper_2 = StringExtensions.toFirstUpper(_name_2);
-        _builder_1.append(_firstUpper_2, "");
-        _builder_1.append(".isEmpty())");
+        _builder_1.append(" == -1.0){");
         _builder_1.newLineIfNotEmpty();
-        _builder_1.append("{");
-        _builder_1.newLine();
         _builder_1.append("\t");
         _builder_1.append("return false;");
         _builder_1.newLine();
@@ -326,13 +376,37 @@ public class CppExtensions {
         return _builder_1.toString();
       }
     }
-    StringConcatenation _builder_2 = new StringConcatenation();
-    _builder_2.append("// missing validation for m");
-    String _name_3 = this.toName(feature);
-    String _firstUpper_3 = StringExtensions.toFirstUpper(_name_3);
-    _builder_2.append(_firstUpper_3, "");
-    _builder_2.newLineIfNotEmpty();
-    return _builder_2.toString();
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        StringConcatenation _builder_2 = new StringConcatenation();
+        _builder_2.append("if(m");
+        String _name_2 = this.toName(feature);
+        String _firstUpper_2 = StringExtensions.toFirstUpper(_name_2);
+        _builder_2.append(_firstUpper_2, "");
+        _builder_2.append(".isNull() || m");
+        String _name_3 = this.toName(feature);
+        String _firstUpper_3 = StringExtensions.toFirstUpper(_name_3);
+        _builder_2.append(_firstUpper_3, "");
+        _builder_2.append(".isEmpty())");
+        _builder_2.newLineIfNotEmpty();
+        _builder_2.append("{");
+        _builder_2.newLine();
+        _builder_2.append("\t");
+        _builder_2.append("return false;");
+        _builder_2.newLine();
+        _builder_2.append("}");
+        _builder_2.newLine();
+        return _builder_2.toString();
+      }
+    }
+    StringConcatenation _builder_3 = new StringConcatenation();
+    _builder_3.append("// missing validation for m");
+    String _name_4 = this.toName(feature);
+    String _firstUpper_4 = StringExtensions.toFirstUpper(_name_4);
+    _builder_3.append(_firstUpper_4, "");
+    _builder_3.newLineIfNotEmpty();
+    return _builder_3.toString();
   }
   
   public String toValidateReference(final String referenceTypeName, final String featureName) {
@@ -355,19 +429,14 @@ public class CppExtensions {
       }
     }
     if (!_matched) {
-      if (Objects.equal(referenceTypeName, "QString")) {
+      if (Objects.equal(referenceTypeName, "double")) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
         _builder_1.append("if(m");
         String _firstUpper_1 = StringExtensions.toFirstUpper(featureName);
         _builder_1.append(_firstUpper_1, "");
-        _builder_1.append(".isNull() || m");
-        String _firstUpper_2 = StringExtensions.toFirstUpper(featureName);
-        _builder_1.append(_firstUpper_2, "");
-        _builder_1.append(".isEmpty())");
+        _builder_1.append(" == -1.0){");
         _builder_1.newLineIfNotEmpty();
-        _builder_1.append("{");
-        _builder_1.newLine();
         _builder_1.append("\t");
         _builder_1.append("return false;");
         _builder_1.newLine();
@@ -376,12 +445,34 @@ public class CppExtensions {
         return _builder_1.toString();
       }
     }
-    StringConcatenation _builder_2 = new StringConcatenation();
-    _builder_2.append("// missing validation for m");
-    String _firstUpper_3 = StringExtensions.toFirstUpper(featureName);
-    _builder_2.append(_firstUpper_3, "");
-    _builder_2.newLineIfNotEmpty();
-    return _builder_2.toString();
+    if (!_matched) {
+      if (Objects.equal(referenceTypeName, "QString")) {
+        _matched=true;
+        StringConcatenation _builder_2 = new StringConcatenation();
+        _builder_2.append("if(m");
+        String _firstUpper_2 = StringExtensions.toFirstUpper(featureName);
+        _builder_2.append(_firstUpper_2, "");
+        _builder_2.append(".isNull() || m");
+        String _firstUpper_3 = StringExtensions.toFirstUpper(featureName);
+        _builder_2.append(_firstUpper_3, "");
+        _builder_2.append(".isEmpty())");
+        _builder_2.newLineIfNotEmpty();
+        _builder_2.append("{");
+        _builder_2.newLine();
+        _builder_2.append("\t");
+        _builder_2.append("return false;");
+        _builder_2.newLine();
+        _builder_2.append("}");
+        _builder_2.newLine();
+        return _builder_2.toString();
+      }
+    }
+    StringConcatenation _builder_3 = new StringConcatenation();
+    _builder_3.append("// missing validation for m");
+    String _firstUpper_4 = StringExtensions.toFirstUpper(featureName);
+    _builder_3.append(_firstUpper_4, "");
+    _builder_3.newLineIfNotEmpty();
+    return _builder_3.toString();
   }
   
   public String toCopyRight(final EObject element) {
@@ -630,6 +721,21 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public boolean hasOpposite(final LFeature ref) {
+    if (ref instanceof LDtoReference) {
+      return _hasOpposite((LDtoReference)ref);
+    } else if (ref instanceof LDtoAbstractAttribute) {
+      return _hasOpposite((LDtoAbstractAttribute)ref);
+    } else if (ref instanceof LDtoAbstractReference) {
+      return _hasOpposite((LDtoAbstractReference)ref);
+    } else if (ref != null) {
+      return _hasOpposite(ref);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(ref).toString());
     }
   }
   

@@ -546,20 +546,6 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
 	
 	'''
 
-	def dispatch boolean hasOpposite(LDtoAbstractAttribute att){
-		return false
-	}
-	def dispatch boolean hasOpposite(LDtoAbstractReference ref){
-		return false
-	}
-	def dispatch boolean hasOpposite(LDtoReference ref){
-		return ref.opposite != null
-	}
-	def dispatch boolean hasOpposite(LFeature feature){
-		return false
-	}
-	
-
 	def dispatch foo(LDtoAbstractAttribute att) '''
 		// ATT 
 		«IF att.isOptional»

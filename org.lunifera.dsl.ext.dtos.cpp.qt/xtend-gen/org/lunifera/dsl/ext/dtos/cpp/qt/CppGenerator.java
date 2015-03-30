@@ -2101,7 +2101,7 @@ public class CppGenerator {
         _builder.append("->uuid());");
         _builder.newLineIfNotEmpty();
         {
-          boolean _hasOpposite = this.hasOpposite(feature_16);
+          boolean _hasOpposite = this._cppExtensions.hasOpposite(feature_16);
           if (_hasOpposite) {
             _builder.append("            ");
             _builder.append("// ");
@@ -2243,7 +2243,7 @@ public class CppGenerator {
         _builder.append(".at(i))->toMap().value(uuidKey).toString() == uuid) {");
         _builder.newLineIfNotEmpty();
         {
-          boolean _hasOpposite_1 = this.hasOpposite(feature_16);
+          boolean _hasOpposite_1 = this._cppExtensions.hasOpposite(feature_16);
           if (_hasOpposite_1) {
             _builder.append("            ");
             String _typeName_41 = this._cppExtensions.toTypeName(feature_16);
@@ -2871,7 +2871,7 @@ public class CppGenerator {
         _builder.append(") {");
         _builder.newLineIfNotEmpty();
         {
-          boolean _hasOpposite_2 = this.hasOpposite(feature_16);
+          boolean _hasOpposite_2 = this._cppExtensions.hasOpposite(feature_16);
           if (_hasOpposite_2) {
             _builder.append("        ");
             _builder.append("// ");
@@ -2961,23 +2961,6 @@ public class CppGenerator {
     _builder.append("\t");
     _builder.newLine();
     return _builder;
-  }
-  
-  protected boolean _hasOpposite(final LDtoAbstractAttribute att) {
-    return false;
-  }
-  
-  protected boolean _hasOpposite(final LDtoAbstractReference ref) {
-    return false;
-  }
-  
-  protected boolean _hasOpposite(final LDtoReference ref) {
-    LDtoReference _opposite = ref.getOpposite();
-    return (!Objects.equal(_opposite, null));
-  }
-  
-  protected boolean _hasOpposite(final LFeature feature) {
-    return false;
   }
   
   protected CharSequence _foo(final LDtoAbstractAttribute att) {
@@ -3071,21 +3054,6 @@ public class CppGenerator {
     _builder.append("// just a helper for max superclass ");
     _builder.newLine();
     return _builder;
-  }
-  
-  public boolean hasOpposite(final LFeature ref) {
-    if (ref instanceof LDtoReference) {
-      return _hasOpposite((LDtoReference)ref);
-    } else if (ref instanceof LDtoAbstractAttribute) {
-      return _hasOpposite((LDtoAbstractAttribute)ref);
-    } else if (ref instanceof LDtoAbstractReference) {
-      return _hasOpposite((LDtoAbstractReference)ref);
-    } else if (ref != null) {
-      return _hasOpposite(ref);
-    } else {
-      throw new IllegalArgumentException("Unhandled parameter types: " +
-        Arrays.<Object>asList(ref).toString());
-    }
   }
   
   public CharSequence foo(final LFeature ref) {

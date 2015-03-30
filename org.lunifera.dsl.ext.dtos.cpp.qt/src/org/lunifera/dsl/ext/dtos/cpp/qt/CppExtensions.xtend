@@ -79,11 +79,27 @@ class CppExtensions {
 	def dispatch boolean isContained(LReference target) {
 		return target.isCascading
 	}
-	
+
 	def dispatch boolean isContained(LDtoReference target) {
 		return target.isCascading
 	}
-	
+
+	def dispatch boolean hasOpposite(LDtoAbstractAttribute att) {
+		return false
+	}
+
+	def dispatch boolean hasOpposite(LDtoAbstractReference ref) {
+		return false
+	}
+
+	def dispatch boolean hasOpposite(LDtoReference ref) {
+		return ref.opposite != null
+	}
+
+	def dispatch boolean hasOpposite(LFeature feature) {
+		return false
+	}
+
 	def dispatch boolean isDomainKey(LAnnotationTarget target) {
 		return false
 	}
@@ -95,7 +111,7 @@ class CppExtensions {
 	def dispatch boolean isDomainKey(LReference target) {
 		return false
 	}
-	
+
 	def dispatch boolean isTransient(LAnnotationTarget target) {
 		return false
 	}
@@ -107,7 +123,7 @@ class CppExtensions {
 	def dispatch boolean isTransient(LReference target) {
 		return false
 	}
-	
+
 	def dispatch boolean isLazy(LAnnotationTarget target) {
 		return false
 	}
@@ -140,17 +156,31 @@ class CppExtensions {
 			case "bool":
 				return "Bool"
 			case "int":
-				return "Int"
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "Int"
+				}
+			case "double":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "Double"
+				}
 			case "QString":
-				return "String"
+				if (feature.isToMany) {
+					return "StringList"
+				} else {
+					return "String"
+				}
 		}
 		if (feature.isToMany) {
 			return "List"
 		}
 		return "Map"
 	}
-	
-	def String mapToLazyTypeName(String typeName){
+
+	def String mapToLazyTypeName(String typeName) {
 		switch (typeName) {
 			case "int":
 				return "Int"
@@ -165,18 +195,24 @@ class CppExtensions {
 			case "bool":
 				return "false"
 			case "int":
-				if(feature.isMandatory || feature.isDomainKey){
+				if (feature.isMandatory || feature.isDomainKey) {
 					return "-1"
 				} else {
 					return "0"
+				}
+			case "double":
+				if (feature.isMandatory || feature.isDomainKey) {
+					return "-1.0"
+				} else {
+					return "0.0"
 				}
 			case "QString":
 				return "\"\""
 		}
 		return ""
 	}
-	
-	def String defaultForLazyTypeName(String typeName){
+
+	def String defaultForLazyTypeName(String typeName) {
 		switch (typeName) {
 			case "int":
 				return "-1"
@@ -193,54 +229,66 @@ class CppExtensions {
 	def Bounds getBounds(LFeature feature) {
 		modelExtension.getBounds(feature)
 	}
-	
-	def boolean isOptional(LFeature feature){
+
+	def boolean isOptional(LFeature feature) {
 		return feature.bounds.isOptional;
 	}
-	
-	def boolean isMandatory(LFeature feature){
+
+	def boolean isMandatory(LFeature feature) {
 		return feature.bounds.isRequired;
 	}
-	
-	def toValidate(LFeature feature){
+
+	def toValidate(LFeature feature) {
 		switch (feature.toTypeName) {
 			case "int":
 				return '''
-				if(m«feature.toName.toFirstUpper» == -1){
-					return false;
-				}
+					if(m«feature.toName.toFirstUpper» == -1){
+						return false;
+					}
+				'''.toString
+			case "double":
+				return '''
+					if(m«feature.toName.toFirstUpper» == -1.0){
+						return false;
+					}
 				'''.toString
 			case "QString":
 				return '''
-				if(m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty())
-				{
-					return false;
-				}
+					if(m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty())
+					{
+						return false;
+					}
 				'''.toString
 		}
 		return '''
-		// missing validation for m«feature.toName.toFirstUpper»
+			// missing validation for m«feature.toName.toFirstUpper»
 		'''.toString
 	}
-	
-	def toValidateReference(String referenceTypeName, String featureName){
+
+	def toValidateReference(String referenceTypeName, String featureName) {
 		switch (referenceTypeName) {
 			case "int":
 				return '''
-				if(m«featureName.toFirstUpper» == -1){
-					return false;
-				}
+					if(m«featureName.toFirstUpper» == -1){
+						return false;
+					}
+				'''.toString
+			case "double":
+				return '''
+					if(m«featureName.toFirstUpper» == -1.0){
+						return false;
+					}
 				'''.toString
 			case "QString":
 				return '''
-				if(m«featureName.toFirstUpper».isNull() || m«featureName.toFirstUpper».isEmpty())
-				{
-					return false;
-				}
+					if(m«featureName.toFirstUpper».isNull() || m«featureName.toFirstUpper».isEmpty())
+					{
+						return false;
+					}
 				'''.toString
 		}
 		return '''
-		// missing validation for m«featureName.toFirstUpper»
+			// missing validation for m«featureName.toFirstUpper»
 		'''.toString
 	}
 
@@ -296,69 +344,69 @@ class CppExtensions {
 		}
 		return true
 	}
-	
-	def dispatch LFeature referenceDomainKeyFeature(LFeature feature){
+
+	def dispatch LFeature referenceDomainKeyFeature(LFeature feature) {
 		return feature
 	}
-	
-	def dispatch LFeature referenceDomainKeyFeature(LDtoReference reference){
+
+	def dispatch LFeature referenceDomainKeyFeature(LDtoReference reference) {
 		return (reference.type as LDto).domainKeyFeature
 	}
-	
-	def LFeature domainKeyFeature(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isDomainKey){
+
+	def LFeature domainKeyFeature(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isDomainKey) {
 				return feature
 			}
 		}
 	}
-	
-	def dispatch String referenceDomainKey(LFeature feature){
+
+	def dispatch String referenceDomainKey(LFeature feature) {
 		return ""
 	}
-	
-	def dispatch String referenceDomainKey(LDtoReference reference){
+
+	def dispatch String referenceDomainKey(LDtoReference reference) {
 		return (reference.type as LDto).domainKey
 	}
-	
-	def String domainKey(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isDomainKey){
+
+	def String domainKey(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isDomainKey) {
 				return feature.toName
 			}
 		}
 		return "uuid"
 	}
-	
-	def dispatch String referenceDomainKeyType(LFeature feature){
+
+	def dispatch String referenceDomainKeyType(LFeature feature) {
 		return ""
 	}
-	
-	def dispatch String referenceDomainKeyType(LDtoReference reference){
+
+	def dispatch String referenceDomainKeyType(LDtoReference reference) {
 		return (reference.type as LDto).domainKeyType
 	}
-	
-	def String domainKeyType(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isDomainKey){
+
+	def String domainKeyType(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isDomainKey) {
 				return feature.toTypeName
 			}
 		}
 		return "QString"
 	}
-	
-	def boolean existsServerName(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.hasServerName){
+
+	def boolean existsServerName(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.hasServerName) {
 				return true
 			}
 		}
 		return false
 	}
-	
-	def boolean existsLazy(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isLazy){
+
+	def boolean existsLazy(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isLazy) {
 				return true
 			}
 		}
