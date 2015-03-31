@@ -32,8 +32,10 @@ import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppGenerator;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppManagerGenerator;
+import org.lunifera.dsl.ext.dtos.cpp.qt.EnumGenerator;
 import org.lunifera.dsl.ext.dtos.cpp.qt.HppGenerator;
 import org.lunifera.dsl.ext.dtos.cpp.qt.HppManagerGenerator;
+import org.lunifera.dsl.semantic.common.types.LEnum;
 import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -47,6 +49,9 @@ public class GeneratorDelegate implements IGeneratorDelegate {
   
   @Inject
   private CppGenerator cppGenerator;
+  
+  @Inject
+  private EnumGenerator enumGenerator;
   
   @Inject
   private CppManagerGenerator cppManagerGenerator;
@@ -86,6 +91,25 @@ public class GeneratorDelegate implements IGeneratorDelegate {
           }
         };
         IterableExtensions.<LDto>forEach(_map, _function_2);
+        EList<LType> _types_1 = it.getTypes();
+        final Function1<LType, Boolean> _function_3 = new Function1<LType, Boolean>() {
+          public Boolean apply(final LType it) {
+            return Boolean.valueOf((it instanceof LEnum));
+          }
+        };
+        Iterable<LType> _filter_1 = IterableExtensions.<LType>filter(_types_1, _function_3);
+        final Function1<LType, LEnum> _function_4 = new Function1<LType, LEnum>() {
+          public LEnum apply(final LType it) {
+            return ((LEnum) it);
+          }
+        };
+        Iterable<LEnum> _map_1 = IterableExtensions.<LType, LEnum>map(_filter_1, _function_4);
+        final Procedure1<LEnum> _function_5 = new Procedure1<LEnum>() {
+          public void apply(final LEnum it) {
+            GeneratorDelegate.this.generateEnumFile(it, fsa);
+          }
+        };
+        IterableExtensions.<LEnum>forEach(_map_1, _function_5);
         GeneratorDelegate.this.generateCppManagerFile(it, fsa);
         GeneratorDelegate.this.generateHppManagerFile(it, fsa);
       }
@@ -163,6 +187,24 @@ public class GeneratorDelegate implements IGeneratorDelegate {
   
   public String toCppManagerFileName(final LTypedPackage lPackage) {
     return this.cppManagerGenerator.toFileName(lPackage);
+  }
+  
+  /**
+   * Generates the .hpp file for the given enum.
+   */
+  public void generateEnumFile(final LEnum lType, final IFileSystemAccess fsa) {
+    final String fileName = this.toEnumFileName(lType);
+    fsa.deleteFile(fileName);
+    CharSequence _enumContent = this.toEnumContent(lType);
+    fsa.generateFile(fileName, "CppQt", _enumContent);
+  }
+  
+  public CharSequence toEnumContent(final LEnum type) {
+    return this.enumGenerator.toContent(type);
+  }
+  
+  public String toEnumFileName(final LEnum type) {
+    return this.enumGenerator.toFileName(type);
   }
   
   /**

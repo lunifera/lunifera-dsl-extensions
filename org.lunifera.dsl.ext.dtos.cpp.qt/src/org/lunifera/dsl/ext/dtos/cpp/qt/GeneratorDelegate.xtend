@@ -28,6 +28,7 @@ import org.lunifera.dsl.semantic.common.types.LTypedPackage
 import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoModel
 import org.lunifera.dsl.xtext.lazyresolver.api.hook.IGeneratorDelegate
+import org.lunifera.dsl.semantic.common.types.LEnum
 
 class GeneratorDelegate implements IGeneratorDelegate {
 
@@ -36,6 +37,9 @@ class GeneratorDelegate implements IGeneratorDelegate {
 
 	@Inject
 	CppGenerator cppGenerator
+	
+	@Inject
+	EnumGenerator enumGenerator
 
 	@Inject
 	CppManagerGenerator cppManagerGenerator
@@ -53,6 +57,10 @@ class GeneratorDelegate implements IGeneratorDelegate {
 			types.filter[it instanceof LDto].map[it as LDto].forEach [
 				it.generateHppFile(fsa)
 				it.generateCppFile(fsa)
+			]
+			// generate enums
+			 types.filter[it instanceof LEnum].map[it as LEnum].forEach [
+				it.generateEnumFile(fsa)
 			]
 			// generate a manager component. Passing in the types package
 			it.generateCppManagerFile(fsa)
@@ -126,6 +134,23 @@ class GeneratorDelegate implements IGeneratorDelegate {
 
 	def String toCppManagerFileName(LTypedPackage lPackage) {
 		cppManagerGenerator.toFileName(lPackage)
+	}
+	
+	/**
+	 * Generates the .hpp file for the given enum.
+	 */
+	def void generateEnumFile(LEnum lType, IFileSystemAccess fsa) {
+		val fileName = lType.toEnumFileName
+		fsa.deleteFile(fileName)
+		fsa.generateFile(fileName, "CppQt", lType.toEnumContent)
+	}
+
+	def CharSequence toEnumContent(LEnum type) {
+		enumGenerator.toContent(type)
+	}
+
+	def String toEnumFileName(LEnum type) {
+		enumGenerator.toFileName(type)
 	}
 
 	/** 
