@@ -34,5 +34,6 @@ package org.lunifera.dsl.ext.cpp.qt.datatypes {
 	datatype QString jvmType QString;
 	datatype bool jvmType bool;
 	datatype Date dateType date;
-
+	datatype Time dateType time;
+	datatype Timestamp dateType timestamp;
 }
