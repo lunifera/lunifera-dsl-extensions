@@ -31,5 +31,10 @@ class EnumGenerator {
 	def CharSequence toContent(LEnum en) '''
 	
 	
+	«FOR literal : en.literals SEPARATOR ", "»
+		«literal.name»
+	«ENDFOR»
+	
+	
 	'''
 }

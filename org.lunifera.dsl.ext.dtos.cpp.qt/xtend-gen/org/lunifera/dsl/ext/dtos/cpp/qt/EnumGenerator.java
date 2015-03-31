@@ -20,8 +20,10 @@
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtend2.lib.StringConcatenation;
 import org.lunifera.dsl.semantic.common.types.LEnum;
+import org.lunifera.dsl.semantic.common.types.LEnumLiteral;
 
 @SuppressWarnings("all")
 public class EnumGenerator {
@@ -32,9 +34,23 @@ public class EnumGenerator {
   
   public CharSequence toContent(final LEnum en) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("\t");
     _builder.newLine();
-    _builder.append("\t");
+    _builder.newLine();
+    {
+      EList<LEnumLiteral> _literals = en.getLiterals();
+      boolean _hasElements = false;
+      for(final LEnumLiteral literal : _literals) {
+        if (!_hasElements) {
+          _hasElements = true;
+        } else {
+          _builder.appendImmediate(", ", "");
+        }
+        String _name = literal.getName();
+        _builder.append(_name, "");
+        _builder.newLineIfNotEmpty();
+      }
+    }
+    _builder.newLine();
     _builder.newLine();
     return _builder;
   }
