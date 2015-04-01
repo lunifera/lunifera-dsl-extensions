@@ -46,6 +46,10 @@ class HppGenerator {
 	#include <QStringList>
 	«ENDIF»
 	
+	«FOR en : dto.allFeatures.filter[isEnum]»
+	#include "«en.toTypeName».hpp"
+	«ENDFOR»
+	
 	«FOR reference : dto.allFeatures.filter[isTypeOfDTO]»
 	«IF !reference.isContained»
 		«IF reference.toTypeName != dto.toName»
@@ -68,6 +72,9 @@ class HppGenerator {
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDTO READ «feature.toName»AsDTO)
+		«ELSEIF feature.isEnum»
+		// int OrderState::OrderStateEnum
+		Q_PROPERTY(int «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ELSE»
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ENDIF»
@@ -116,6 +123,9 @@ class HppGenerator {
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»AsDTO();
 		
+		«ELSEIF feature.isEnum»
+		int «feature.toName»() const;
+		void set«feature.toName.toFirstUpper»(int «feature.toName»);
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDTO && feature.isContained»
@@ -200,6 +210,8 @@ class HppGenerator {
 		void «feature.toName»Changed(«feature.referenceDomainKeyType» «feature.toName»);
 		void «feature.toName»Removed(«feature.referenceDomainKeyType» «feature.toName»);
 		void request«feature.toName.toFirstUpper»AsDTO(«feature.referenceDomainKeyType» «feature.toName»);
+		«ELSEIF feature.isEnum»
+		void «feature.toName»Changed(int «feature.toName»);
 		«ELSE»
 		«IF feature.isTypeOfDTO && feature.isContained»
 		// no SIGNAL «feature.toName» is only convenience way to get the parent
@@ -248,6 +260,8 @@ class HppGenerator {
 		«ELSEIF feature.isLazy»
 		«feature.referenceDomainKeyType» m«feature.toName.toFirstUpper»;
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»AsDTO;
+		«ELSEIF feature.isEnum»
+		int m«feature.toName.toFirstUpper»;
 		«ELSE»
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
 		«ENDIF»

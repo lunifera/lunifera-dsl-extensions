@@ -182,6 +182,18 @@ public class CppExtensions {
     return false;
   }
   
+  protected boolean _isEnum(final LDtoAbstractAttribute att) {
+    boolean _typeIsEnum = this.modelExtension.typeIsEnum(att);
+    if (_typeIsEnum) {
+      return true;
+    }
+    return false;
+  }
+  
+  protected boolean _isEnum(final LFeature feature) {
+    return false;
+  }
+  
   public String mapToType(final LFeature feature) {
     String _typeName = this.toTypeName(feature);
     boolean _matched = false;
@@ -846,6 +858,17 @@ public class CppExtensions {
       return _toTypeName((LAttribute)att);
     } else if (att instanceof LReference) {
       return _toTypeName((LReference)att);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public boolean isEnum(final LFeature att) {
+    if (att instanceof LDtoAbstractAttribute) {
+      return _isEnum((LDtoAbstractAttribute)att);
+    } else if (att != null) {
+      return _isEnum(att);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());

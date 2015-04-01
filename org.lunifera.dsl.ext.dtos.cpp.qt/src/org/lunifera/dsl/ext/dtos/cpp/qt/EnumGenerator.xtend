@@ -20,42 +20,41 @@
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt
 
+import com.google.inject.Inject
 import org.lunifera.dsl.semantic.common.types.LEnum
 
 class EnumGenerator {	
+	
+	@Inject extension CppExtensions
 	
 	def String toFileName(LEnum en) {
 		en.name + ".hpp"
 	}
 	
 	def CharSequence toContent(LEnum en) '''
-	#ifndef «en.name.toUpperCase»_HPP_
-	#define «en.name.toUpperCase»_HPP_
+	#ifndef «en.toName.toUpperCase»_HPP_
+	#define «en.toName.toUpperCase»_HPP_
 
 	#include <QObject>
 	
-	class «en.name»: public QObject
+	class «en.toName»: public QObject
 	{
 	
 	public:
-		«en.name»();
-		virtual ~«en.name»()
-		{
-		}
+		«en.toName»(QObject *parent = 0);
+		virtual ~«en.toName»() {}
 		
-		enum «en.name»Enum
+		enum «en.toName»Enum
 		{	
 			«FOR literal : en.literals SEPARATOR ", "»
 			«literal.name»
 			«ENDFOR»
 		};
-		Q_ENUMS («en.name»Enum)
-		
-		«en.name»(QObject *parent = 0);
+		Q_ENUMS («en.toName»Enum)
 	
 };
 	
-#endif /* «en.name.toUpperCase»_HPP_ */
+#endif /* «en.toName.toUpperCase»_HPP_ */
 	
 	
 	'''

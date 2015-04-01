@@ -28,6 +28,7 @@ import org.eclipse.xtext.xbase.lib.Functions.Function1;
 import org.eclipse.xtext.xbase.lib.IterableExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.ManagerExtensions;
+import org.lunifera.dsl.semantic.common.types.LEnum;
 import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -78,6 +79,28 @@ public class HppManagerGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
+    {
+      EList<LType> _types_1 = pkg.getTypes();
+      final Function1<LType, Boolean> _function_2 = new Function1<LType, Boolean>() {
+        public Boolean apply(final LType it) {
+          return Boolean.valueOf((it instanceof LEnum));
+        }
+      };
+      Iterable<LType> _filter_1 = IterableExtensions.<LType>filter(_types_1, _function_2);
+      final Function1<LType, LEnum> _function_3 = new Function1<LType, LEnum>() {
+        public LEnum apply(final LType it) {
+          return ((LEnum) it);
+        }
+      };
+      Iterable<LEnum> _map_1 = IterableExtensions.<LType, LEnum>map(_filter_1, _function_3);
+      for(final LEnum en : _map_1) {
+        _builder.append("#include \"");
+        String _name_1 = this._cppExtensions.toName(en);
+        _builder.append(_name_1, "");
+        _builder.append(".hpp\"");
+        _builder.newLineIfNotEmpty();
+      }
+    }
     _builder.newLine();
     _builder.append("class DTOManager: public QObject");
     _builder.newLine();
@@ -102,41 +125,6 @@ public class HppManagerGenerator {
     _builder.newLine();
     _builder.newLine();
     {
-      EList<LType> _types_1 = pkg.getTypes();
-      final Function1<LType, Boolean> _function_2 = new Function1<LType, Boolean>() {
-        public Boolean apply(final LType it) {
-          return Boolean.valueOf((it instanceof LDto));
-        }
-      };
-      Iterable<LType> _filter_1 = IterableExtensions.<LType>filter(_types_1, _function_2);
-      final Function1<LType, LDto> _function_3 = new Function1<LType, LDto>() {
-        public LDto apply(final LType it) {
-          return ((LDto) it);
-        }
-      };
-      Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
-      for(final LDto dto_1 : _map_1) {
-        {
-          boolean _isRootDTO = this._managerExtensions.isRootDTO(dto_1);
-          if (_isRootDTO) {
-            _builder.append("\t");
-            _builder.append("Q_INVOKABLE");
-            _builder.newLine();
-            _builder.append("\t");
-            _builder.append("void fill");
-            String _name_1 = this._cppExtensions.toName(dto_1);
-            _builder.append(_name_1, "\t");
-            _builder.append("DataModel(QString objectName);");
-            _builder.newLineIfNotEmpty();
-          }
-        }
-      }
-    }
-    _builder.newLine();
-    _builder.append("private:");
-    _builder.newLine();
-    _builder.newLine();
-    {
       EList<LType> _types_2 = pkg.getTypes();
       final Function1<LType, Boolean> _function_4 = new Function1<LType, Boolean>() {
         public Boolean apply(final LType it) {
@@ -150,31 +138,26 @@ public class HppManagerGenerator {
         }
       };
       Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
-      for(final LDto dto_2 : _map_2) {
+      for(final LDto dto_1 : _map_2) {
         {
-          boolean _isRootDTO_1 = this._managerExtensions.isRootDTO(dto_2);
-          if (_isRootDTO_1) {
-            _builder.append("    ");
-            _builder.append("QList<QObject*> mAll");
-            String _name_2 = this._cppExtensions.toName(dto_2);
-            _builder.append(_name_2, "    ");
-            _builder.append(";");
-            _builder.newLineIfNotEmpty();
-          }
-        }
-        {
-          boolean _isTree = this._managerExtensions.isTree(dto_2);
-          if (_isTree) {
-            _builder.append("    ");
-            _builder.append("QList<QObject*> mAll");
-            String _name_3 = this._cppExtensions.toName(dto_2);
-            _builder.append(_name_3, "    ");
-            _builder.append("asTree;");
+          boolean _isRootDTO = this._managerExtensions.isRootDTO(dto_1);
+          if (_isRootDTO) {
+            _builder.append("\t");
+            _builder.append("Q_INVOKABLE");
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("void fill");
+            String _name_2 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_2, "\t");
+            _builder.append("DataModel(QString objectName);");
             _builder.newLineIfNotEmpty();
           }
         }
       }
     }
+    _builder.newLine();
+    _builder.append("private:");
+    _builder.newLine();
     _builder.newLine();
     {
       EList<LType> _types_3 = pkg.getTypes();
@@ -190,14 +173,54 @@ public class HppManagerGenerator {
         }
       };
       Iterable<LDto> _map_3 = IterableExtensions.<LType, LDto>map(_filter_3, _function_7);
-      for(final LDto dto_3 : _map_3) {
+      for(final LDto dto_2 : _map_3) {
+        {
+          boolean _isRootDTO_1 = this._managerExtensions.isRootDTO(dto_2);
+          if (_isRootDTO_1) {
+            _builder.append("    ");
+            _builder.append("QList<QObject*> mAll");
+            String _name_3 = this._cppExtensions.toName(dto_2);
+            _builder.append(_name_3, "    ");
+            _builder.append(";");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+        {
+          boolean _isTree = this._managerExtensions.isTree(dto_2);
+          if (_isTree) {
+            _builder.append("    ");
+            _builder.append("QList<QObject*> mAll");
+            String _name_4 = this._cppExtensions.toName(dto_2);
+            _builder.append(_name_4, "    ");
+            _builder.append("asTree;");
+            _builder.newLineIfNotEmpty();
+          }
+        }
+      }
+    }
+    _builder.newLine();
+    {
+      EList<LType> _types_4 = pkg.getTypes();
+      final Function1<LType, Boolean> _function_8 = new Function1<LType, Boolean>() {
+        public Boolean apply(final LType it) {
+          return Boolean.valueOf((it instanceof LDto));
+        }
+      };
+      Iterable<LType> _filter_4 = IterableExtensions.<LType>filter(_types_4, _function_8);
+      final Function1<LType, LDto> _function_9 = new Function1<LType, LDto>() {
+        public LDto apply(final LType it) {
+          return ((LDto) it);
+        }
+      };
+      Iterable<LDto> _map_4 = IterableExtensions.<LType, LDto>map(_filter_4, _function_9);
+      for(final LDto dto_3 : _map_4) {
         {
           boolean _isRootDTO_2 = this._managerExtensions.isRootDTO(dto_3);
           if (_isRootDTO_2) {
             _builder.append("    ");
             _builder.append("void init");
-            String _name_4 = this._cppExtensions.toName(dto_3);
-            _builder.append(_name_4, "    ");
+            String _name_5 = this._cppExtensions.toName(dto_3);
+            _builder.append(_name_5, "    ");
             _builder.append("();");
             _builder.newLineIfNotEmpty();
           }

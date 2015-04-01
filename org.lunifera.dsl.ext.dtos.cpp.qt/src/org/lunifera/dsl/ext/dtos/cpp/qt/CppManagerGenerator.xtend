@@ -27,6 +27,7 @@ import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.semantic.common.types.LFeature
 import org.lunifera.dsl.semantic.common.types.LTypedPackage
+import org.lunifera.dsl.semantic.common.types.LEnum
 
 class CppManagerGenerator {
 
@@ -84,6 +85,10 @@ DTOManager::DTOManager(QObject *parent) :
     // register all DTOs to get access to properties from QML:	
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 		qmlRegisterType<«dto.toName»>("org.ekkescorner", 1, 0, "«dto.toName»");
+	«ENDFOR»
+	// register all ENUMs to get access from QML
+	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
+		qmlRegisterType<«en.toName»::«en.toName»Enum>("org.ekkescorner", 1, 0, "«en.toName»Enum");
 	«ENDFOR»
 }
 

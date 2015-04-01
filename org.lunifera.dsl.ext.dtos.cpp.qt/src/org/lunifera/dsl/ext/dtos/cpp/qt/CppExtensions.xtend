@@ -37,6 +37,7 @@ import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
+import org.lunifera.dsl.semantic.common.types.LEnum
 
 class CppExtensions {
 
@@ -151,6 +152,17 @@ class CppExtensions {
 		return false
 	}
 
+	def dispatch boolean isEnum(LDtoAbstractAttribute att) {
+		if (modelExtension.typeIsEnum(att)) {
+			return true
+		}
+		return false
+	}
+
+	def dispatch boolean isEnum(LFeature feature) {
+		return false
+	}
+
 	def String mapToType(LFeature feature) {
 		switch (feature.toTypeName) {
 			case "bool":
@@ -179,7 +191,7 @@ class CppExtensions {
 		}
 		return "Map"
 	}
-	
+
 	def String mapToSingleType(LFeature feature) {
 		switch (feature.toTypeName) {
 			case "bool":
@@ -235,9 +247,9 @@ class CppExtensions {
 		}
 		return ""
 	}
-	
+
 	def boolean isArrayList(LFeature feature) {
-		if(feature.isToMany){
+		if (feature.isToMany) {
 			switch (feature.toTypeName) {
 				case "int":
 					return true
@@ -249,7 +261,7 @@ class CppExtensions {
 					return true
 			}
 		}
-		
+
 		return false
 	}
 
