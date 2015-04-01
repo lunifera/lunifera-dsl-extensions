@@ -240,6 +240,10 @@ public class CppExtensions {
     if (_isToMany_3) {
       return "List";
     }
+    boolean _isEnum = this.isEnum(feature);
+    if (_isEnum) {
+      return "Int";
+    }
     return "Map";
   }
   
@@ -340,6 +344,10 @@ public class CppExtensions {
         _matched=true;
         return "\"\"";
       }
+    }
+    boolean _isEnum = this.isEnum(feature);
+    if (_isEnum) {
+      return "0";
     }
     return "";
   }

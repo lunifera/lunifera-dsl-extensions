@@ -381,6 +381,18 @@ void «dto.toName»::onRequested«feature.toName.toFirstUpper»AsDTO(«feature.t
 {
 	return qobject_cast<«feature.toTypeOrQObject»>(parent());
 }
+«ELSEIF feature.isEnum»
+int «dto.toName»::«feature.toName»() const
+{
+	return m«feature.toName.toFirstUpper»;
+}
+void «dto.toName»::set«feature.toName.toFirstUpper»(int «feature.toName»)
+{
+	if («feature.toName» != m«feature.toName.toFirstUpper») {
+		m«feature.toName.toFirstUpper» = «feature.toName»;
+		emit «feature.toName»Changed(«feature.toName»);
+	}
+}
 «ELSE»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
@@ -683,6 +695,9 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
 		«ENDIF»
 		«IF att.isDomainKey»
 			// Domain KEY: «att.toName»
+		«ENDIF»
+		«IF att.isEnum»
+			// ENUM: «att.toTypeName»::«att.toTypeName»Enum
 		«ENDIF»
 	'''
 

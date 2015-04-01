@@ -189,6 +189,9 @@ class CppExtensions {
 		if (feature.isToMany) {
 			return "List"
 		}
+		if (feature.isEnum){
+			return "Int"
+		}
 		return "Map"
 	}
 
@@ -234,6 +237,9 @@ class CppExtensions {
 				}
 			case "QString":
 				return "\"\""
+		}
+		if(feature.isEnum){
+			return "0"
 		}
 		return ""
 	}
