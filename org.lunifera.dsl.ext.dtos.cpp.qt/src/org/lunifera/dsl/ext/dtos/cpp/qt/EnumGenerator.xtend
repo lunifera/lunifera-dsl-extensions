@@ -29,11 +29,33 @@ class EnumGenerator {
 	}
 	
 	def CharSequence toContent(LEnum en) '''
+	#ifndef «en.name.toUpperCase»_HPP_
+	#define «en.name.toUpperCase»_HPP_
+
+	#include <QObject>
 	
+	class «en.name»: public QObject
+	{
 	
-	«FOR literal : en.literals SEPARATOR ", "»
-		«literal.name»
-	«ENDFOR»
+	public:
+		«en.name»();
+		virtual ~«en.name»()
+		{
+		}
+		
+		enum «en.name»Enum
+		{	
+			«FOR literal : en.literals SEPARATOR ", "»
+			«literal.name»
+			«ENDFOR»
+		};
+		Q_ENUMS («en.name»Enum)
+		
+		«en.name»(QObject *parent = 0);
+	
+};
+	
+#endif /* «en.name.toUpperCase»_HPP_ */
 	
 	
 	'''
