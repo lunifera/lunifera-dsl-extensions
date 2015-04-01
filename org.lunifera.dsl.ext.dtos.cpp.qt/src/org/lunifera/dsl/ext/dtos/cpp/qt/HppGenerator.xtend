@@ -45,6 +45,15 @@ class HppGenerator {
 	«IF dto.allFeatures.filter[isToMany && toTypeName == "QString"].size > 0»
 	#include <QStringList>
 	«ENDIF»
+	«IF dto.allFeatures.filter[toTypeName == "QDate"].size > 0»
+	#include <QDate>
+	«ENDIF»
+	«IF dto.allFeatures.filter[toTypeName == "QTime"].size > 0»
+	#include <QTime>
+	«ENDIF»
+	«IF dto.allFeatures.filter[toTypeName == "QDateTime"].size > 0»
+	#include <QDateTime>
+	«ENDIF»
 	
 	«FOR en : dto.allFeatures.filter[isEnum]»
 	#include "«en.toTypeName».hpp"

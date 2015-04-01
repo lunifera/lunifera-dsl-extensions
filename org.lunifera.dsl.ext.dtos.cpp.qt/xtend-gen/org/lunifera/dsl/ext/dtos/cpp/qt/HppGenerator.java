@@ -116,16 +116,64 @@ public class HppGenerator {
         _builder.newLine();
       }
     }
-    _builder.newLine();
     {
       List<? extends LFeature> _allFeatures_2 = dto.getAllFeatures();
       final Function1<LFeature, Boolean> _function_2 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
-          return Boolean.valueOf(HppGenerator.this._cppExtensions.isEnum(it));
+          String _typeName = HppGenerator.this._cppExtensions.toTypeName(it);
+          return Boolean.valueOf(Objects.equal(_typeName, "QDate"));
         }
       };
       Iterable<? extends LFeature> _filter_2 = IterableExtensions.filter(_allFeatures_2, _function_2);
-      for(final LFeature en : _filter_2) {
+      int _size_2 = IterableExtensions.size(_filter_2);
+      boolean _greaterThan_2 = (_size_2 > 0);
+      if (_greaterThan_2) {
+        _builder.append("#include <QDate>");
+        _builder.newLine();
+      }
+    }
+    {
+      List<? extends LFeature> _allFeatures_3 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_3 = new Function1<LFeature, Boolean>() {
+        public Boolean apply(final LFeature it) {
+          String _typeName = HppGenerator.this._cppExtensions.toTypeName(it);
+          return Boolean.valueOf(Objects.equal(_typeName, "QTime"));
+        }
+      };
+      Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_3, _function_3);
+      int _size_3 = IterableExtensions.size(_filter_3);
+      boolean _greaterThan_3 = (_size_3 > 0);
+      if (_greaterThan_3) {
+        _builder.append("#include <QTime>");
+        _builder.newLine();
+      }
+    }
+    {
+      List<? extends LFeature> _allFeatures_4 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_4 = new Function1<LFeature, Boolean>() {
+        public Boolean apply(final LFeature it) {
+          String _typeName = HppGenerator.this._cppExtensions.toTypeName(it);
+          return Boolean.valueOf(Objects.equal(_typeName, "QDateTime"));
+        }
+      };
+      Iterable<? extends LFeature> _filter_4 = IterableExtensions.filter(_allFeatures_4, _function_4);
+      int _size_4 = IterableExtensions.size(_filter_4);
+      boolean _greaterThan_4 = (_size_4 > 0);
+      if (_greaterThan_4) {
+        _builder.append("#include <QDateTime>");
+        _builder.newLine();
+      }
+    }
+    _builder.newLine();
+    {
+      List<? extends LFeature> _allFeatures_5 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_5 = new Function1<LFeature, Boolean>() {
+        public Boolean apply(final LFeature it) {
+          return Boolean.valueOf(HppGenerator.this._cppExtensions.isEnum(it));
+        }
+      };
+      Iterable<? extends LFeature> _filter_5 = IterableExtensions.filter(_allFeatures_5, _function_5);
+      for(final LFeature en : _filter_5) {
         _builder.append("#include \"");
         String _typeName = this._cppExtensions.toTypeName(en);
         _builder.append(_typeName, "");
@@ -135,14 +183,14 @@ public class HppGenerator {
     }
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_3 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_3 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_6 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_6 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           return Boolean.valueOf(HppGenerator.this._cppExtensions.isTypeOfDTO(it));
         }
       };
-      Iterable<? extends LFeature> _filter_3 = IterableExtensions.filter(_allFeatures_3, _function_3);
-      for(final LFeature reference : _filter_3) {
+      Iterable<? extends LFeature> _filter_6 = IterableExtensions.filter(_allFeatures_6, _function_6);
+      for(final LFeature reference : _filter_6) {
         {
           boolean _isContained = this._cppExtensions.isContained(reference);
           boolean _not = (!_isContained);
@@ -185,15 +233,15 @@ public class HppGenerator {
     _builder.newLine();
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_4 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_4 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_7 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_7 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
           return Boolean.valueOf((!_isToMany));
         }
       };
-      Iterable<? extends LFeature> _filter_4 = IterableExtensions.filter(_allFeatures_4, _function_4);
-      for(final LFeature feature : _filter_4) {
+      Iterable<? extends LFeature> _filter_7 = IterableExtensions.filter(_allFeatures_7, _function_7);
+      for(final LFeature feature : _filter_7) {
         {
           boolean _and = false;
           boolean _isTypeOfDTO = this._cppExtensions.isTypeOfDTO(feature);
@@ -312,8 +360,8 @@ public class HppGenerator {
     }
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_5 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_5 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_8 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_8 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _and = false;
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
@@ -327,8 +375,8 @@ public class HppGenerator {
           return Boolean.valueOf(_and);
         }
       };
-      Iterable<? extends LFeature> _filter_5 = IterableExtensions.filter(_allFeatures_5, _function_5);
-      for(final LFeature feature_1 : _filter_5) {
+      Iterable<? extends LFeature> _filter_8 = IterableExtensions.filter(_allFeatures_8, _function_8);
+      for(final LFeature feature_1 : _filter_8) {
         _builder.append("\t");
         _builder.append("// QDeclarativeListProperty to get easy access from QML");
         _builder.newLine();
@@ -347,8 +395,8 @@ public class HppGenerator {
       }
     }
     {
-      List<? extends LFeature> _allFeatures_6 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_6 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_9 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_9 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _and = false;
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
@@ -361,8 +409,8 @@ public class HppGenerator {
           return Boolean.valueOf(_and);
         }
       };
-      Iterable<? extends LFeature> _filter_6 = IterableExtensions.filter(_allFeatures_6, _function_6);
-      for(final LFeature feature_2 : _filter_6) {
+      Iterable<? extends LFeature> _filter_9 = IterableExtensions.filter(_allFeatures_9, _function_9);
+      for(final LFeature feature_2 : _filter_9) {
         {
           String _typeName_5 = this._cppExtensions.toTypeName(feature_2);
           boolean _equals = Objects.equal(_typeName_5, "QString");
@@ -455,15 +503,15 @@ public class HppGenerator {
     _builder.newLine();
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_7 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_7 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_10 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_10 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
           return Boolean.valueOf((!_isToMany));
         }
       };
-      Iterable<? extends LFeature> _filter_7 = IterableExtensions.filter(_allFeatures_7, _function_7);
-      for(final LFeature feature_3 : _filter_7) {
+      Iterable<? extends LFeature> _filter_10 = IterableExtensions.filter(_allFeatures_10, _function_10);
+      for(final LFeature feature_3 : _filter_10) {
         {
           boolean _isLazy_1 = this._cppExtensions.isLazy(feature_3);
           if (_isLazy_1) {
@@ -640,14 +688,14 @@ public class HppGenerator {
     }
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_8 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_8 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_11 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_11 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           return Boolean.valueOf(HppGenerator.this._cppExtensions.isToMany(it));
         }
       };
-      Iterable<? extends LFeature> _filter_8 = IterableExtensions.filter(_allFeatures_8, _function_8);
-      for(final LFeature feature_4 : _filter_8) {
+      Iterable<? extends LFeature> _filter_11 = IterableExtensions.filter(_allFeatures_11, _function_11);
+      for(final LFeature feature_4 : _filter_11) {
         {
           boolean _isArrayList = this._cppExtensions.isArrayList(feature_4);
           boolean _not_1 = (!_isArrayList);
@@ -964,15 +1012,15 @@ public class HppGenerator {
     _builder.newLine();
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_9 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_9 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_12 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_12 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
           return Boolean.valueOf((!_isToMany));
         }
       };
-      Iterable<? extends LFeature> _filter_9 = IterableExtensions.filter(_allFeatures_9, _function_9);
-      for(final LFeature feature_5 : _filter_9) {
+      Iterable<? extends LFeature> _filter_12 = IterableExtensions.filter(_allFeatures_12, _function_12);
+      for(final LFeature feature_5 : _filter_12) {
         {
           boolean _isLazy_2 = this._cppExtensions.isLazy(feature_5);
           if (_isLazy_2) {
@@ -1087,14 +1135,14 @@ public class HppGenerator {
       }
     }
     {
-      List<? extends LFeature> _allFeatures_10 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_10 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_13 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_13 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           return Boolean.valueOf(HppGenerator.this._cppExtensions.isToMany(it));
         }
       };
-      Iterable<? extends LFeature> _filter_10 = IterableExtensions.filter(_allFeatures_10, _function_10);
-      for(final LFeature feature_6 : _filter_10) {
+      Iterable<? extends LFeature> _filter_13 = IterableExtensions.filter(_allFeatures_13, _function_13);
+      for(final LFeature feature_6 : _filter_13) {
         {
           boolean _isArrayList_2 = this._cppExtensions.isArrayList(feature_6);
           boolean _not_3 = (!_isArrayList_2);
@@ -1226,15 +1274,15 @@ public class HppGenerator {
         _builder.append("public slots:");
         _builder.newLine();
         {
-          List<? extends LFeature> _allFeatures_11 = dto.getAllFeatures();
-          final Function1<LFeature, Boolean> _function_11 = new Function1<LFeature, Boolean>() {
+          List<? extends LFeature> _allFeatures_14 = dto.getAllFeatures();
+          final Function1<LFeature, Boolean> _function_14 = new Function1<LFeature, Boolean>() {
             public Boolean apply(final LFeature it) {
               boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
               return Boolean.valueOf((!_isToMany));
             }
           };
-          Iterable<? extends LFeature> _filter_11 = IterableExtensions.filter(_allFeatures_11, _function_11);
-          for(final LFeature feature_7 : _filter_11) {
+          Iterable<? extends LFeature> _filter_14 = IterableExtensions.filter(_allFeatures_14, _function_14);
+          for(final LFeature feature_7 : _filter_14) {
             {
               boolean _isLazy_3 = this._cppExtensions.isLazy(feature_7);
               if (_isLazy_3) {
@@ -1272,15 +1320,15 @@ public class HppGenerator {
     _builder.append("\t");
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_12 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_12 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_15 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_15 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
           return Boolean.valueOf((!_isToMany));
         }
       };
-      Iterable<? extends LFeature> _filter_12 = IterableExtensions.filter(_allFeatures_12, _function_12);
-      for(final LFeature feature_8 : _filter_12) {
+      Iterable<? extends LFeature> _filter_15 = IterableExtensions.filter(_allFeatures_15, _function_15);
+      for(final LFeature feature_8 : _filter_15) {
         {
           boolean _and_3 = false;
           boolean _isTypeOfDTO_5 = this._cppExtensions.isTypeOfDTO(feature_8);
@@ -1346,14 +1394,14 @@ public class HppGenerator {
       }
     }
     {
-      List<? extends LFeature> _allFeatures_13 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_13 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_16 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_16 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           return Boolean.valueOf(HppGenerator.this._cppExtensions.isToMany(it));
         }
       };
-      Iterable<? extends LFeature> _filter_13 = IterableExtensions.filter(_allFeatures_13, _function_13);
-      for(final LFeature feature_9 : _filter_13) {
+      Iterable<? extends LFeature> _filter_16 = IterableExtensions.filter(_allFeatures_16, _function_16);
+      for(final LFeature feature_9 : _filter_16) {
         {
           boolean _isArrayList_3 = this._cppExtensions.isArrayList(feature_9);
           boolean _not_4 = (!_isArrayList_3);
