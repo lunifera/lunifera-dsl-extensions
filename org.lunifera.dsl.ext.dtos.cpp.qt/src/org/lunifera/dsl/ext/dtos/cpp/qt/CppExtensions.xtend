@@ -138,7 +138,15 @@ class CppExtensions {
 	}
 
 	def dispatch String toTypeName(LAttribute att) {
-		modelExtension.toTypeName(att as LDtoAbstractAttribute)
+		switch (modelExtension.toTypeName(att as LDtoAbstractAttribute)) {
+			case "Date":
+				return "QDate"
+			case "Time":
+				return "QTime"
+			case "Timestamp":
+				return "QDateTime"
+		}
+		return modelExtension.toTypeName(att as LDtoAbstractAttribute)
 	}
 
 	def dispatch String toTypeName(LReference ref) {
@@ -185,11 +193,29 @@ class CppExtensions {
 				} else {
 					return "String"
 				}
+			case "QDate":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "Date"
+				}
+			case "QTime":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "Time"
+				}
+			case "QDateTime":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "DateTime"
+				}
 		}
 		if (feature.isToMany) {
 			return "List"
 		}
-		if (feature.isEnum){
+		if (feature.isEnum) {
 			return "Int"
 		}
 		return "Map"
@@ -205,6 +231,12 @@ class CppExtensions {
 				return "Double"
 			case "QString":
 				return "String"
+			case "QDate":
+				return "Date"
+			case "QTime":
+				return "Time"
+			case "QDateTime":
+				return "DateTime"
 		}
 		return "Map"
 	}
@@ -238,7 +270,7 @@ class CppExtensions {
 			case "QString":
 				return "\"\""
 		}
-		if(feature.isEnum){
+		if (feature.isEnum) {
 			return "0"
 		}
 		return ""

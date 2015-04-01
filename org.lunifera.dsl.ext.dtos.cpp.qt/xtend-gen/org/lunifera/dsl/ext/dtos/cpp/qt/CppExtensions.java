@@ -166,6 +166,26 @@ public class CppExtensions {
   }
   
   protected String _toTypeName(final LAttribute att) {
+    String _typeName = this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Date")) {
+        _matched=true;
+        return "QDate";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Time")) {
+        _matched=true;
+        return "QTime";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Timestamp")) {
+        _matched=true;
+        return "QDateTime";
+      }
+    }
     return this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
   }
   
@@ -236,8 +256,41 @@ public class CppExtensions {
         }
       }
     }
-    boolean _isToMany_3 = this.isToMany(feature);
-    if (_isToMany_3) {
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDate")) {
+        _matched=true;
+        boolean _isToMany_3 = this.isToMany(feature);
+        if (_isToMany_3) {
+          return "List";
+        } else {
+          return "Date";
+        }
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QTime")) {
+        _matched=true;
+        boolean _isToMany_4 = this.isToMany(feature);
+        if (_isToMany_4) {
+          return "List";
+        } else {
+          return "Time";
+        }
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDateTime")) {
+        _matched=true;
+        boolean _isToMany_5 = this.isToMany(feature);
+        if (_isToMany_5) {
+          return "List";
+        } else {
+          return "DateTime";
+        }
+      }
+    }
+    boolean _isToMany_6 = this.isToMany(feature);
+    if (_isToMany_6) {
       return "List";
     }
     boolean _isEnum = this.isEnum(feature);
@@ -272,6 +325,24 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "QString")) {
         _matched=true;
         return "String";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDate")) {
+        _matched=true;
+        return "Date";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QTime")) {
+        _matched=true;
+        return "Time";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDateTime")) {
+        _matched=true;
+        return "DateTime";
       }
     }
     return "Map";

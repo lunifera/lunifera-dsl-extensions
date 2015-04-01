@@ -88,7 +88,7 @@ DTOManager::DTOManager(QObject *parent) :
 	«ENDFOR»
 	// register all ENUMs to get access from QML
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
-		qmlRegisterType<«en.toName»::«en.toName»Enum>("org.ekkescorner", 1, 0, "«en.toName»Enum");
+		qmlRegisterType<«en.toName»>("org.ekkescorner", 1, 0, "«en.toName»");
 	«ENDFOR»
 }
 

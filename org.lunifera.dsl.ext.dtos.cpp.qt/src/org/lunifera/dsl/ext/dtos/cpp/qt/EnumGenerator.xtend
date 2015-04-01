@@ -41,8 +41,6 @@ class EnumGenerator {
 	{
 	
 	public:
-		«en.toName»(QObject *parent = 0);
-		virtual ~«en.toName»() {}
 		
 		enum «en.toName»Enum
 		{	

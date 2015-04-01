@@ -68,22 +68,11 @@ public class EnumGenerator {
     _builder.append("public:");
     _builder.newLine();
     _builder.append("\t");
-    String _name_3 = this._cppExtensions.toName(en);
-    _builder.append(_name_3, "\t");
-    _builder.append("(QObject *parent = 0);");
-    _builder.newLineIfNotEmpty();
-    _builder.append("\t");
-    _builder.append("virtual ~");
-    String _name_4 = this._cppExtensions.toName(en);
-    _builder.append(_name_4, "\t");
-    _builder.append("() {}");
-    _builder.newLineIfNotEmpty();
-    _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("enum ");
-    String _name_5 = this._cppExtensions.toName(en);
-    _builder.append(_name_5, "\t");
+    String _name_3 = this._cppExtensions.toName(en);
+    _builder.append(_name_3, "\t");
     _builder.append("Enum");
     _builder.newLineIfNotEmpty();
     _builder.append("\t");
@@ -99,8 +88,8 @@ public class EnumGenerator {
           _builder.appendImmediate(", ", "\t\t");
         }
         _builder.append("\t\t");
-        String _name_6 = literal.getName();
-        _builder.append(_name_6, "\t\t");
+        String _name_4 = literal.getName();
+        _builder.append(_name_4, "\t\t");
         _builder.newLineIfNotEmpty();
       }
     }
@@ -109,8 +98,8 @@ public class EnumGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("Q_ENUMS (");
-    String _name_7 = this._cppExtensions.toName(en);
-    _builder.append(_name_7, "\t");
+    String _name_5 = this._cppExtensions.toName(en);
+    _builder.append(_name_5, "\t");
     _builder.append("Enum)");
     _builder.newLineIfNotEmpty();
     _builder.newLine();
@@ -118,8 +107,8 @@ public class EnumGenerator {
     _builder.newLine();
     _builder.newLine();
     _builder.append("#endif /* ");
-    String _name_8 = this._cppExtensions.toName(en);
-    String _upperCase_2 = _name_8.toUpperCase();
+    String _name_6 = this._cppExtensions.toName(en);
+    String _upperCase_2 = _name_6.toUpperCase();
     _builder.append(_upperCase_2, "");
     _builder.append("_HPP_ */");
     _builder.newLineIfNotEmpty();
