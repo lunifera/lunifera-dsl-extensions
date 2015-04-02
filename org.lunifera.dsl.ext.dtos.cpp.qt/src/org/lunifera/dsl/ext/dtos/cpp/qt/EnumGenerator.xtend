@@ -42,6 +42,7 @@ class EnumGenerator {
 	
 	public:
 		
+		// «en.toEnumValues»
 		enum «en.toName»Enum
 		{	
 			«FOR literal : en.literals SEPARATOR ", "»

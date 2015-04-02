@@ -70,6 +70,11 @@ public class EnumGenerator {
     _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");
+    _builder.append("// ");
+    String _enumValues = this._cppExtensions.toEnumValues(en);
+    _builder.append(_enumValues, "\t");
+    _builder.newLineIfNotEmpty();
+    _builder.append("\t");
     _builder.append("enum ");
     String _name_3 = this._cppExtensions.toName(en);
     _builder.append(_name_3, "\t");

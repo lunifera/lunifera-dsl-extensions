@@ -28,6 +28,7 @@ import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
 import org.lunifera.dsl.semantic.common.helper.Bounds
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
@@ -38,6 +39,7 @@ import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.semantic.common.types.LEnum
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
 
 class CppExtensions {
 
@@ -67,6 +69,19 @@ class CppExtensions {
 			return value
 		}
 		modelExtension.toName(target)
+	}
+	
+	def dispatch String toEnumValues(LAttribute target) {
+		
+		return ""
+	}
+	
+	def dispatch String toEnumValues(LEnum target) {
+		val values = target.enumValues
+		if (values != null) {
+			return values
+		}
+		return ""
 	}
 
 	def dispatch boolean isContained(LAnnotationTarget target) {
@@ -425,6 +440,13 @@ class CppExtensions {
 		}
 		return true
 	}
+	
+	def boolean hasEnumValues(LEnum en) {
+		if (en.enumValues == null) {
+			return false
+		}
+		return true
+	}
 
 	def dispatch LFeature referenceDomainKeyFeature(LFeature feature) {
 		return feature
@@ -510,6 +532,17 @@ class CppExtensions {
 
 	def String getServerNameValue(LFeature member) {
 		val annoDef = typeof(ServerName).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
+	
+	def String getEnumValues(LEnum member) {
+		val annoDef = typeof(EnumValues).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

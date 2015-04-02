@@ -37,11 +37,13 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName;
 import org.lunifera.dsl.semantic.common.helper.Bounds;
 import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
+import org.lunifera.dsl.semantic.common.types.LEnum;
 import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.common.types.LReference;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -94,6 +96,19 @@ public class CppExtensions {
       _xblockexpression = this.modelExtension.toName(target);
     }
     return _xblockexpression;
+  }
+  
+  protected String _toEnumValues(final LAttribute target) {
+    return "";
+  }
+  
+  protected String _toEnumValues(final LEnum target) {
+    final String values = this.getEnumValues(target);
+    boolean _notEquals = (!Objects.equal(values, null));
+    if (_notEquals) {
+      return values;
+    }
+    return "";
   }
   
   protected boolean _isContained(final LAnnotationTarget target) {
@@ -725,6 +740,15 @@ public class CppExtensions {
     return true;
   }
   
+  public boolean hasEnumValues(final LEnum en) {
+    String _enumValues = this.getEnumValues(en);
+    boolean _equals = Objects.equal(_enumValues, null);
+    if (_equals) {
+      return false;
+    }
+    return true;
+  }
+  
   protected LFeature _referenceDomainKeyFeature(final LFeature feature) {
     return feature;
   }
@@ -850,6 +874,24 @@ public class CppExtensions {
     }
   }
   
+  public String getEnumValues(final LEnum member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(EnumValues.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
+  }
+  
   public String toServerName(final LAnnotationTarget target) {
     if (target instanceof LAttribute) {
       return _toServerName((LAttribute)target);
@@ -857,6 +899,17 @@ public class CppExtensions {
       return _toServerName((LReference)target);
     } else if (target != null) {
       return _toServerName(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public String toEnumValues(final LAnnotationTarget target) {
+    if (target instanceof LEnum) {
+      return _toEnumValues((LEnum)target);
+    } else if (target instanceof LAttribute) {
+      return _toEnumValues((LAttribute)target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());
