@@ -70,7 +70,7 @@ class CppGenerator {
  */
 «dto.toName»::«dto.toName»(QObject *parent) :
         QObject(parent)«FOR feature : dto.allFeatures.filter [
-		!isToMany && !isTypeOfDTO && !isContained
+		!isToMany && !isTypeOfDTO && !isContained &&!isEnum
 	]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
 {
 	«IF dto.existsLazy»
@@ -79,7 +79,12 @@ class CppGenerator {
 		m«feature.toName.toFirstUpper» = «feature.referenceDomainKeyType.defaultForLazyTypeName»;
 		«ENDFOR»
 	«ENDIF»
-	//
+	«IF dto.existsEnum»
+		// ENUMs:
+		«FOR feature : dto.allFeatures.filter[isEnum]»
+		m«feature.toName.toFirstUpper» = «feature.toTypeName»::DEFAULT_VALUE;
+		«ENDFOR»
+	«ENDIF»
 }
 
 /*
@@ -119,6 +124,20 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			// m«feature.toName.toFirstUpper» is transient - perhaps not included
 			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)){
 				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			}
+			«ELSEIF feature.isEnum»
+			// ENUM
+			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)) {
+				bool* ok;
+				ok = false;
+				m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
+				if (ok) {
+					m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toInt();
+				} else {
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toString());
+				}
+			} else {
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
 			«ELSE»
 			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();

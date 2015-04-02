@@ -820,6 +820,17 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean existsEnum(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isEnum = this.isEnum(feature);
+      if (_isEnum) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public boolean existsLazy(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {

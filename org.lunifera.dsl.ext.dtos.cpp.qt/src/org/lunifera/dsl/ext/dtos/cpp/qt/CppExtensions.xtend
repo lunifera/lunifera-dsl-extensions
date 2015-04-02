@@ -506,6 +506,15 @@ class CppExtensions {
 		}
 		return false
 	}
+	
+	def boolean existsEnum(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isEnum) {
+				return true
+			}
+		}
+		return false
+	}
 
 	def boolean existsLazy(LDto dto) {
 		for (feature : dto.allFeatures) {
