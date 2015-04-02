@@ -67,6 +67,13 @@ public class EnumGenerator {
     _builder.newLine();
     _builder.append("public:");
     _builder.newLine();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("static const int DEFAULT_VALUE = 0;");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("static const int NO_VALUE = -1;");
+    _builder.newLine();
     _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");

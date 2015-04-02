@@ -41,6 +41,9 @@ class EnumGenerator {
 	{
 	
 	public:
+	
+		static const int DEFAULT_VALUE = 0;
+		static const int NO_VALUE = -1;
 		
 		// «en.toEnumValues»
 		enum «en.toName»Enum

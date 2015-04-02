@@ -82,7 +82,7 @@ class HppGenerator {
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDTO READ «feature.toName»AsDTO)
 		«ELSEIF feature.isEnum»
-		// int OrderState::OrderStateEnum
+		// int ENUM «feature.toTypeName»
 		Q_PROPERTY(int «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		«ELSE»
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
@@ -135,6 +135,7 @@ class HppGenerator {
 		«ELSEIF feature.isEnum»
 		int «feature.toName»() const;
 		void set«feature.toName.toFirstUpper»(int «feature.toName»);
+		void set«feature.toName.toFirstUpper»(QString «feature.toName»);
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDTO && feature.isContained»
@@ -271,6 +272,7 @@ class HppGenerator {
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»AsDTO;
 		«ELSEIF feature.isEnum»
 		int m«feature.toName.toFirstUpper»;
+		int «feature.toName.toFirstLower»StringToInt(QString «feature.toName.toFirstLower»);
 		«ELSE»
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»;
 		«ENDIF»

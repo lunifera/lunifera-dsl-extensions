@@ -23,7 +23,6 @@ package org.lunifera.dsl.ext.dtos.cpp.qt
 import com.google.inject.Inject
 import org.lunifera.dsl.semantic.common.types.LTypedPackage
 import org.lunifera.dsl.semantic.dto.LDto
-import org.lunifera.dsl.semantic.common.types.LEnum
 
 class HppManagerGenerator {
 
@@ -42,9 +41,6 @@ class HppManagerGenerator {
 
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 #include "«dto.toName».hpp"
-«ENDFOR»
-«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
-#include "«en.toName».hpp"
 «ENDFOR»
 
 class DTOManager: public QObject
