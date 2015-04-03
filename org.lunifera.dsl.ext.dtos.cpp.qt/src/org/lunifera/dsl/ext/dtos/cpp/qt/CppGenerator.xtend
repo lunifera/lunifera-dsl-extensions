@@ -70,7 +70,7 @@ class CppGenerator {
  */
 «dto.toName»::«dto.toName»(QObject *parent) :
         QObject(parent)«FOR feature : dto.allFeatures.filter [
-		!isToMany && !isTypeOfDTO && !isContained &&!isEnum
+		!isToMany && !isTypeOfDTO && !typeOfDates && !isContained &&!isEnum
 	]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
 {
 	«IF dto.existsLazy»
@@ -83,6 +83,12 @@ class CppGenerator {
 		// ENUMs:
 		«FOR feature : dto.allFeatures.filter[isEnum]»
 		m«feature.toName.toFirstUpper» = «feature.toTypeName»::DEFAULT_VALUE;
+		«ENDFOR»
+	«ENDIF»
+	«IF dto.existsDates»
+		// Date, Time or Timestamp ? construct null value
+		«FOR feature : dto.allFeatures.filter[isTypeOfDates]»
+		m«feature.toName.toFirstUpper» = «feature.toTypeName»();
 		«ENDFOR»
 	«ENDIF»
 }
@@ -466,6 +472,11 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»(){
     }
 }
 	«ENDIF»
+«ENDIF»
+«IF feature.isTypeOfDates»
+bool «dto.toName»::has«feature.toName.toFirstUpper»(){
+	return !m«feature.toName.toFirstUpper».isNull() && m«feature.toName.toFirstUpper».isValid();
+}
 «ENDIF»
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isArrayList && toTypeName == "QString"]»

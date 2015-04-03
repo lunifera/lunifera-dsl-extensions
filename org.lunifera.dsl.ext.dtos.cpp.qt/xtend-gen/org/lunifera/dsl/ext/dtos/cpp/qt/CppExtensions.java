@@ -219,6 +219,31 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean isTypeOfDates(final LFeature feature) {
+    boolean _or = false;
+    boolean _or_1 = false;
+    String _typeName = this.toTypeName(feature);
+    boolean _equals = Objects.equal(_typeName, "QDate");
+    if (_equals) {
+      _or_1 = true;
+    } else {
+      String _typeName_1 = this.toTypeName(feature);
+      boolean _equals_1 = Objects.equal(_typeName_1, "QTime");
+      _or_1 = _equals_1;
+    }
+    if (_or_1) {
+      _or = true;
+    } else {
+      String _typeName_2 = this.toTypeName(feature);
+      boolean _equals_2 = Objects.equal(_typeName_2, "QDateTime");
+      _or = _equals_2;
+    }
+    if (_or) {
+      return true;
+    }
+    return false;
+  }
+  
   protected boolean _isEnum(final LDtoAbstractAttribute att) {
     boolean _typeIsEnum = this.modelExtension.typeIsEnum(att);
     if (_typeIsEnum) {
@@ -848,6 +873,17 @@ public class CppExtensions {
     for (final LFeature feature : _allFeatures) {
       boolean _isEnum = this.isEnum(feature);
       if (_isEnum) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean existsDates(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isTypeOfDates = this.isTypeOfDates(feature);
+      if (_isTypeOfDates) {
         return true;
       }
     }

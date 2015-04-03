@@ -138,6 +138,9 @@ class HppGenerator {
 		void set«feature.toName.toFirstUpper»(QString «feature.toName»);
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
+		«IF feature.isTypeOfDates»
+		bool has«feature.toName.toFirstUpper»();
+		«ENDIF»
 		«IF feature.isTypeOfDTO && feature.isContained»
 		// no SETTER «feature.toName»() is only convenience method to get the parent
 		«ELSE»

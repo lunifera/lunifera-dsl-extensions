@@ -174,6 +174,13 @@ class CppExtensions {
 		}
 		return false
 	}
+	
+	def boolean isTypeOfDates(LFeature feature) {
+		if (feature.toTypeName == "QDate" || feature.toTypeName == "QTime" || feature.toTypeName == "QDateTime") {
+			return true
+		}
+		return false
+	}
 
 	def dispatch boolean isEnum(LDtoAbstractAttribute att) {
 		if (modelExtension.typeIsEnum(att)) {
@@ -527,6 +534,15 @@ class CppExtensions {
 	def boolean existsEnum(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isEnum) {
+				return true
+			}
+		}
+		return false
+	}
+	
+	def boolean existsDates(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isTypeOfDates) {
 				return true
 			}
 		}
