@@ -44,8 +44,10 @@ import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
 import org.lunifera.dsl.semantic.common.types.LAttribute;
 import org.lunifera.dsl.semantic.common.types.LEnum;
+import org.lunifera.dsl.semantic.common.types.LEnumLiteral;
 import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.common.types.LReference;
+import org.lunifera.dsl.semantic.common.types.LScalarType;
 import org.lunifera.dsl.semantic.dto.LDto;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
@@ -227,6 +229,27 @@ public class CppExtensions {
   
   protected boolean _isEnum(final LFeature feature) {
     return false;
+  }
+  
+  protected LEnum _enumFromAttributeType(final LDtoAbstractAttribute att) {
+    LScalarType _type = att.getType();
+    return ((LEnum) _type);
+  }
+  
+  protected LEnum _enumFromAttributeType(final LFeature feature) {
+    return null;
+  }
+  
+  public int enumIndex(final LEnum en, final LEnumLiteral lit) {
+    for (int i = 0; (i < en.getLiterals().size()); i++) {
+      EList<LEnumLiteral> _literals = en.getLiterals();
+      LEnumLiteral _get = _literals.get(i);
+      boolean _equals = Objects.equal(lit, _get);
+      if (_equals) {
+        return i;
+      }
+    }
+    return (-1);
   }
   
   public String mapToType(final LFeature feature) {
@@ -1012,6 +1035,17 @@ public class CppExtensions {
       return _isEnum((LDtoAbstractAttribute)att);
     } else if (att != null) {
       return _isEnum(att);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public LEnum enumFromAttributeType(final LFeature att) {
+    if (att instanceof LDtoAbstractAttribute) {
+      return _enumFromAttributeType((LDtoAbstractAttribute)att);
+    } else if (att != null) {
+      return _enumFromAttributeType(att);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());

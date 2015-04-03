@@ -84,11 +84,11 @@ DTOManager::DTOManager(QObject *parent) :
 
     // register all DTOs to get access to properties from QML:	
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-		qmlRegisterType<«dto.toName»>("org.ekkescorner", 1, 0, "«dto.toName»");
+		qmlRegisterType<«dto.toName»>("org.ekkescorner.dto", 1, 0, "«dto.toName»");
 	«ENDFOR»
 	// register all ENUMs to get access from QML
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
-		qmlRegisterType<«en.toName»>("org.ekkescorner", 1, 0, "«en.toName»");
+		qmlRegisterType<«en.toName»>("org.ekkescorner.enums", 1, 0, "«en.toName»");
 	«ENDFOR»
 }
 

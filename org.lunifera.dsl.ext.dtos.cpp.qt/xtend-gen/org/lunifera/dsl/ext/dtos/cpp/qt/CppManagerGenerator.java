@@ -202,7 +202,7 @@ public class CppManagerGenerator {
         _builder.append("qmlRegisterType<");
         String _name_5 = this._cppExtensions.toName(dto_2);
         _builder.append(_name_5, "\t");
-        _builder.append(">(\"org.ekkescorner\", 1, 0, \"");
+        _builder.append(">(\"org.ekkescorner.dto\", 1, 0, \"");
         String _name_6 = this._cppExtensions.toName(dto_2);
         _builder.append(_name_6, "\t");
         _builder.append("\");");
@@ -231,7 +231,7 @@ public class CppManagerGenerator {
         _builder.append("qmlRegisterType<");
         String _name_7 = this._cppExtensions.toName(en);
         _builder.append(_name_7, "\t");
-        _builder.append(">(\"org.ekkescorner\", 1, 0, \"");
+        _builder.append(">(\"org.ekkescorner.enums\", 1, 0, \"");
         String _name_8 = this._cppExtensions.toName(en);
         _builder.append(_name_8, "\t");
         _builder.append("\");");

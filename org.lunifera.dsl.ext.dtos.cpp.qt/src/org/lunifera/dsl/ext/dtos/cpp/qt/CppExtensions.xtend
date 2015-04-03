@@ -39,7 +39,7 @@ import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.semantic.common.types.LEnum
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
+import org.lunifera.dsl.semantic.common.types.LEnumLiteral
 
 class CppExtensions {
 
@@ -70,12 +70,12 @@ class CppExtensions {
 		}
 		modelExtension.toName(target)
 	}
-	
+
 	def dispatch String toEnumValues(LAttribute target) {
-		
+
 		return ""
 	}
-	
+
 	def dispatch String toEnumValues(LEnum target) {
 		val values = target.enumValues
 		if (values != null) {
@@ -184,6 +184,23 @@ class CppExtensions {
 
 	def dispatch boolean isEnum(LFeature feature) {
 		return false
+	}
+
+	def dispatch LEnum enumFromAttributeType(LDtoAbstractAttribute att) {
+		return att.getType() as LEnum
+	}
+
+	def dispatch LEnum enumFromAttributeType(LFeature feature) {
+		return null
+	}
+
+	def int enumIndex(LEnum en, LEnumLiteral lit) {
+		for (var i = 0; i < en.literals.size; i++) {
+			if(lit == en.literals.get(i)){
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	def String mapToType(LFeature feature) {
@@ -440,7 +457,7 @@ class CppExtensions {
 		}
 		return true
 	}
-	
+
 	def boolean hasEnumValues(LEnum en) {
 		if (en.enumValues == null) {
 			return false
@@ -506,7 +523,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean existsEnum(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isEnum) {
@@ -549,7 +566,7 @@ class CppExtensions {
 			return null
 		}
 	}
-	
+
 	def String getEnumValues(LEnum member) {
 		val annoDef = typeof(EnumValues).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {

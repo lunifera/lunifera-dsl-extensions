@@ -412,6 +412,23 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(int «feature.toName»)
 		emit «feature.toName»Changed(«feature.toName»);
 	}
 }
+void «dto.toName»::set«feature.toName.toFirstUpper»(QString «feature.toName»)
+{
+    set«feature.toName.toFirstUpper»(«feature.toName»StringToInt(«feature.toName»));
+}
+int «dto.toName»::«feature.toName»StringToInt(QString «feature.toName»)
+{
+    if («feature.toName».isNull() || «feature.toName».isEmpty()) {
+        return «feature.toTypeName»::NO_VALUE;
+    }
+    «FOR literal : feature.enumFromAttributeType.literals»
+    if («feature.toName» == "«literal.name»") {
+        return «feature.enumFromAttributeType.literals.indexOf(literal)»;
+    }
+    «ENDFOR»
+    qWarning() << "«feature.toName» wrong enumValue as String: " << «feature.toName»;
+    return «feature.toTypeName»::NO_VALUE;
+}
 «ELSE»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
