@@ -379,6 +379,27 @@ class CppExtensions {
 						return false;
 					}
 				'''.toString
+			case "QDate":
+			return '''
+					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
+					{
+						return false;
+					}
+				'''.toString
+			case "QTime":
+			return '''
+					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
+					{
+						return false;
+					}
+				'''.toString
+			case "QDateTime":
+				return '''
+					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
+					{
+						return false;
+					}
+				'''.toString
 		}
 		return '''
 			// missing validation for m«feature.toName.toFirstUpper»

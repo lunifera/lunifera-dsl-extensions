@@ -617,13 +617,85 @@ public class CppExtensions {
         return _builder_2.toString();
       }
     }
-    StringConcatenation _builder_3 = new StringConcatenation();
-    _builder_3.append("// missing validation for m");
-    String _name_4 = this.toName(feature);
-    String _firstUpper_4 = StringExtensions.toFirstUpper(_name_4);
-    _builder_3.append(_firstUpper_4, "");
-    _builder_3.newLineIfNotEmpty();
-    return _builder_3.toString();
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDate")) {
+        _matched=true;
+        StringConcatenation _builder_3 = new StringConcatenation();
+        _builder_3.append("if(m");
+        String _name_4 = this.toName(feature);
+        String _firstUpper_4 = StringExtensions.toFirstUpper(_name_4);
+        _builder_3.append(_firstUpper_4, "");
+        _builder_3.append(".isNull() || !m");
+        String _name_5 = this.toName(feature);
+        String _firstUpper_5 = StringExtensions.toFirstUpper(_name_5);
+        _builder_3.append(_firstUpper_5, "");
+        _builder_3.append(".isValid())");
+        _builder_3.newLineIfNotEmpty();
+        _builder_3.append("{");
+        _builder_3.newLine();
+        _builder_3.append("\t");
+        _builder_3.append("return false;");
+        _builder_3.newLine();
+        _builder_3.append("}");
+        _builder_3.newLine();
+        return _builder_3.toString();
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QTime")) {
+        _matched=true;
+        StringConcatenation _builder_4 = new StringConcatenation();
+        _builder_4.append("if(m");
+        String _name_6 = this.toName(feature);
+        String _firstUpper_6 = StringExtensions.toFirstUpper(_name_6);
+        _builder_4.append(_firstUpper_6, "");
+        _builder_4.append(".isNull() || !m");
+        String _name_7 = this.toName(feature);
+        String _firstUpper_7 = StringExtensions.toFirstUpper(_name_7);
+        _builder_4.append(_firstUpper_7, "");
+        _builder_4.append(".isValid())");
+        _builder_4.newLineIfNotEmpty();
+        _builder_4.append("{");
+        _builder_4.newLine();
+        _builder_4.append("\t");
+        _builder_4.append("return false;");
+        _builder_4.newLine();
+        _builder_4.append("}");
+        _builder_4.newLine();
+        return _builder_4.toString();
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QDateTime")) {
+        _matched=true;
+        StringConcatenation _builder_5 = new StringConcatenation();
+        _builder_5.append("if(m");
+        String _name_8 = this.toName(feature);
+        String _firstUpper_8 = StringExtensions.toFirstUpper(_name_8);
+        _builder_5.append(_firstUpper_8, "");
+        _builder_5.append(".isNull() || !m");
+        String _name_9 = this.toName(feature);
+        String _firstUpper_9 = StringExtensions.toFirstUpper(_name_9);
+        _builder_5.append(_firstUpper_9, "");
+        _builder_5.append(".isValid())");
+        _builder_5.newLineIfNotEmpty();
+        _builder_5.append("{");
+        _builder_5.newLine();
+        _builder_5.append("\t");
+        _builder_5.append("return false;");
+        _builder_5.newLine();
+        _builder_5.append("}");
+        _builder_5.newLine();
+        return _builder_5.toString();
+      }
+    }
+    StringConcatenation _builder_6 = new StringConcatenation();
+    _builder_6.append("// missing validation for m");
+    String _name_10 = this.toName(feature);
+    String _firstUpper_10 = StringExtensions.toFirstUpper(_name_10);
+    _builder_6.append(_firstUpper_10, "");
+    _builder_6.newLineIfNotEmpty();
+    return _builder_6.toString();
   }
   
   public String toValidateReference(final String referenceTypeName, final String featureName) {

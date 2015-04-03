@@ -145,6 +145,16 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
+			«ELSEIF feature.isTypeOfDates»
+			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)) {
+				// always getting the Date as a String (from server or JSON)
+				QString «feature.toName.toFirstLower»AsString = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toString();
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, Qt::ISODate);
+				if (!m«feature.toName.toFirstUpper».isValid()) {
+					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
+					qDebug() << "m«feature.toName.toFirstUpper» is not valid for String: " << «feature.toName.toFirstLower»AsString;
+				}
+			}
 			«ELSE»
 			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
 			«ENDIF»
@@ -249,6 +259,10 @@ QVariantMap «dto.toName»::toMap()
 				«ELSE»
 				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»List());
 				«ENDIF»
+			«ELSEIF feature.isTypeOfDates»
+				if(has«feature.toName.toFirstUpper»()){
+					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(Qt::ISODate));
+				}
 			«ELSE»
 			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
@@ -291,6 +305,10 @@ QVariantMap «dto.toName»::toForeignMap()
 				«ELSE»
 				foreignMap.insert(«feature.toName»ForeignKey, «feature.toName»List());
 				«ENDIF»
+			«ELSEIF feature.isTypeOfDates»
+				if(has«feature.toName.toFirstUpper»()){
+					foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper».toString(Qt::ISODate));
+				}
 			«ELSE»
 			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 			«ENDIF»
@@ -333,6 +351,10 @@ QVariantMap «dto.toName»::dataToPersist()
 				«ELSE»
 				persistMap.insert(«feature.toName»Key, «feature.toName»List());
 				«ENDIF»
+			«ELSEIF feature.isTypeOfDates»
+				if(has«feature.toName.toFirstUpper»()){
+					persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(Qt::ISODate));
+				}
 			«ELSE»
 			persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
