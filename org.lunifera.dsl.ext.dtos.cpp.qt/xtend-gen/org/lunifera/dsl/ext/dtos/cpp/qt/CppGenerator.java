@@ -85,8 +85,8 @@ public class CppGenerator {
       for(final LFeature feature : _allFeatures) {
         {
           boolean _and = false;
-          boolean _isTypeOfDTO = this._cppExtensions.isTypeOfDTO(feature);
-          if (!_isTypeOfDTO) {
+          boolean _isTypeOfDataObject = this._cppExtensions.isTypeOfDataObject(feature);
+          if (!_isTypeOfDataObject) {
             _and = false;
           } else {
             boolean _isContained_1 = this._cppExtensions.isContained(feature);
@@ -121,8 +121,8 @@ public class CppGenerator {
           for(final LFeature feature_1 : _allFeatures_1) {
             {
               boolean _and_1 = false;
-              boolean _isTypeOfDTO_1 = this._cppExtensions.isTypeOfDTO(feature_1);
-              if (!_isTypeOfDTO_1) {
+              boolean _isTypeOfDataObject_1 = this._cppExtensions.isTypeOfDataObject(feature_1);
+              if (!_isTypeOfDataObject_1) {
                 _and_1 = false;
               } else {
                 boolean _isContained_2 = this._cppExtensions.isContained(feature_1);
@@ -182,8 +182,8 @@ public class CppGenerator {
           if (!_not) {
             _and_3 = false;
           } else {
-            boolean _isTypeOfDTO = CppGenerator.this._cppExtensions.isTypeOfDTO(it);
-            boolean _not_1 = (!_isTypeOfDTO);
+            boolean _isTypeOfDataObject = CppGenerator.this._cppExtensions.isTypeOfDataObject(it);
+            boolean _not_1 = (!_isTypeOfDataObject);
             _and_3 = _not_1;
           }
           if (!_and_3) {
@@ -391,8 +391,8 @@ public class CppGenerator {
       Iterable<? extends LFeature> _filter_5 = IterableExtensions.filter(_allFeatures_7, _function_5);
       for(final LFeature feature_7 : _filter_5) {
         {
-          boolean _isTypeOfDTO_2 = this._cppExtensions.isTypeOfDTO(feature_7);
-          if (_isTypeOfDTO_2) {
+          boolean _isTypeOfDataObject_2 = this._cppExtensions.isTypeOfDataObject(feature_7);
+          if (_isTypeOfDataObject_2) {
             {
               boolean _isContained_3 = this._cppExtensions.isContained(feature_7);
               if (_isContained_3) {
@@ -467,7 +467,7 @@ public class CppGenerator {
                   _builder.newLineIfNotEmpty();
                   _builder.append("\t");
                   _builder.append("\t\t");
-                  _builder.append("// SIGNAL to request a pointer to the corresponding DTO");
+                  _builder.append("// SIGNAL to request a pointer to the corresponding Data Object");
                   _builder.newLine();
                   _builder.append("\t");
                   _builder.append("\t\t");
@@ -475,7 +475,7 @@ public class CppGenerator {
                   String _name_28 = this._cppExtensions.toName(feature_7);
                   String _firstUpper_11 = StringExtensions.toFirstUpper(_name_28);
                   _builder.append(_firstUpper_11, "\t\t\t");
-                  _builder.append("AsDTO(m");
+                  _builder.append("AsDataObject(m");
                   String _name_29 = this._cppExtensions.toName(feature_7);
                   String _firstUpper_12 = StringExtensions.toFirstUpper(_name_29);
                   _builder.append(_firstUpper_12, "\t\t\t");
@@ -1191,8 +1191,8 @@ public class CppGenerator {
               _builder.append(_validateReference, "\t");
               _builder.newLineIfNotEmpty();
             } else {
-              boolean _isTypeOfDTO_3 = this._cppExtensions.isTypeOfDTO(feature_10);
-              if (_isTypeOfDTO_3) {
+              boolean _isTypeOfDataObject_3 = this._cppExtensions.isTypeOfDataObject(feature_10);
+              if (_isTypeOfDataObject_3) {
                 _builder.append("\t");
                 _builder.append("if(!m");
                 String _name_104 = this._cppExtensions.toName(feature_10);
@@ -1308,8 +1308,8 @@ public class CppGenerator {
       Iterable<? extends LFeature> _filter_10 = IterableExtensions.filter(_allFeatures_12, _function_10);
       for(final LFeature feature_12 : _filter_10) {
         {
-          boolean _isTypeOfDTO_4 = this._cppExtensions.isTypeOfDTO(feature_12);
-          if (_isTypeOfDTO_4) {
+          boolean _isTypeOfDataObject_4 = this._cppExtensions.isTypeOfDataObject(feature_12);
+          if (_isTypeOfDataObject_4) {
             {
               boolean _isContained_4 = this._cppExtensions.isContained(feature_12);
               boolean _not = (!_isContained_4);
@@ -1585,8 +1585,8 @@ public class CppGenerator {
           Iterable<? extends LFeature> _filter_12 = IterableExtensions.filter(_allFeatures_14, _function_12);
           for(final LFeature feature_14 : _filter_12) {
             {
-              boolean _isTypeOfDTO_5 = this._cppExtensions.isTypeOfDTO(feature_14);
-              if (_isTypeOfDTO_5) {
+              boolean _isTypeOfDataObject_5 = this._cppExtensions.isTypeOfDataObject(feature_14);
+              if (_isTypeOfDataObject_5) {
                 {
                   boolean _isContained_5 = this._cppExtensions.isContained(feature_14);
                   boolean _not_1 = (!_isContained_5);
@@ -1880,8 +1880,8 @@ public class CppGenerator {
       Iterable<? extends LFeature> _filter_15 = IterableExtensions.filter(_allFeatures_17, _function_15);
       for(final LFeature feature_17 : _filter_15) {
         {
-          boolean _isTypeOfDTO_6 = this._cppExtensions.isTypeOfDTO(feature_17);
-          if (_isTypeOfDTO_6) {
+          boolean _isTypeOfDataObject_6 = this._cppExtensions.isTypeOfDataObject(feature_17);
+          if (_isTypeOfDataObject_6) {
             {
               boolean _isContained_6 = this._cppExtensions.isContained(feature_17);
               boolean _not_2 = (!_isContained_6);
@@ -2121,7 +2121,7 @@ public class CppGenerator {
         _builder.append("::");
         String _name_189 = this._cppExtensions.toName(feature_19);
         _builder.append(_name_189, "");
-        _builder.append("AsDTO() const");
+        _builder.append("AsDataObject() const");
         _builder.newLineIfNotEmpty();
         _builder.append("{");
         _builder.newLine();
@@ -2130,7 +2130,7 @@ public class CppGenerator {
         String _name_190 = this._cppExtensions.toName(feature_19);
         String _firstUpper_91 = StringExtensions.toFirstUpper(_name_190);
         _builder.append(_firstUpper_91, "\t");
-        _builder.append("AsDTO;");
+        _builder.append("AsDataObject;");
         _builder.newLineIfNotEmpty();
         _builder.append("}");
         _builder.newLine();
@@ -2172,14 +2172,14 @@ public class CppGenerator {
         _builder.append(") {");
         _builder.newLineIfNotEmpty();
         _builder.append("            ");
-        _builder.append("// connected from DTOManager to lookup for DTO");
+        _builder.append("// connected from DataManager to lookup for Data Object");
         _builder.newLine();
         _builder.append("            ");
         _builder.append("emit request");
         String _name_197 = this._cppExtensions.toName(feature_19);
         String _firstUpper_94 = StringExtensions.toFirstUpper(_name_197);
         _builder.append(_firstUpper_94, "            ");
-        _builder.append("AsDTO(");
+        _builder.append("AsDataObject(");
         String _name_198 = this._cppExtensions.toName(feature_19);
         _builder.append(_name_198, "            ");
         _builder.append(");");
@@ -2195,7 +2195,7 @@ public class CppGenerator {
         String _name_199 = this._cppExtensions.toName(feature_19);
         String _firstUpper_95 = StringExtensions.toFirstUpper(_name_199);
         _builder.append(_firstUpper_95, "            ");
-        _builder.append("AsDTO = 0;");
+        _builder.append("AsDataObject = 0;");
         _builder.newLineIfNotEmpty();
         _builder.append("            ");
         _builder.append("emit ");
@@ -2299,14 +2299,14 @@ public class CppGenerator {
         String _name_213 = this._cppExtensions.toName(feature_19);
         String _firstUpper_102 = StringExtensions.toFirstUpper(_name_213);
         _builder.append(_firstUpper_102, "");
-        _builder.append("AsDTO(){");
+        _builder.append("AsDataObject(){");
         _builder.newLineIfNotEmpty();
         _builder.append("    ");
         _builder.append("if(m");
         String _name_214 = this._cppExtensions.toName(feature_19);
         String _firstUpper_103 = StringExtensions.toFirstUpper(_name_214);
         _builder.append(_firstUpper_103, "    ");
-        _builder.append("AsDTO){");
+        _builder.append("AsDataObject){");
         _builder.newLineIfNotEmpty();
         _builder.append("        ");
         _builder.append("return true;");
@@ -2331,7 +2331,7 @@ public class CppGenerator {
         String _name_216 = this._cppExtensions.toName(feature_19);
         String _firstUpper_104 = StringExtensions.toFirstUpper(_name_216);
         _builder.append(_firstUpper_104, "");
-        _builder.append("AsDTO(");
+        _builder.append("AsDataObject(");
         String _typeOrQObject_7 = this._cppExtensions.toTypeOrQObject(feature_19);
         _builder.append(_typeOrQObject_7, "");
         _builder.append(" ");
@@ -2368,7 +2368,7 @@ public class CppGenerator {
         String _name_218 = this._cppExtensions.toName(feature_19);
         String _firstUpper_106 = StringExtensions.toFirstUpper(_name_218);
         _builder.append(_firstUpper_106, "            ");
-        _builder.append("AsDTO = ");
+        _builder.append("AsDataObject = ");
         String _typeName_35 = this._cppExtensions.toTypeName(feature_19);
         String _firstLower_29 = StringExtensions.toFirstLower(_typeName_35);
         _builder.append(_firstLower_29, "            ");
@@ -2408,8 +2408,8 @@ public class CppGenerator {
         _builder.newLineIfNotEmpty();
         {
           boolean _and_2 = false;
-          boolean _isTypeOfDTO_7 = this._cppExtensions.isTypeOfDTO(feature_20);
-          if (!_isTypeOfDTO_7) {
+          boolean _isTypeOfDataObject_7 = this._cppExtensions.isTypeOfDataObject(feature_20);
+          if (!_isTypeOfDataObject_7) {
             _and_2 = false;
           } else {
             boolean _isContained_7 = this._cppExtensions.isContained(feature_20);
@@ -2666,8 +2666,8 @@ public class CppGenerator {
               _builder.append(") {");
               _builder.newLineIfNotEmpty();
               {
-                boolean _isTypeOfDTO_8 = this._cppExtensions.isTypeOfDTO(feature_20);
-                if (_isTypeOfDTO_8) {
+                boolean _isTypeOfDataObject_8 = this._cppExtensions.isTypeOfDataObject(feature_20);
+                if (_isTypeOfDataObject_8) {
                   _builder.append("\t\t");
                   _builder.append("if (m");
                   String _name_257 = this._cppExtensions.toName(feature_20);
@@ -2731,8 +2731,8 @@ public class CppGenerator {
               _builder.append("}");
               _builder.newLine();
               {
-                boolean _isTypeOfDTO_9 = this._cppExtensions.isTypeOfDTO(feature_20);
-                if (_isTypeOfDTO_9) {
+                boolean _isTypeOfDataObject_9 = this._cppExtensions.isTypeOfDataObject(feature_20);
+                if (_isTypeOfDataObject_9) {
                   _builder.append("void ");
                   String _name_266 = this._cppExtensions.toName(dto);
                   _builder.append(_name_266, "");
@@ -4487,7 +4487,7 @@ public class CppGenerator {
   
   protected CharSequence _foo(final LDtoReference ref) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("// do DTO ref ");
+    _builder.append("// REF");
     _builder.newLine();
     {
       LDtoReference _opposite = ref.getOpposite();

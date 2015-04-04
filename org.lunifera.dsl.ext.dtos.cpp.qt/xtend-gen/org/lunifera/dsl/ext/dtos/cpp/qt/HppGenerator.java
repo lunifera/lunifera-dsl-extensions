@@ -186,7 +186,7 @@ public class HppGenerator {
       List<? extends LFeature> _allFeatures_6 = dto.getAllFeatures();
       final Function1<LFeature, Boolean> _function_6 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
-          return Boolean.valueOf(HppGenerator.this._cppExtensions.isTypeOfDTO(it));
+          return Boolean.valueOf(HppGenerator.this._cppExtensions.isTypeOfDataObject(it));
         }
       };
       Iterable<? extends LFeature> _filter_6 = IterableExtensions.filter(_allFeatures_6, _function_6);
@@ -244,8 +244,8 @@ public class HppGenerator {
       for(final LFeature feature : _filter_7) {
         {
           boolean _and = false;
-          boolean _isTypeOfDTO = this._cppExtensions.isTypeOfDTO(feature);
-          if (!_isTypeOfDTO) {
+          boolean _isTypeOfDataObject = this._cppExtensions.isTypeOfDataObject(feature);
+          if (!_isTypeOfDataObject) {
             _and = false;
           } else {
             boolean _isContained_1 = this._cppExtensions.isContained(feature);
@@ -305,10 +305,10 @@ public class HppGenerator {
               _builder.append(" ");
               String _name_11 = this._cppExtensions.toName(feature);
               _builder.append(_name_11, "\t");
-              _builder.append("AsDTO READ ");
+              _builder.append("AsDataObject READ ");
               String _name_12 = this._cppExtensions.toName(feature);
               _builder.append(_name_12, "\t");
-              _builder.append("AsDTO)");
+              _builder.append("AsDataObject)");
               _builder.newLineIfNotEmpty();
             } else {
               boolean _isEnum = this._cppExtensions.isEnum(feature);
@@ -556,7 +556,7 @@ public class HppGenerator {
             _builder.append(" ");
             String _name_37 = this._cppExtensions.toName(feature_3);
             _builder.append(_name_37, "\t");
-            _builder.append("AsDTO() const;");
+            _builder.append("AsDataObject() const;");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("Q_INVOKABLE");
@@ -590,7 +590,7 @@ public class HppGenerator {
             String _name_40 = this._cppExtensions.toName(feature_3);
             String _firstUpper_9 = StringExtensions.toFirstUpper(_name_40);
             _builder.append(_firstUpper_9, "\t");
-            _builder.append("AsDTO();");
+            _builder.append("AsDataObject();");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.newLine();
@@ -646,8 +646,8 @@ public class HppGenerator {
               }
               {
                 boolean _and_1 = false;
-                boolean _isTypeOfDTO_1 = this._cppExtensions.isTypeOfDTO(feature_3);
-                if (!_isTypeOfDTO_1) {
+                boolean _isTypeOfDataObject_1 = this._cppExtensions.isTypeOfDataObject(feature_3);
+                if (!_isTypeOfDataObject_1) {
                   _and_1 = false;
                 } else {
                   boolean _isContained_2 = this._cppExtensions.isContained(feature_3);
@@ -675,8 +675,8 @@ public class HppGenerator {
                   _builder.append(");");
                   _builder.newLineIfNotEmpty();
                   {
-                    boolean _isTypeOfDTO_2 = this._cppExtensions.isTypeOfDTO(feature_3);
-                    if (_isTypeOfDTO_2) {
+                    boolean _isTypeOfDataObject_2 = this._cppExtensions.isTypeOfDataObject(feature_3);
+                    if (_isTypeOfDataObject_2) {
                       _builder.append("\t");
                       _builder.append("Q_INVOKABLE");
                       _builder.newLine();
@@ -1089,7 +1089,7 @@ public class HppGenerator {
             String _name_86 = this._cppExtensions.toName(feature_5);
             String _firstUpper_31 = StringExtensions.toFirstUpper(_name_86);
             _builder.append(_firstUpper_31, "\t");
-            _builder.append("AsDTO(");
+            _builder.append("AsDataObject(");
             String _referenceDomainKeyType_5 = this._cppExtensions.referenceDomainKeyType(feature_5);
             _builder.append(_referenceDomainKeyType_5, "\t");
             _builder.append(" ");
@@ -1112,8 +1112,8 @@ public class HppGenerator {
             } else {
               {
                 boolean _and_2 = false;
-                boolean _isTypeOfDTO_3 = this._cppExtensions.isTypeOfDTO(feature_5);
-                if (!_isTypeOfDTO_3) {
+                boolean _isTypeOfDataObject_3 = this._cppExtensions.isTypeOfDataObject(feature_5);
+                if (!_isTypeOfDataObject_3) {
                   _and_2 = false;
                 } else {
                   boolean _isContained_3 = this._cppExtensions.isContained(feature_5);
@@ -1140,8 +1140,8 @@ public class HppGenerator {
                   _builder.append(");");
                   _builder.newLineIfNotEmpty();
                   {
-                    boolean _isTypeOfDTO_4 = this._cppExtensions.isTypeOfDTO(feature_5);
-                    if (_isTypeOfDTO_4) {
+                    boolean _isTypeOfDataObject_4 = this._cppExtensions.isTypeOfDataObject(feature_5);
+                    if (_isTypeOfDataObject_4) {
                       _builder.append("\t");
                       _builder.append("void ");
                       String _name_93 = this._cppExtensions.toName(feature_5);
@@ -1315,7 +1315,7 @@ public class HppGenerator {
                 String _name_106 = this._cppExtensions.toName(feature_7);
                 String _firstUpper_40 = StringExtensions.toFirstUpper(_name_106);
                 _builder.append(_firstUpper_40, "\t");
-                _builder.append("AsDTO(");
+                _builder.append("AsDataObject(");
                 String _typeOrQObject_10 = this._cppExtensions.toTypeOrQObject(feature_7);
                 _builder.append(_typeOrQObject_10, "\t");
                 _builder.append(" ");
@@ -1355,8 +1355,8 @@ public class HppGenerator {
       for(final LFeature feature_8 : _filter_15) {
         {
           boolean _and_3 = false;
-          boolean _isTypeOfDTO_5 = this._cppExtensions.isTypeOfDTO(feature_8);
-          if (!_isTypeOfDTO_5) {
+          boolean _isTypeOfDataObject_5 = this._cppExtensions.isTypeOfDataObject(feature_8);
+          if (!_isTypeOfDataObject_5) {
             _and_3 = false;
           } else {
             boolean _isContained_4 = this._cppExtensions.isContained(feature_8);
@@ -1389,7 +1389,7 @@ public class HppGenerator {
               String _name_110 = this._cppExtensions.toName(feature_8);
               String _firstUpper_44 = StringExtensions.toFirstUpper(_name_110);
               _builder.append(_firstUpper_44, "\t");
-              _builder.append("AsDTO;");
+              _builder.append("AsDataObject;");
               _builder.newLineIfNotEmpty();
             } else {
               boolean _isEnum_3 = this._cppExtensions.isEnum(feature_8);

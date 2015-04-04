@@ -71,8 +71,8 @@ class CppExtensions {
 		}
 		modelExtension.toName(target)
 	}
-	
-		def dispatch String toDateFormatString(LAnnotationTarget target) {
+
+	def dispatch String toDateFormatString(LAnnotationTarget target) {
 		return ""
 	}
 
@@ -185,13 +185,22 @@ class CppExtensions {
 		modelExtension.toTypeName(ref as LDtoAbstractReference)
 	}
 
-	def boolean isTypeOfDTO(LFeature feature) {
-		if (feature.toTypeName.endsWith("DTO")) {
+	def dispatch boolean isTypeOfDataObject(LDtoAbstractAttribute att) {
+		if(att.type instanceof LDto) {
 			return true
 		}
 		return false
 	}
-	
+	def dispatch boolean isTypeOfDataObject(LDtoAbstractReference ref) {
+		if(ref.type instanceof LDto) {
+			return true
+		}
+		return false
+	}
+	def dispatch boolean isTypeOfDataObject(LFeature feature) {
+		return false
+	}
+
 	def boolean isTypeOfDates(LFeature feature) {
 		if (feature.toTypeName == "QDate" || feature.toTypeName == "QTime" || feature.toTypeName == "QDateTime") {
 			return true
@@ -220,7 +229,7 @@ class CppExtensions {
 
 	def int enumIndex(LEnum en, LEnumLiteral lit) {
 		for (var i = 0; i < en.literals.size; i++) {
-			if(lit == en.literals.get(i)){
+			if (lit == en.literals.get(i)) {
 				return i;
 			}
 		}
@@ -397,14 +406,14 @@ class CppExtensions {
 					}
 				'''.toString
 			case "QDate":
-			return '''
+				return '''
 					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
 					{
 						return false;
 					}
 				'''.toString
 			case "QTime":
-			return '''
+				return '''
 					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
 					{
 						return false;
@@ -577,7 +586,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean existsDates(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isTypeOfDates) {
@@ -595,7 +604,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean existsTransient(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isTransient) {
@@ -606,7 +615,7 @@ class CppExtensions {
 	}
 
 	def toTypeOrQObject(LFeature feature) {
-		if (feature.toTypeName.endsWith("DTO")) {
+		if (feature.isTypeOfDataObject) {
 			return '''«feature.toTypeName»*'''.toString
 		}
 		return feature.toTypeName
@@ -618,7 +627,7 @@ class CppExtensions {
 		}
 		return '''Map'''.toString
 	}
-	
+
 	def String getDateFormatStrngValue(LFeature member) {
 		val annoDef = typeof(DateFormatString).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {

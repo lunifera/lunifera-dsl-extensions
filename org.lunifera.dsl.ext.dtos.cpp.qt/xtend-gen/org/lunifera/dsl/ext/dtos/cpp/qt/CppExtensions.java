@@ -232,12 +232,23 @@ public class CppExtensions {
     return this.modelExtension.toTypeName(((LDtoAbstractReference) ref));
   }
   
-  public boolean isTypeOfDTO(final LFeature feature) {
-    String _typeName = this.toTypeName(feature);
-    boolean _endsWith = _typeName.endsWith("DTO");
-    if (_endsWith) {
+  protected boolean _isTypeOfDataObject(final LDtoAbstractAttribute att) {
+    LScalarType _type = att.getType();
+    if ((_type instanceof LDto)) {
       return true;
     }
+    return false;
+  }
+  
+  protected boolean _isTypeOfDataObject(final LDtoAbstractReference ref) {
+    LDto _type = ref.getType();
+    if ((_type instanceof LDto)) {
+      return true;
+    }
+    return false;
+  }
+  
+  protected boolean _isTypeOfDataObject(final LFeature feature) {
     return false;
   }
   
@@ -1007,12 +1018,11 @@ public class CppExtensions {
   }
   
   public String toTypeOrQObject(final LFeature feature) {
-    String _typeName = this.toTypeName(feature);
-    boolean _endsWith = _typeName.endsWith("DTO");
-    if (_endsWith) {
+    boolean _isTypeOfDataObject = this.isTypeOfDataObject(feature);
+    if (_isTypeOfDataObject) {
       StringConcatenation _builder = new StringConcatenation();
-      String _typeName_1 = this.toTypeName(feature);
-      _builder.append(_typeName_1, "");
+      String _typeName = this.toTypeName(feature);
+      _builder.append(_typeName, "");
       _builder.append("*");
       return _builder.toString();
     }
@@ -1196,6 +1206,19 @@ public class CppExtensions {
       return _toTypeName((LAttribute)att);
     } else if (att instanceof LReference) {
       return _toTypeName((LReference)att);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public boolean isTypeOfDataObject(final LFeature att) {
+    if (att instanceof LDtoAbstractAttribute) {
+      return _isTypeOfDataObject((LDtoAbstractAttribute)att);
+    } else if (att instanceof LDtoAbstractReference) {
+      return _isTypeOfDataObject((LDtoAbstractReference)att);
+    } else if (att != null) {
+      return _isTypeOfDataObject(att);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());
