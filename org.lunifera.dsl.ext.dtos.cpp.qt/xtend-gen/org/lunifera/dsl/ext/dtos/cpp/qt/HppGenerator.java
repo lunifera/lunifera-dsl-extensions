@@ -493,8 +493,8 @@ public class HppGenerator {
     _builder.append("\t");
     _builder.newLine();
     {
-      boolean _existsServerName = this._cppExtensions.existsServerName(dto);
-      if (_existsServerName) {
+      boolean _existsForeignPropertyName = this._cppExtensions.existsForeignPropertyName(dto);
+      if (_existsForeignPropertyName) {
         _builder.append("\t");
         _builder.append("QVariantMap toForeignMap();");
         _builder.newLine();

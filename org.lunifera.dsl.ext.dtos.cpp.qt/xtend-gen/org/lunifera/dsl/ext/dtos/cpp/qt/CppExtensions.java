@@ -37,8 +37,9 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues;
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName;
 import org.lunifera.dsl.semantic.common.helper.Bounds;
 import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
@@ -70,14 +71,14 @@ public class CppExtensions {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toServerName(final LAnnotationTarget target) {
+  protected String _toForeignPropertyName(final LAnnotationTarget target) {
     return this.modelExtension.toName(target);
   }
   
-  protected String _toServerName(final LAttribute target) {
+  protected String _toForeignPropertyName(final LAttribute target) {
     String _xblockexpression = null;
     {
-      final String value = this.getServerNameValue(target);
+      final String value = this.getForeignPropertyNameValue(target);
       boolean _notEquals = (!Objects.equal(value, null));
       if (_notEquals) {
         return value;
@@ -87,10 +88,10 @@ public class CppExtensions {
     return _xblockexpression;
   }
   
-  protected String _toServerName(final LReference target) {
+  protected String _toForeignPropertyName(final LReference target) {
     String _xblockexpression = null;
     {
-      final String value = this.getServerNameValue(target);
+      final String value = this.getForeignPropertyNameValue(target);
       boolean _notEquals = (!Objects.equal(value, null));
       if (_notEquals) {
         return value;
@@ -98,6 +99,27 @@ public class CppExtensions {
       _xblockexpression = this.modelExtension.toName(target);
     }
     return _xblockexpression;
+  }
+  
+  protected String _toDateFormatString(final LAnnotationTarget target) {
+    return this.modelExtension.toName(target);
+  }
+  
+  protected String _toDateFormatString(final LAttribute target) {
+    String _xblockexpression = null;
+    {
+      final String value = this.getDateFormatStrngValue(target);
+      boolean _notEquals = (!Objects.equal(value, null));
+      if (_notEquals) {
+        return value;
+      }
+      _xblockexpression = this.modelExtension.toName(target);
+    }
+    return _xblockexpression;
+  }
+  
+  protected String _toDateFormatString(final LReference target) {
+    return this.modelExtension.toName(target);
   }
   
   protected String _toEnumValues(final LAttribute target) {
@@ -851,9 +873,9 @@ public class CppExtensions {
     return "";
   }
   
-  public boolean hasServerName(final LFeature feature) {
-    String _serverNameValue = this.getServerNameValue(feature);
-    boolean _equals = Objects.equal(_serverNameValue, null);
+  public boolean hasForeignPropertyName(final LFeature feature) {
+    String _foreignPropertyNameValue = this.getForeignPropertyNameValue(feature);
+    boolean _equals = Objects.equal(_foreignPropertyNameValue, null);
     if (_equals) {
       return false;
     }
@@ -929,11 +951,11 @@ public class CppExtensions {
     return "QString";
   }
   
-  public boolean existsServerName(final LDto dto) {
+  public boolean existsForeignPropertyName(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
-      boolean _hasServerName = this.hasServerName(feature);
-      if (_hasServerName) {
+      boolean _hasForeignPropertyName = this.hasForeignPropertyName(feature);
+      if (_hasForeignPropertyName) {
         return true;
       }
     }
@@ -998,9 +1020,27 @@ public class CppExtensions {
     return _builder_1.toString();
   }
   
-  public String getServerNameValue(final LFeature member) {
+  public String getDateFormatStrngValue(final LFeature member) {
     EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
-    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(ServerName.class, _resolvedAnnotations);
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(DateFormatString.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
+  }
+  
+  public String getForeignPropertyNameValue(final LFeature member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(ForeignPropertyName.class, _resolvedAnnotations);
     boolean _notEquals = (!Objects.equal(annoDef, null));
     if (_notEquals) {
       XAnnotation _annotation = annoDef.getAnnotation();
@@ -1034,13 +1074,26 @@ public class CppExtensions {
     }
   }
   
-  public String toServerName(final LAnnotationTarget target) {
+  public String toForeignPropertyName(final LAnnotationTarget target) {
     if (target instanceof LAttribute) {
-      return _toServerName((LAttribute)target);
+      return _toForeignPropertyName((LAttribute)target);
     } else if (target instanceof LReference) {
-      return _toServerName((LReference)target);
+      return _toForeignPropertyName((LReference)target);
     } else if (target != null) {
-      return _toServerName(target);
+      return _toForeignPropertyName(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public String toDateFormatString(final LAnnotationTarget target) {
+    if (target instanceof LAttribute) {
+      return _toDateFormatString((LAttribute)target);
+    } else if (target instanceof LReference) {
+      return _toDateFormatString((LReference)target);
+    } else if (target != null) {
+      return _toDateFormatString(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

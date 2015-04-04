@@ -27,7 +27,6 @@ import org.eclipse.xtext.xbase.XStringLiteral
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
 import org.lunifera.dsl.semantic.common.helper.Bounds
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
@@ -37,6 +36,7 @@ import org.lunifera.dsl.semantic.dto.LDto
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
 
 class ManagerExtensions {
 

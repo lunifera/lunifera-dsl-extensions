@@ -112,8 +112,8 @@ public class CppGenerator {
     }
     _builder.newLine();
     {
-      boolean _existsServerName = this._cppExtensions.existsServerName(dto);
-      if (_existsServerName) {
+      boolean _existsForeignPropertyName = this._cppExtensions.existsForeignPropertyName(dto);
+      if (_existsForeignPropertyName) {
         _builder.append("// keys used from Server API etc");
         _builder.newLine();
         {
@@ -138,8 +138,8 @@ public class CppGenerator {
                 String _name_5 = this._cppExtensions.toName(feature_1);
                 _builder.append(_name_5, "");
                 _builder.append("ForeignKey = \"");
-                String _serverName = this._cppExtensions.toServerName(feature_1);
-                _builder.append(_serverName, "");
+                String _foreignPropertyName = this._cppExtensions.toForeignPropertyName(feature_1);
+                _builder.append(_foreignPropertyName, "");
                 _builder.append("\";\t");
                 _builder.newLineIfNotEmpty();
               }
@@ -1443,8 +1443,8 @@ public class CppGenerator {
     _builder.newLine();
     _builder.newLine();
     {
-      boolean _existsServerName_1 = this._cppExtensions.existsServerName(dto);
-      if (_existsServerName_1) {
+      boolean _existsForeignPropertyName_1 = this._cppExtensions.existsForeignPropertyName(dto);
+      if (_existsForeignPropertyName_1) {
         _builder.append("/*");
         _builder.newLine();
         _builder.append(" ");

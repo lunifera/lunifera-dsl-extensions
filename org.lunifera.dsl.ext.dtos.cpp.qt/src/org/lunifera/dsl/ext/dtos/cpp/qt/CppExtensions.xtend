@@ -27,8 +27,6 @@ import org.eclipse.xtext.xbase.XStringLiteral
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ServerName
-import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
 import org.lunifera.dsl.semantic.common.helper.Bounds
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget
 import org.lunifera.dsl.semantic.common.types.LAttribute
@@ -40,6 +38,9 @@ import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.semantic.common.types.LEnum
 import org.lunifera.dsl.semantic.common.types.LEnumLiteral
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString
 
 class CppExtensions {
 
@@ -51,23 +52,39 @@ class CppExtensions {
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toServerName(LAnnotationTarget target) {
+	def dispatch String toForeignPropertyName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toServerName(LAttribute target) {
-		val value = target.serverNameValue
+	def dispatch String toForeignPropertyName(LAttribute target) {
+		val value = target.foreignPropertyNameValue
 		if (value != null) {
 			return value
 		}
 		modelExtension.toName(target)
 	}
 
-	def dispatch String toServerName(LReference target) {
-		val value = target.serverNameValue
+	def dispatch String toForeignPropertyName(LReference target) {
+		val value = target.foreignPropertyNameValue
 		if (value != null) {
 			return value
 		}
+		modelExtension.toName(target)
+	}
+	
+		def dispatch String toDateFormatString(LAnnotationTarget target) {
+		modelExtension.toName(target)
+	}
+
+	def dispatch String toDateFormatString(LAttribute target) {
+		val value = target.dateFormatStrngValue
+		if (value != null) {
+			return value
+		}
+		modelExtension.toName(target)
+	}
+
+	def dispatch String toDateFormatString(LReference target) {
 		modelExtension.toName(target)
 	}
 
@@ -479,8 +496,8 @@ class CppExtensions {
 		return ""
 	}
 
-	def boolean hasServerName(LFeature feature) {
-		if (feature.serverNameValue == null) {
+	def boolean hasForeignPropertyName(LFeature feature) {
+		if (feature.foreignPropertyNameValue == null) {
 			return false
 		}
 		return true
@@ -543,9 +560,9 @@ class CppExtensions {
 		return "QString"
 	}
 
-	def boolean existsServerName(LDto dto) {
+	def boolean existsForeignPropertyName(LDto dto) {
 		for (feature : dto.allFeatures) {
-			if (feature.hasServerName) {
+			if (feature.hasForeignPropertyName) {
 				return true
 			}
 		}
@@ -592,9 +609,20 @@ class CppExtensions {
 		}
 		return '''Map'''.toString
 	}
+	
+	def String getDateFormatStrngValue(LFeature member) {
+		val annoDef = typeof(DateFormatString).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
 
-	def String getServerNameValue(LFeature member) {
-		val annoDef = typeof(ServerName).getRedefined(member.resolvedAnnotations)
+	def String getForeignPropertyNameValue(LFeature member) {
+		val annoDef = typeof(ForeignPropertyName).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

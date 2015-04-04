@@ -112,7 +112,7 @@ class HppGenerator {
 		Q_INVOKABLE
 		QVariantMap toMap();
 		
-		«IF dto.existsServerName»
+		«IF dto.existsForeignPropertyName»
 		QVariantMap toForeignMap();
 		«ENDIF»
 		QVariantMap dataToPersist();
