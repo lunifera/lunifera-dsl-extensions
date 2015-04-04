@@ -501,7 +501,7 @@ public class HppGenerator {
       }
     }
     _builder.append("\t");
-    _builder.append("QVariantMap dataToPersist();");
+    _builder.append("QVariantMap toCacheMap();");
     _builder.newLine();
     _builder.newLine();
     {

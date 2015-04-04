@@ -1209,7 +1209,7 @@ public class CppGenerator {
     _builder.append("* exports ALL data including transient properties");
     _builder.newLine();
     _builder.append(" ");
-    _builder.append("* To store persistent Data in JsonDataAccess use dataToPersist()");
+    _builder.append("* To store persistent Data in JsonDataAccess use toCacheMap()");
     _builder.newLine();
     _builder.append(" ");
     _builder.append("*/");
@@ -1695,12 +1695,12 @@ public class CppGenerator {
     _builder.append("QVariantMap ");
     String _name_157 = this._cppExtensions.toName(dto);
     _builder.append(_name_157, "");
-    _builder.append("::dataToPersist()");
+    _builder.append("::toCacheMap()");
     _builder.newLineIfNotEmpty();
     _builder.append("{");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("QVariantMap persistMap;");
+    _builder.append("QVariantMap cacheMap;");
     _builder.newLine();
     {
       List<? extends LFeature> _allFeatures_14 = dto.getAllFeatures();
@@ -1733,7 +1733,7 @@ public class CppGenerator {
         _builder.append(")");
         _builder.newLineIfNotEmpty();
         _builder.append("\t");
-        _builder.append("persistMap.insert(");
+        _builder.append("cacheMap.insert(");
         String _name_159 = this._cppExtensions.toName(feature_14);
         _builder.append(_name_159, "\t");
         _builder.append("Key, m");
@@ -1784,7 +1784,7 @@ public class CppGenerator {
                   boolean _isToMany_3 = this._cppExtensions.isToMany(feature_15);
                   if (_isToMany_3) {
                     _builder.append("\t");
-                    _builder.append("persistMap.insert(");
+                    _builder.append("cacheMap.insert(");
                     String _name_162 = this._cppExtensions.toName(feature_15);
                     _builder.append(_name_162, "\t");
                     _builder.append("Key, ");
@@ -1802,7 +1802,7 @@ public class CppGenerator {
                     _builder.newLineIfNotEmpty();
                     _builder.append("\t");
                     _builder.append("\t");
-                    _builder.append("persistMap.insert(");
+                    _builder.append("cacheMap.insert(");
                     String _name_165 = this._cppExtensions.toName(feature_15);
                     _builder.append(_name_165, "\t\t");
                     _builder.append("Key, m");
@@ -1843,7 +1843,7 @@ public class CppGenerator {
                   boolean _equals_4 = Objects.equal(_typeName_27, "QString");
                   if (_equals_4) {
                     _builder.append("\t");
-                    _builder.append("persistMap.insert(");
+                    _builder.append("cacheMap.insert(");
                     String _name_169 = this._cppExtensions.toName(feature_15);
                     _builder.append(_name_169, "\t");
                     _builder.append("Key, m");
@@ -1854,7 +1854,7 @@ public class CppGenerator {
                     _builder.newLineIfNotEmpty();
                   } else {
                     _builder.append("\t");
-                    _builder.append("persistMap.insert(");
+                    _builder.append("cacheMap.insert(");
                     String _name_171 = this._cppExtensions.toName(feature_15);
                     _builder.append(_name_171, "\t");
                     _builder.append("Key, ");
@@ -1876,7 +1876,7 @@ public class CppGenerator {
                   _builder.newLineIfNotEmpty();
                   _builder.append("\t");
                   _builder.append("\t");
-                  _builder.append("persistMap.insert(");
+                  _builder.append("cacheMap.insert(");
                   String _name_174 = this._cppExtensions.toName(feature_15);
                   _builder.append(_name_174, "\t\t");
                   _builder.append("Key, m");
@@ -1893,7 +1893,7 @@ public class CppGenerator {
                   _builder.newLine();
                 } else {
                   _builder.append("\t");
-                  _builder.append("persistMap.insert(");
+                  _builder.append("cacheMap.insert(");
                   String _name_176 = this._cppExtensions.toName(feature_15);
                   _builder.append(_name_176, "\t");
                   _builder.append("Key, m");
@@ -1927,7 +1927,7 @@ public class CppGenerator {
       }
     }
     _builder.append("\t");
-    _builder.append("return persistMap;");
+    _builder.append("return cacheMap;");
     _builder.newLine();
     _builder.append("}");
     _builder.newLine();

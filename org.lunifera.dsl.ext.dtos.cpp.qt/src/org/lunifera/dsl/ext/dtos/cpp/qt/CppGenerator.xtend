@@ -230,7 +230,7 @@ bool «dto.toName»::isValid()
 /*
  * Exports Properties from «dto.toName» as QVariantMap
  * exports ALL data including transient properties
- * To store persistent Data in JsonDataAccess use dataToPersist()
+ * To store persistent Data in JsonDataAccess use toCacheMap()
  */
 QVariantMap «dto.toName»::toMap()
 {
@@ -323,22 +323,22 @@ QVariantMap «dto.toName»::toForeignMap()
  * transient properties are excluded
  * To export ALL data use toMap()
  */
-QVariantMap «dto.toName»::dataToPersist()
+QVariantMap «dto.toName»::toCacheMap()
 {
-	QVariantMap persistMap;
+	QVariantMap cacheMap;
 	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy]»
 		«IF feature.isTypeOfDTO»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				persistMap.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+				cacheMap.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if(m«feature.toName.toFirstUpper»){
-					persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 				}
 			«ENDIF»
 			«ELSE»
@@ -347,23 +347,23 @@ QVariantMap «dto.toName»::dataToPersist()
 		«ELSE» 
 			«IF feature.isArrayList»
 				«IF feature.toTypeName == "QString"»
-				persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
-				persistMap.insert(«feature.toName»Key, «feature.toName»List());
+				cacheMap.insert(«feature.toName»Key, «feature.toName»List());
 				«ENDIF»
 			«ELSEIF feature.isTypeOfDates»
 				if(has«feature.toName.toFirstUpper»()){
-					persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+					cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
-			persistMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isTransient]»
 		// excluded: m«feature.toName.toFirstUpper»
 	«ENDFOR»
-	return persistMap;
+	return cacheMap;
 }
 «FOR feature : dto.allFeatures.filter[!isToMany && isLazy]»
 «feature.foo»
