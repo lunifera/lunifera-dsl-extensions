@@ -995,6 +995,17 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean existsTransient(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isTransient = this.isTransient(feature);
+      if (_isTransient) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public String toTypeOrQObject(final LFeature feature) {
     String _typeName = this.toTypeName(feature);
     boolean _endsWith = _typeName.endsWith("DTO");

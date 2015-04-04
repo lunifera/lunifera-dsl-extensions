@@ -595,6 +595,15 @@ class CppExtensions {
 		}
 		return false
 	}
+	
+	def boolean existsTransient(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isTransient) {
+				return true
+			}
+		}
+		return false
+	}
 
 	def toTypeOrQObject(LFeature feature) {
 		if (feature.toTypeName.endsWith("DTO")) {

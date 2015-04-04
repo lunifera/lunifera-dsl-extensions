@@ -91,6 +91,12 @@ class CppGenerator {
 		m«feature.toName.toFirstUpper» = «feature.toTypeName»();
 		«ENDFOR»
 	«ENDIF»
+	«IF dto.existsTransient»
+		// transient values (not cached)
+		«FOR feature : dto.allFeatures.filter[isTransient]»
+		// «feature.toTypeName» m«feature.toName.toFirstUpper»
+		«ENDFOR»
+	«ENDIF»
 }
 
 /*
@@ -127,7 +133,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			«ENDIF»
 		«ELSE» 
 			«IF feature.isTransient»
-			// m«feature.toName.toFirstUpper» is transient - perhaps not included
+			// m«feature.toName.toFirstUpper» is transient
 			if(m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)){
 				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
 			}
@@ -236,7 +242,9 @@ QVariantMap «dto.toName»::toMap()
 {
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		if (has«feature.toName.toFirstUpper»()) {
+			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isLazy]»
 		«IF feature.isTypeOfDTO»
@@ -254,6 +262,7 @@ QVariantMap «dto.toName»::toMap()
 			«ENDIF»
 		«ELSE» 
 			«IF feature.isArrayList»
+				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
 				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
@@ -264,6 +273,9 @@ QVariantMap «dto.toName»::toMap()
 					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
+			«IF feature.isEnum»
+			// ENUM always as  int
+			«ENDIF»
 			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»
@@ -282,7 +294,9 @@ QVariantMap «dto.toName»::toForeignMap()
 	QVariantMap foreignMap;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+		if (has«feature.toName.toFirstUpper»()) {
+			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isLazy]»
 		«IF feature.isTypeOfDTO»
@@ -300,6 +314,7 @@ QVariantMap «dto.toName»::toForeignMap()
 			«ENDIF»
 		«ELSE» 
 			«IF feature.isArrayList»
+				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
 				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
@@ -310,6 +325,9 @@ QVariantMap «dto.toName»::toForeignMap()
 					foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
+			«IF feature.isEnum»
+			// ENUM always as  int
+			«ENDIF»
 			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»	
@@ -320,7 +338,8 @@ QVariantMap «dto.toName»::toForeignMap()
 
 /*
  * Exports Properties from «dto.toName» as QVariantMap
- * transient properties are excluded
+ * transient properties are excluded:
+ «IF dto.existsTransient»* «FOR feature : dto.allFeatures.filter[isTransient] SEPARATOR ", "»m«feature.toName.toFirstUpper»«ENDFOR»«ENDIF»
  * To export ALL data use toMap()
  */
 QVariantMap «dto.toName»::toCacheMap()
@@ -328,7 +347,9 @@ QVariantMap «dto.toName»::toCacheMap()
 	QVariantMap cacheMap;
 	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		if (has«feature.toName.toFirstUpper»()) {
+			cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy]»
 		«IF feature.isTypeOfDTO»
@@ -346,6 +367,7 @@ QVariantMap «dto.toName»::toCacheMap()
 			«ENDIF»
 		«ELSE» 
 			«IF feature.isArrayList»
+				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
 				cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
@@ -356,6 +378,9 @@ QVariantMap «dto.toName»::toCacheMap()
 					cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
+			«IF feature.isEnum»
+			// ENUM always as  int
+			«ENDIF»
 			cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»
