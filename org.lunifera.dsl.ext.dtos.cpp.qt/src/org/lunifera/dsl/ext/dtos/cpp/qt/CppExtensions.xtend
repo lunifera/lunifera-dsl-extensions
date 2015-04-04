@@ -73,19 +73,19 @@ class CppExtensions {
 	}
 	
 		def dispatch String toDateFormatString(LAnnotationTarget target) {
-		modelExtension.toName(target)
+		return ""
 	}
 
 	def dispatch String toDateFormatString(LAttribute target) {
 		val value = target.dateFormatStrngValue
 		if (value != null) {
-			return value
+			return '''"«value»"'''.toString
 		}
-		modelExtension.toName(target)
+		return "Qt::ISODate"
 	}
 
 	def dispatch String toDateFormatString(LReference target) {
-		modelExtension.toName(target)
+		return ""
 	}
 
 	def dispatch String toEnumValues(LAttribute target) {

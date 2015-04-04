@@ -740,7 +740,10 @@ public class CppGenerator {
                     String _name_65 = this._cppExtensions.toName(feature_6);
                     String _firstLower_11 = StringExtensions.toFirstLower(_name_65);
                     _builder.append(_firstLower_11, "\t\t");
-                    _builder.append("AsString, Qt::ISODate);");
+                    _builder.append("AsString, ");
+                    String _dateFormatString = this._cppExtensions.toDateFormatString(feature_6);
+                    _builder.append(_dateFormatString, "\t\t");
+                    _builder.append(");");
                     _builder.newLineIfNotEmpty();
                     _builder.append("\t");
                     _builder.append("\t");
@@ -1405,7 +1408,10 @@ public class CppGenerator {
                   String _name_129 = this._cppExtensions.toName(feature_11);
                   String _firstUpper_62 = StringExtensions.toFirstUpper(_name_129);
                   _builder.append(_firstUpper_62, "\t\t");
-                  _builder.append(".toString(Qt::ISODate));");
+                  _builder.append(".toString(");
+                  String _dateFormatString_1 = this._cppExtensions.toDateFormatString(feature_11);
+                  _builder.append(_dateFormatString_1, "\t\t");
+                  _builder.append("));");
                   _builder.newLineIfNotEmpty();
                   _builder.append("\t");
                   _builder.append("}");
@@ -1635,7 +1641,10 @@ public class CppGenerator {
                       String _name_153 = this._cppExtensions.toName(feature_13);
                       String _firstUpper_73 = StringExtensions.toFirstUpper(_name_153);
                       _builder.append(_firstUpper_73, "\t\t");
-                      _builder.append(".toString(Qt::ISODate));");
+                      _builder.append(".toString(");
+                      String _dateFormatString_2 = this._cppExtensions.toDateFormatString(feature_13);
+                      _builder.append(_dateFormatString_2, "\t\t");
+                      _builder.append("));");
                       _builder.newLineIfNotEmpty();
                       _builder.append("\t");
                       _builder.append("}");
@@ -1874,7 +1883,10 @@ public class CppGenerator {
                   String _name_175 = this._cppExtensions.toName(feature_15);
                   String _firstUpper_82 = StringExtensions.toFirstUpper(_name_175);
                   _builder.append(_firstUpper_82, "\t\t");
-                  _builder.append(".toString(Qt::ISODate));");
+                  _builder.append(".toString(");
+                  String _dateFormatString_3 = this._cppExtensions.toDateFormatString(feature_15);
+                  _builder.append(_dateFormatString_3, "\t\t");
+                  _builder.append("));");
                   _builder.newLineIfNotEmpty();
                   _builder.append("\t");
                   _builder.append("}");

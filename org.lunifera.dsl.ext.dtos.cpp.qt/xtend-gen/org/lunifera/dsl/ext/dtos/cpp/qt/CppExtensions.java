@@ -102,24 +102,24 @@ public class CppExtensions {
   }
   
   protected String _toDateFormatString(final LAnnotationTarget target) {
-    return this.modelExtension.toName(target);
+    return "";
   }
   
   protected String _toDateFormatString(final LAttribute target) {
-    String _xblockexpression = null;
-    {
-      final String value = this.getDateFormatStrngValue(target);
-      boolean _notEquals = (!Objects.equal(value, null));
-      if (_notEquals) {
-        return value;
-      }
-      _xblockexpression = this.modelExtension.toName(target);
+    final String value = this.getDateFormatStrngValue(target);
+    boolean _notEquals = (!Objects.equal(value, null));
+    if (_notEquals) {
+      StringConcatenation _builder = new StringConcatenation();
+      _builder.append("\"");
+      _builder.append(value, "");
+      _builder.append("\"");
+      return _builder.toString();
     }
-    return _xblockexpression;
+    return "Qt::ISODate";
   }
   
   protected String _toDateFormatString(final LReference target) {
-    return this.modelExtension.toName(target);
+    return "";
   }
   
   protected String _toEnumValues(final LAttribute target) {
