@@ -388,41 +388,37 @@ class CppExtensions {
 		switch (feature.toTypeName) {
 			case "int":
 				return '''
-					if(m«feature.toName.toFirstUpper» == -1){
+					if (m«feature.toName.toFirstUpper» == -1) {
 						return false;
 					}
 				'''.toString
 			case "double":
 				return '''
-					if(m«feature.toName.toFirstUpper» == -1.0){
+					if (m«feature.toName.toFirstUpper» == -1.0) {
 						return false;
 					}
 				'''.toString
 			case "QString":
 				return '''
-					if(m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty())
-					{
+					if (m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty()) {
 						return false;
 					}
 				'''.toString
 			case "QDate":
 				return '''
-					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
-					{
+					if (m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid()) {
 						return false;
 					}
 				'''.toString
 			case "QTime":
 				return '''
-					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
-					{
+					if (m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid()) {
 						return false;
 					}
 				'''.toString
 			case "QDateTime":
 				return '''
-					if(m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid())
-					{
+					if (m«feature.toName.toFirstUpper».isNull() || !m«feature.toName.toFirstUpper».isValid()) {
 						return false;
 					}
 				'''.toString
@@ -436,20 +432,19 @@ class CppExtensions {
 		switch (referenceTypeName) {
 			case "int":
 				return '''
-					if(m«featureName.toFirstUpper» == -1){
+					if (m«featureName.toFirstUpper» == -1) {
 						return false;
 					}
 				'''.toString
 			case "double":
 				return '''
-					if(m«featureName.toFirstUpper» == -1.0){
+					if (m«featureName.toFirstUpper» == -1.0) {
 						return false;
 					}
 				'''.toString
 			case "QString":
 				return '''
-					if(m«featureName.toFirstUpper».isNull() || m«featureName.toFirstUpper».isEmpty())
-					{
+					if (m«featureName.toFirstUpper».isNull() || m«featureName.toFirstUpper».isEmpty()) {
 						return false;
 					}
 				'''.toString

@@ -80,7 +80,7 @@ class HppGenerator {
 		«ELSEIF feature.isLazy»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
-		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject)
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject WRITE set«feature.toName.toFirstUpper»FromDataObject)
 		«ELSEIF feature.isEnum»
 		// int ENUM «feature.toTypeName»
 		Q_PROPERTY(int «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
@@ -123,6 +123,8 @@ class HppGenerator {
 		«feature.referenceDomainKeyType» «feature.toName»() const;
 		void set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»);
 		«feature.toTypeOrQObject» «feature.toName»AsDataObject() const;
+		void set«feature.toName.toFirstUpper»FromDataObject(«feature.toTypeName.toFirstUpper»* «feature.toTypeName.toFirstLower»);
+		
 		Q_INVOKABLE
 		void remove«feature.toName.toFirstUpper»();
 		
@@ -146,6 +148,7 @@ class HppGenerator {
 		«ELSE»
 		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
 		«IF feature.isTypeOfDataObject»
+		
 		Q_INVOKABLE
 		void delete«feature.toName.toFirstUpper»();
 		
@@ -159,6 +162,7 @@ class HppGenerator {
 	
 		«FOR feature : dto.allFeatures.filter[isToMany]»
 		«IF !(feature.isArrayList)»
+		
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
 		
@@ -174,6 +178,7 @@ class HppGenerator {
 		Q_INVOKABLE
 		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
 		«ELSE»
+			
 			«IF feature.toTypeName == "QString"»
 			Q_INVOKABLE
 			void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
@@ -197,7 +202,7 @@ class HppGenerator {
 		QList<«feature.toTypeName»*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
 		// access from QML to «feature.toName»
-		 QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
+		QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
 		 «ELSE»
 		 	«IF feature.toTypeName == "QString"»
 		 	QStringList «feature.toName»StringList();

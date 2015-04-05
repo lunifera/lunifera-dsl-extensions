@@ -425,7 +425,7 @@ public class CppManagerGenerator {
             _builder.append("objectName);");
             _builder.newLine();
             _builder.append("    ");
-            _builder.append("if(dataModel){");
+            _builder.append("if(dataModel) {");
             _builder.newLine();
             _builder.append("        ");
             _builder.append("QList<QObject*> theList;");

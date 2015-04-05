@@ -594,11 +594,11 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "int")) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("if(m");
+        _builder.append("if (m");
         String _name = this.toName(feature);
         String _firstUpper = StringExtensions.toFirstUpper(_name);
         _builder.append(_firstUpper, "");
-        _builder.append(" == -1){");
+        _builder.append(" == -1) {");
         _builder.newLineIfNotEmpty();
         _builder.append("\t");
         _builder.append("return false;");
@@ -612,11 +612,11 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "double")) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("if(m");
+        _builder_1.append("if (m");
         String _name_1 = this.toName(feature);
         String _firstUpper_1 = StringExtensions.toFirstUpper(_name_1);
         _builder_1.append(_firstUpper_1, "");
-        _builder_1.append(" == -1.0){");
+        _builder_1.append(" == -1.0) {");
         _builder_1.newLineIfNotEmpty();
         _builder_1.append("\t");
         _builder_1.append("return false;");
@@ -630,7 +630,7 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "QString")) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
-        _builder_2.append("if(m");
+        _builder_2.append("if (m");
         String _name_2 = this.toName(feature);
         String _firstUpper_2 = StringExtensions.toFirstUpper(_name_2);
         _builder_2.append(_firstUpper_2, "");
@@ -638,10 +638,8 @@ public class CppExtensions {
         String _name_3 = this.toName(feature);
         String _firstUpper_3 = StringExtensions.toFirstUpper(_name_3);
         _builder_2.append(_firstUpper_3, "");
-        _builder_2.append(".isEmpty())");
+        _builder_2.append(".isEmpty()) {");
         _builder_2.newLineIfNotEmpty();
-        _builder_2.append("{");
-        _builder_2.newLine();
         _builder_2.append("\t");
         _builder_2.append("return false;");
         _builder_2.newLine();
@@ -654,7 +652,7 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "QDate")) {
         _matched=true;
         StringConcatenation _builder_3 = new StringConcatenation();
-        _builder_3.append("if(m");
+        _builder_3.append("if (m");
         String _name_4 = this.toName(feature);
         String _firstUpper_4 = StringExtensions.toFirstUpper(_name_4);
         _builder_3.append(_firstUpper_4, "");
@@ -662,10 +660,8 @@ public class CppExtensions {
         String _name_5 = this.toName(feature);
         String _firstUpper_5 = StringExtensions.toFirstUpper(_name_5);
         _builder_3.append(_firstUpper_5, "");
-        _builder_3.append(".isValid())");
+        _builder_3.append(".isValid()) {");
         _builder_3.newLineIfNotEmpty();
-        _builder_3.append("{");
-        _builder_3.newLine();
         _builder_3.append("\t");
         _builder_3.append("return false;");
         _builder_3.newLine();
@@ -678,7 +674,7 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "QTime")) {
         _matched=true;
         StringConcatenation _builder_4 = new StringConcatenation();
-        _builder_4.append("if(m");
+        _builder_4.append("if (m");
         String _name_6 = this.toName(feature);
         String _firstUpper_6 = StringExtensions.toFirstUpper(_name_6);
         _builder_4.append(_firstUpper_6, "");
@@ -686,10 +682,8 @@ public class CppExtensions {
         String _name_7 = this.toName(feature);
         String _firstUpper_7 = StringExtensions.toFirstUpper(_name_7);
         _builder_4.append(_firstUpper_7, "");
-        _builder_4.append(".isValid())");
+        _builder_4.append(".isValid()) {");
         _builder_4.newLineIfNotEmpty();
-        _builder_4.append("{");
-        _builder_4.newLine();
         _builder_4.append("\t");
         _builder_4.append("return false;");
         _builder_4.newLine();
@@ -702,7 +696,7 @@ public class CppExtensions {
       if (Objects.equal(_typeName, "QDateTime")) {
         _matched=true;
         StringConcatenation _builder_5 = new StringConcatenation();
-        _builder_5.append("if(m");
+        _builder_5.append("if (m");
         String _name_8 = this.toName(feature);
         String _firstUpper_8 = StringExtensions.toFirstUpper(_name_8);
         _builder_5.append(_firstUpper_8, "");
@@ -710,10 +704,8 @@ public class CppExtensions {
         String _name_9 = this.toName(feature);
         String _firstUpper_9 = StringExtensions.toFirstUpper(_name_9);
         _builder_5.append(_firstUpper_9, "");
-        _builder_5.append(".isValid())");
+        _builder_5.append(".isValid()) {");
         _builder_5.newLineIfNotEmpty();
-        _builder_5.append("{");
-        _builder_5.newLine();
         _builder_5.append("\t");
         _builder_5.append("return false;");
         _builder_5.newLine();
@@ -737,10 +729,10 @@ public class CppExtensions {
       if (Objects.equal(referenceTypeName, "int")) {
         _matched=true;
         StringConcatenation _builder = new StringConcatenation();
-        _builder.append("if(m");
+        _builder.append("if (m");
         String _firstUpper = StringExtensions.toFirstUpper(featureName);
         _builder.append(_firstUpper, "");
-        _builder.append(" == -1){");
+        _builder.append(" == -1) {");
         _builder.newLineIfNotEmpty();
         _builder.append("\t");
         _builder.append("return false;");
@@ -754,10 +746,10 @@ public class CppExtensions {
       if (Objects.equal(referenceTypeName, "double")) {
         _matched=true;
         StringConcatenation _builder_1 = new StringConcatenation();
-        _builder_1.append("if(m");
+        _builder_1.append("if (m");
         String _firstUpper_1 = StringExtensions.toFirstUpper(featureName);
         _builder_1.append(_firstUpper_1, "");
-        _builder_1.append(" == -1.0){");
+        _builder_1.append(" == -1.0) {");
         _builder_1.newLineIfNotEmpty();
         _builder_1.append("\t");
         _builder_1.append("return false;");
@@ -771,16 +763,14 @@ public class CppExtensions {
       if (Objects.equal(referenceTypeName, "QString")) {
         _matched=true;
         StringConcatenation _builder_2 = new StringConcatenation();
-        _builder_2.append("if(m");
+        _builder_2.append("if (m");
         String _firstUpper_2 = StringExtensions.toFirstUpper(featureName);
         _builder_2.append(_firstUpper_2, "");
         _builder_2.append(".isNull() || m");
         String _firstUpper_3 = StringExtensions.toFirstUpper(featureName);
         _builder_2.append(_firstUpper_3, "");
-        _builder_2.append(".isEmpty())");
+        _builder_2.append(".isEmpty()) {");
         _builder_2.newLineIfNotEmpty();
-        _builder_2.append("{");
-        _builder_2.newLine();
         _builder_2.append("\t");
         _builder_2.append("return false;");
         _builder_2.newLine();

@@ -133,7 +133,7 @@ void DTOManager::fill«dto.toName»DataModel(QString objectName)
 {
     GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
             objectName);
-    if(dataModel){
+    if(dataModel) {
         QList<QObject*> theList;
         for (int i = 0; i < mAll«dto.toName».size(); ++i) {
             theList.append(mAll«dto.toName».at(i));
