@@ -115,10 +115,7 @@ class HppGenerator {
 	
 		Q_INVOKABLE
 		QVariantMap toMap();
-		
-		«IF dto.existsForeignPropertyName»
 		QVariantMap toForeignMap();
-		«ENDIF»
 		QVariantMap toCacheMap();
 
 		«FOR feature : dto.allFeatures.filter[!isToMany]»

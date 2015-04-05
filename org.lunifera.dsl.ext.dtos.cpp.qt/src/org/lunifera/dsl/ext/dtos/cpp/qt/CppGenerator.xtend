@@ -503,7 +503,6 @@ QVariantMap «dto.toName»::toMap()
 	return «dto.toName.toFirstLower»Map;
 }
 
-«IF dto.existsForeignPropertyName»
 /*
  * Exports Properties from «dto.toName» as QVariantMap
  * To send data as payload to Server
@@ -511,6 +510,7 @@ QVariantMap «dto.toName»::toMap()
  */
 QVariantMap «dto.toName»::toForeignMap()
 {
+	«IF dto.existsForeignPropertyName»
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
@@ -553,8 +553,12 @@ QVariantMap «dto.toName»::toForeignMap()
 		«ENDIF»	
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
+	«ELSE»
+	// no Foreign Properties found in data model
+	return toMap();
+	«ENDIF»
 }
-«ENDIF»
+
 
 /*
  * Exports Properties from «dto.toName» as QVariantMap
@@ -564,6 +568,7 @@ QVariantMap «dto.toName»::toForeignMap()
  */
 QVariantMap «dto.toName»::toCacheMap()
 {
+	«IF dto.existsTransient»
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
@@ -609,6 +614,11 @@ QVariantMap «dto.toName»::toCacheMap()
 		// excluded: m«feature.toName.toFirstUpper»
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
+	«ELSE»
+	// no transient properties found from data model
+	// use default toMao()
+	return toMap();
+	«ENDIF»
 }
 «FOR feature : dto.allFeatures.filter[!isToMany && isLazy]»
 «feature.foo»

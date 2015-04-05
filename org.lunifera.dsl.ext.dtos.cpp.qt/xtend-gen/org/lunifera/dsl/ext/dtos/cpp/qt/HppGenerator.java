@@ -513,15 +513,8 @@ public class HppGenerator {
     _builder.append("QVariantMap toMap();");
     _builder.newLine();
     _builder.append("\t");
+    _builder.append("QVariantMap toForeignMap();");
     _builder.newLine();
-    {
-      boolean _existsForeignPropertyName = this._cppExtensions.existsForeignPropertyName(dto);
-      if (_existsForeignPropertyName) {
-        _builder.append("\t");
-        _builder.append("QVariantMap toForeignMap();");
-        _builder.newLine();
-      }
-    }
     _builder.append("\t");
     _builder.append("QVariantMap toCacheMap();");
     _builder.newLine();

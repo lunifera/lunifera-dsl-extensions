@@ -2985,33 +2985,33 @@ public class CppGenerator {
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();
+    _builder.append("/*");
+    _builder.newLine();
+    _builder.append(" ");
+    _builder.append("* Exports Properties from ");
+    String _name_296 = this._cppExtensions.toName(dto);
+    _builder.append(_name_296, " ");
+    _builder.append(" as QVariantMap");
+    _builder.newLineIfNotEmpty();
+    _builder.append(" ");
+    _builder.append("* To send data as payload to Server");
+    _builder.newLine();
+    _builder.append(" ");
+    _builder.append("* Makes it possible to use defferent naming conditions");
+    _builder.newLine();
+    _builder.append(" ");
+    _builder.append("*/");
+    _builder.newLine();
+    _builder.append("QVariantMap ");
+    String _name_297 = this._cppExtensions.toName(dto);
+    _builder.append(_name_297, "");
+    _builder.append("::toForeignMap()");
+    _builder.newLineIfNotEmpty();
+    _builder.append("{");
+    _builder.newLine();
     {
       boolean _existsForeignPropertyName_2 = this._cppExtensions.existsForeignPropertyName(dto);
       if (_existsForeignPropertyName_2) {
-        _builder.append("/*");
-        _builder.newLine();
-        _builder.append(" ");
-        _builder.append("* Exports Properties from ");
-        String _name_296 = this._cppExtensions.toName(dto);
-        _builder.append(_name_296, " ");
-        _builder.append(" as QVariantMap");
-        _builder.newLineIfNotEmpty();
-        _builder.append(" ");
-        _builder.append("* To send data as payload to Server");
-        _builder.newLine();
-        _builder.append(" ");
-        _builder.append("* Makes it possible to use defferent naming conditions");
-        _builder.newLine();
-        _builder.append(" ");
-        _builder.append("*/");
-        _builder.newLine();
-        _builder.append("QVariantMap ");
-        String _name_297 = this._cppExtensions.toName(dto);
-        _builder.append(_name_297, "");
-        _builder.append("::toForeignMap()");
-        _builder.newLineIfNotEmpty();
-        _builder.append("{");
-        _builder.newLine();
         _builder.append("\t");
         _builder.append("QVariantMap ");
         String _name_298 = this._cppExtensions.toName(dto);
@@ -3260,10 +3260,18 @@ public class CppGenerator {
         _builder.append(_firstLower_139, "\t");
         _builder.append("Map;");
         _builder.newLineIfNotEmpty();
-        _builder.append("}");
+      } else {
+        _builder.append("\t");
+        _builder.append("// no Foreign Properties found in data model");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("return toMap();");
         _builder.newLine();
       }
     }
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
     _builder.newLine();
     _builder.append("/*");
     _builder.newLine();
@@ -3318,289 +3326,304 @@ public class CppGenerator {
     _builder.newLineIfNotEmpty();
     _builder.append("{");
     _builder.newLine();
-    _builder.append("\t");
-    _builder.append("QVariantMap ");
-    String _name_331 = this._cppExtensions.toName(dto);
-    String _firstLower_140 = StringExtensions.toFirstLower(_name_331);
-    _builder.append(_firstLower_140, "\t");
-    _builder.append("Map;");
-    _builder.newLineIfNotEmpty();
     {
-      List<? extends LFeature> _allFeatures_22 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_20 = new Function1<LFeature, Boolean>() {
-        public Boolean apply(final LFeature it) {
-          boolean _and = false;
-          boolean _isTransient = CppGenerator.this._cppExtensions.isTransient(it);
-          boolean _not = (!_isTransient);
-          if (!_not) {
-            _and = false;
-          } else {
-            boolean _isLazy = CppGenerator.this._cppExtensions.isLazy(it);
-            _and = _isLazy;
+      boolean _existsTransient_3 = this._cppExtensions.existsTransient(dto);
+      if (_existsTransient_3) {
+        _builder.append("\t");
+        _builder.append("QVariantMap ");
+        String _name_331 = this._cppExtensions.toName(dto);
+        String _firstLower_140 = StringExtensions.toFirstLower(_name_331);
+        _builder.append(_firstLower_140, "\t");
+        _builder.append("Map;");
+        _builder.newLineIfNotEmpty();
+        {
+          List<? extends LFeature> _allFeatures_22 = dto.getAllFeatures();
+          final Function1<LFeature, Boolean> _function_20 = new Function1<LFeature, Boolean>() {
+            public Boolean apply(final LFeature it) {
+              boolean _and = false;
+              boolean _isTransient = CppGenerator.this._cppExtensions.isTransient(it);
+              boolean _not = (!_isTransient);
+              if (!_not) {
+                _and = false;
+              } else {
+                boolean _isLazy = CppGenerator.this._cppExtensions.isLazy(it);
+                _and = _isLazy;
+              }
+              return Boolean.valueOf(_and);
+            }
+          };
+          Iterable<? extends LFeature> _filter_20 = IterableExtensions.filter(_allFeatures_22, _function_20);
+          for(final LFeature feature_22 : _filter_20) {
+            _builder.append("\t");
+            _builder.append("// ");
+            String _name_332 = this._cppExtensions.toName(feature_22);
+            _builder.append(_name_332, "\t");
+            _builder.append(" lazy pointing to ");
+            String _typeOrQObject_6 = this._cppExtensions.toTypeOrQObject(feature_22);
+            _builder.append(_typeOrQObject_6, "\t");
+            _builder.append(" (domainKey: ");
+            String _referenceDomainKey_6 = this._cppExtensions.referenceDomainKey(feature_22);
+            _builder.append(_referenceDomainKey_6, "\t");
+            _builder.append(")");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("if (has");
+            String _name_333 = this._cppExtensions.toName(feature_22);
+            String _firstUpper_105 = StringExtensions.toFirstUpper(_name_333);
+            _builder.append(_firstUpper_105, "\t");
+            _builder.append("()) {");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("\t");
+            String _name_334 = this._cppExtensions.toName(dto);
+            String _firstLower_141 = StringExtensions.toFirstLower(_name_334);
+            _builder.append(_firstLower_141, "\t\t");
+            _builder.append("Map.insert(");
+            String _name_335 = this._cppExtensions.toName(feature_22);
+            _builder.append(_name_335, "\t\t");
+            _builder.append("Key, m");
+            String _name_336 = this._cppExtensions.toName(feature_22);
+            String _firstUpper_106 = StringExtensions.toFirstUpper(_name_336);
+            _builder.append(_firstUpper_106, "\t\t");
+            _builder.append(");");
+            _builder.newLineIfNotEmpty();
+            _builder.append("\t");
+            _builder.append("}");
+            _builder.newLine();
           }
-          return Boolean.valueOf(_and);
         }
-      };
-      Iterable<? extends LFeature> _filter_20 = IterableExtensions.filter(_allFeatures_22, _function_20);
-      for(final LFeature feature_22 : _filter_20) {
+        {
+          List<? extends LFeature> _allFeatures_23 = dto.getAllFeatures();
+          final Function1<LFeature, Boolean> _function_21 = new Function1<LFeature, Boolean>() {
+            public Boolean apply(final LFeature it) {
+              boolean _and = false;
+              boolean _isTransient = CppGenerator.this._cppExtensions.isTransient(it);
+              boolean _not = (!_isTransient);
+              if (!_not) {
+                _and = false;
+              } else {
+                boolean _isLazy = CppGenerator.this._cppExtensions.isLazy(it);
+                boolean _not_1 = (!_isLazy);
+                _and = _not_1;
+              }
+              return Boolean.valueOf(_and);
+            }
+          };
+          Iterable<? extends LFeature> _filter_21 = IterableExtensions.filter(_allFeatures_23, _function_21);
+          for(final LFeature feature_23 : _filter_21) {
+            {
+              boolean _isTypeOfDataObject_8 = this._cppExtensions.isTypeOfDataObject(feature_23);
+              if (_isTypeOfDataObject_8) {
+                {
+                  boolean _isContained_8 = this._cppExtensions.isContained(feature_23);
+                  boolean _not_2 = (!_isContained_8);
+                  if (_not_2) {
+                    _builder.append("\t");
+                    _builder.append("// m");
+                    String _name_337 = this._cppExtensions.toName(feature_23);
+                    String _firstUpper_107 = StringExtensions.toFirstUpper(_name_337);
+                    _builder.append(_firstUpper_107, "\t");
+                    _builder.append(" points to ");
+                    String _typeName_58 = this._cppExtensions.toTypeName(feature_23);
+                    _builder.append(_typeName_58, "\t");
+                    _builder.append("*");
+                    _builder.newLineIfNotEmpty();
+                    {
+                      boolean _isToMany_3 = this._cppExtensions.isToMany(feature_23);
+                      if (_isToMany_3) {
+                        _builder.append("\t");
+                        String _name_338 = this._cppExtensions.toName(dto);
+                        String _firstLower_142 = StringExtensions.toFirstLower(_name_338);
+                        _builder.append(_firstLower_142, "\t");
+                        _builder.append("Map.insert(");
+                        String _name_339 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_339, "\t");
+                        _builder.append("Key, ");
+                        String _name_340 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_340, "\t");
+                        _builder.append("AsQVariantList());");
+                        _builder.newLineIfNotEmpty();
+                      } else {
+                        _builder.append("\t");
+                        _builder.append("if (m");
+                        String _name_341 = this._cppExtensions.toName(feature_23);
+                        String _firstUpper_108 = StringExtensions.toFirstUpper(_name_341);
+                        _builder.append(_firstUpper_108, "\t");
+                        _builder.append(") {");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("\t");
+                        String _name_342 = this._cppExtensions.toName(dto);
+                        String _firstLower_143 = StringExtensions.toFirstLower(_name_342);
+                        _builder.append(_firstLower_143, "\t\t");
+                        _builder.append("Map.insert(");
+                        String _name_343 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_343, "\t\t");
+                        _builder.append("Key, m");
+                        String _name_344 = this._cppExtensions.toName(feature_23);
+                        String _firstUpper_109 = StringExtensions.toFirstUpper(_name_344);
+                        _builder.append(_firstUpper_109, "\t\t");
+                        _builder.append("->to");
+                        String _mapOrList_2 = this._cppExtensions.toMapOrList(feature_23);
+                        _builder.append(_mapOrList_2, "\t\t");
+                        _builder.append("());");
+                        _builder.newLineIfNotEmpty();
+                        _builder.append("\t");
+                        _builder.append("}");
+                        _builder.newLine();
+                      }
+                    }
+                  } else {
+                    _builder.append("\t");
+                    _builder.append("// m");
+                    String _name_345 = this._cppExtensions.toName(feature_23);
+                    String _firstUpper_110 = StringExtensions.toFirstUpper(_name_345);
+                    _builder.append(_firstUpper_110, "\t");
+                    _builder.append(" points to ");
+                    String _typeName_59 = this._cppExtensions.toTypeName(feature_23);
+                    _builder.append(_typeName_59, "\t");
+                    _builder.append("* containing ");
+                    String _name_346 = this._cppExtensions.toName(dto);
+                    _builder.append(_name_346, "\t");
+                    _builder.newLineIfNotEmpty();
+                  }
+                }
+              } else {
+                {
+                  boolean _isArrayList_2 = this._cppExtensions.isArrayList(feature_23);
+                  if (_isArrayList_2) {
+                    _builder.append("\t");
+                    _builder.append("// Array of ");
+                    String _typeName_60 = this._cppExtensions.toTypeName(feature_23);
+                    _builder.append(_typeName_60, "\t");
+                    _builder.newLineIfNotEmpty();
+                    {
+                      String _typeName_61 = this._cppExtensions.toTypeName(feature_23);
+                      boolean _equals_8 = Objects.equal(_typeName_61, "QString");
+                      if (_equals_8) {
+                        _builder.append("\t");
+                        String _name_347 = this._cppExtensions.toName(dto);
+                        String _firstLower_144 = StringExtensions.toFirstLower(_name_347);
+                        _builder.append(_firstLower_144, "\t");
+                        _builder.append("Map.insert(");
+                        String _name_348 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_348, "\t");
+                        _builder.append("Key, m");
+                        String _name_349 = this._cppExtensions.toName(feature_23);
+                        String _firstUpper_111 = StringExtensions.toFirstUpper(_name_349);
+                        _builder.append(_firstUpper_111, "\t");
+                        _builder.append("StringList);");
+                        _builder.newLineIfNotEmpty();
+                      } else {
+                        _builder.append("\t");
+                        String _name_350 = this._cppExtensions.toName(dto);
+                        String _firstLower_145 = StringExtensions.toFirstLower(_name_350);
+                        _builder.append(_firstLower_145, "\t");
+                        _builder.append("Map.insert(");
+                        String _name_351 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_351, "\t");
+                        _builder.append("Key, ");
+                        String _name_352 = this._cppExtensions.toName(feature_23);
+                        _builder.append(_name_352, "\t");
+                        _builder.append("List());");
+                        _builder.newLineIfNotEmpty();
+                      }
+                    }
+                  } else {
+                    boolean _isTypeOfDates_5 = this._cppExtensions.isTypeOfDates(feature_23);
+                    if (_isTypeOfDates_5) {
+                      _builder.append("\t");
+                      _builder.append("if (has");
+                      String _name_353 = this._cppExtensions.toName(feature_23);
+                      String _firstUpper_112 = StringExtensions.toFirstUpper(_name_353);
+                      _builder.append(_firstUpper_112, "\t");
+                      _builder.append("()) {");
+                      _builder.newLineIfNotEmpty();
+                      _builder.append("\t");
+                      _builder.append("\t");
+                      String _name_354 = this._cppExtensions.toName(dto);
+                      String _firstLower_146 = StringExtensions.toFirstLower(_name_354);
+                      _builder.append(_firstLower_146, "\t\t");
+                      _builder.append("Map.insert(");
+                      String _name_355 = this._cppExtensions.toName(feature_23);
+                      _builder.append(_name_355, "\t\t");
+                      _builder.append("Key, m");
+                      String _name_356 = this._cppExtensions.toName(feature_23);
+                      String _firstUpper_113 = StringExtensions.toFirstUpper(_name_356);
+                      _builder.append(_firstUpper_113, "\t\t");
+                      _builder.append(".toString(");
+                      String _dateFormatString_5 = this._cppExtensions.toDateFormatString(feature_23);
+                      _builder.append(_dateFormatString_5, "\t\t");
+                      _builder.append("));");
+                      _builder.newLineIfNotEmpty();
+                      _builder.append("\t");
+                      _builder.append("}");
+                      _builder.newLine();
+                    } else {
+                      {
+                        boolean _isEnum_5 = this._cppExtensions.isEnum(feature_23);
+                        if (_isEnum_5) {
+                          _builder.append("\t");
+                          _builder.append("// ENUM always as  int");
+                          _builder.newLine();
+                        }
+                      }
+                      _builder.append("\t");
+                      String _name_357 = this._cppExtensions.toName(dto);
+                      String _firstLower_147 = StringExtensions.toFirstLower(_name_357);
+                      _builder.append(_firstLower_147, "\t");
+                      _builder.append("Map.insert(");
+                      String _name_358 = this._cppExtensions.toName(feature_23);
+                      _builder.append(_name_358, "\t");
+                      _builder.append("Key, m");
+                      String _name_359 = this._cppExtensions.toName(feature_23);
+                      String _firstUpper_114 = StringExtensions.toFirstUpper(_name_359);
+                      _builder.append(_firstUpper_114, "\t");
+                      _builder.append(");");
+                      _builder.newLineIfNotEmpty();
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        {
+          List<? extends LFeature> _allFeatures_24 = dto.getAllFeatures();
+          final Function1<LFeature, Boolean> _function_22 = new Function1<LFeature, Boolean>() {
+            public Boolean apply(final LFeature it) {
+              return Boolean.valueOf(CppGenerator.this._cppExtensions.isTransient(it));
+            }
+          };
+          Iterable<? extends LFeature> _filter_22 = IterableExtensions.filter(_allFeatures_24, _function_22);
+          for(final LFeature feature_24 : _filter_22) {
+            _builder.append("\t");
+            _builder.append("// excluded: m");
+            String _name_360 = this._cppExtensions.toName(feature_24);
+            String _firstUpper_115 = StringExtensions.toFirstUpper(_name_360);
+            _builder.append(_firstUpper_115, "\t");
+            _builder.newLineIfNotEmpty();
+          }
+        }
         _builder.append("\t");
-        _builder.append("// ");
-        String _name_332 = this._cppExtensions.toName(feature_22);
-        _builder.append(_name_332, "\t");
-        _builder.append(" lazy pointing to ");
-        String _typeOrQObject_6 = this._cppExtensions.toTypeOrQObject(feature_22);
-        _builder.append(_typeOrQObject_6, "\t");
-        _builder.append(" (domainKey: ");
-        String _referenceDomainKey_6 = this._cppExtensions.referenceDomainKey(feature_22);
-        _builder.append(_referenceDomainKey_6, "\t");
-        _builder.append(")");
+        _builder.append("return ");
+        String _name_361 = this._cppExtensions.toName(dto);
+        String _firstLower_148 = StringExtensions.toFirstLower(_name_361);
+        _builder.append(_firstLower_148, "\t");
+        _builder.append("Map;");
         _builder.newLineIfNotEmpty();
+      } else {
         _builder.append("\t");
-        _builder.append("if (has");
-        String _name_333 = this._cppExtensions.toName(feature_22);
-        String _firstUpper_105 = StringExtensions.toFirstUpper(_name_333);
-        _builder.append(_firstUpper_105, "\t");
-        _builder.append("()) {");
-        _builder.newLineIfNotEmpty();
+        _builder.append("// no transient properties found from data model");
+        _builder.newLine();
         _builder.append("\t");
+        _builder.append("// use default toMao()");
+        _builder.newLine();
         _builder.append("\t");
-        String _name_334 = this._cppExtensions.toName(dto);
-        String _firstLower_141 = StringExtensions.toFirstLower(_name_334);
-        _builder.append(_firstLower_141, "\t\t");
-        _builder.append("Map.insert(");
-        String _name_335 = this._cppExtensions.toName(feature_22);
-        _builder.append(_name_335, "\t\t");
-        _builder.append("Key, m");
-        String _name_336 = this._cppExtensions.toName(feature_22);
-        String _firstUpper_106 = StringExtensions.toFirstUpper(_name_336);
-        _builder.append(_firstUpper_106, "\t\t");
-        _builder.append(");");
-        _builder.newLineIfNotEmpty();
-        _builder.append("\t");
-        _builder.append("}");
+        _builder.append("return toMap();");
         _builder.newLine();
       }
     }
-    {
-      List<? extends LFeature> _allFeatures_23 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_21 = new Function1<LFeature, Boolean>() {
-        public Boolean apply(final LFeature it) {
-          boolean _and = false;
-          boolean _isTransient = CppGenerator.this._cppExtensions.isTransient(it);
-          boolean _not = (!_isTransient);
-          if (!_not) {
-            _and = false;
-          } else {
-            boolean _isLazy = CppGenerator.this._cppExtensions.isLazy(it);
-            boolean _not_1 = (!_isLazy);
-            _and = _not_1;
-          }
-          return Boolean.valueOf(_and);
-        }
-      };
-      Iterable<? extends LFeature> _filter_21 = IterableExtensions.filter(_allFeatures_23, _function_21);
-      for(final LFeature feature_23 : _filter_21) {
-        {
-          boolean _isTypeOfDataObject_8 = this._cppExtensions.isTypeOfDataObject(feature_23);
-          if (_isTypeOfDataObject_8) {
-            {
-              boolean _isContained_8 = this._cppExtensions.isContained(feature_23);
-              boolean _not_2 = (!_isContained_8);
-              if (_not_2) {
-                _builder.append("\t");
-                _builder.append("// m");
-                String _name_337 = this._cppExtensions.toName(feature_23);
-                String _firstUpper_107 = StringExtensions.toFirstUpper(_name_337);
-                _builder.append(_firstUpper_107, "\t");
-                _builder.append(" points to ");
-                String _typeName_58 = this._cppExtensions.toTypeName(feature_23);
-                _builder.append(_typeName_58, "\t");
-                _builder.append("*");
-                _builder.newLineIfNotEmpty();
-                {
-                  boolean _isToMany_3 = this._cppExtensions.isToMany(feature_23);
-                  if (_isToMany_3) {
-                    _builder.append("\t");
-                    String _name_338 = this._cppExtensions.toName(dto);
-                    String _firstLower_142 = StringExtensions.toFirstLower(_name_338);
-                    _builder.append(_firstLower_142, "\t");
-                    _builder.append("Map.insert(");
-                    String _name_339 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_339, "\t");
-                    _builder.append("Key, ");
-                    String _name_340 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_340, "\t");
-                    _builder.append("AsQVariantList());");
-                    _builder.newLineIfNotEmpty();
-                  } else {
-                    _builder.append("\t");
-                    _builder.append("if (m");
-                    String _name_341 = this._cppExtensions.toName(feature_23);
-                    String _firstUpper_108 = StringExtensions.toFirstUpper(_name_341);
-                    _builder.append(_firstUpper_108, "\t");
-                    _builder.append(") {");
-                    _builder.newLineIfNotEmpty();
-                    _builder.append("\t");
-                    _builder.append("\t");
-                    String _name_342 = this._cppExtensions.toName(dto);
-                    String _firstLower_143 = StringExtensions.toFirstLower(_name_342);
-                    _builder.append(_firstLower_143, "\t\t");
-                    _builder.append("Map.insert(");
-                    String _name_343 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_343, "\t\t");
-                    _builder.append("Key, m");
-                    String _name_344 = this._cppExtensions.toName(feature_23);
-                    String _firstUpper_109 = StringExtensions.toFirstUpper(_name_344);
-                    _builder.append(_firstUpper_109, "\t\t");
-                    _builder.append("->to");
-                    String _mapOrList_2 = this._cppExtensions.toMapOrList(feature_23);
-                    _builder.append(_mapOrList_2, "\t\t");
-                    _builder.append("());");
-                    _builder.newLineIfNotEmpty();
-                    _builder.append("\t");
-                    _builder.append("}");
-                    _builder.newLine();
-                  }
-                }
-              } else {
-                _builder.append("\t");
-                _builder.append("// m");
-                String _name_345 = this._cppExtensions.toName(feature_23);
-                String _firstUpper_110 = StringExtensions.toFirstUpper(_name_345);
-                _builder.append(_firstUpper_110, "\t");
-                _builder.append(" points to ");
-                String _typeName_59 = this._cppExtensions.toTypeName(feature_23);
-                _builder.append(_typeName_59, "\t");
-                _builder.append("* containing ");
-                String _name_346 = this._cppExtensions.toName(dto);
-                _builder.append(_name_346, "\t");
-                _builder.newLineIfNotEmpty();
-              }
-            }
-          } else {
-            {
-              boolean _isArrayList_2 = this._cppExtensions.isArrayList(feature_23);
-              if (_isArrayList_2) {
-                _builder.append("\t");
-                _builder.append("// Array of ");
-                String _typeName_60 = this._cppExtensions.toTypeName(feature_23);
-                _builder.append(_typeName_60, "\t");
-                _builder.newLineIfNotEmpty();
-                {
-                  String _typeName_61 = this._cppExtensions.toTypeName(feature_23);
-                  boolean _equals_8 = Objects.equal(_typeName_61, "QString");
-                  if (_equals_8) {
-                    _builder.append("\t");
-                    String _name_347 = this._cppExtensions.toName(dto);
-                    String _firstLower_144 = StringExtensions.toFirstLower(_name_347);
-                    _builder.append(_firstLower_144, "\t");
-                    _builder.append("Map.insert(");
-                    String _name_348 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_348, "\t");
-                    _builder.append("Key, m");
-                    String _name_349 = this._cppExtensions.toName(feature_23);
-                    String _firstUpper_111 = StringExtensions.toFirstUpper(_name_349);
-                    _builder.append(_firstUpper_111, "\t");
-                    _builder.append("StringList);");
-                    _builder.newLineIfNotEmpty();
-                  } else {
-                    _builder.append("\t");
-                    String _name_350 = this._cppExtensions.toName(dto);
-                    String _firstLower_145 = StringExtensions.toFirstLower(_name_350);
-                    _builder.append(_firstLower_145, "\t");
-                    _builder.append("Map.insert(");
-                    String _name_351 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_351, "\t");
-                    _builder.append("Key, ");
-                    String _name_352 = this._cppExtensions.toName(feature_23);
-                    _builder.append(_name_352, "\t");
-                    _builder.append("List());");
-                    _builder.newLineIfNotEmpty();
-                  }
-                }
-              } else {
-                boolean _isTypeOfDates_5 = this._cppExtensions.isTypeOfDates(feature_23);
-                if (_isTypeOfDates_5) {
-                  _builder.append("\t");
-                  _builder.append("if (has");
-                  String _name_353 = this._cppExtensions.toName(feature_23);
-                  String _firstUpper_112 = StringExtensions.toFirstUpper(_name_353);
-                  _builder.append(_firstUpper_112, "\t");
-                  _builder.append("()) {");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("\t");
-                  _builder.append("\t");
-                  String _name_354 = this._cppExtensions.toName(dto);
-                  String _firstLower_146 = StringExtensions.toFirstLower(_name_354);
-                  _builder.append(_firstLower_146, "\t\t");
-                  _builder.append("Map.insert(");
-                  String _name_355 = this._cppExtensions.toName(feature_23);
-                  _builder.append(_name_355, "\t\t");
-                  _builder.append("Key, m");
-                  String _name_356 = this._cppExtensions.toName(feature_23);
-                  String _firstUpper_113 = StringExtensions.toFirstUpper(_name_356);
-                  _builder.append(_firstUpper_113, "\t\t");
-                  _builder.append(".toString(");
-                  String _dateFormatString_5 = this._cppExtensions.toDateFormatString(feature_23);
-                  _builder.append(_dateFormatString_5, "\t\t");
-                  _builder.append("));");
-                  _builder.newLineIfNotEmpty();
-                  _builder.append("\t");
-                  _builder.append("}");
-                  _builder.newLine();
-                } else {
-                  {
-                    boolean _isEnum_5 = this._cppExtensions.isEnum(feature_23);
-                    if (_isEnum_5) {
-                      _builder.append("\t");
-                      _builder.append("// ENUM always as  int");
-                      _builder.newLine();
-                    }
-                  }
-                  _builder.append("\t");
-                  String _name_357 = this._cppExtensions.toName(dto);
-                  String _firstLower_147 = StringExtensions.toFirstLower(_name_357);
-                  _builder.append(_firstLower_147, "\t");
-                  _builder.append("Map.insert(");
-                  String _name_358 = this._cppExtensions.toName(feature_23);
-                  _builder.append(_name_358, "\t");
-                  _builder.append("Key, m");
-                  String _name_359 = this._cppExtensions.toName(feature_23);
-                  String _firstUpper_114 = StringExtensions.toFirstUpper(_name_359);
-                  _builder.append(_firstUpper_114, "\t");
-                  _builder.append(");");
-                  _builder.newLineIfNotEmpty();
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    {
-      List<? extends LFeature> _allFeatures_24 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_22 = new Function1<LFeature, Boolean>() {
-        public Boolean apply(final LFeature it) {
-          return Boolean.valueOf(CppGenerator.this._cppExtensions.isTransient(it));
-        }
-      };
-      Iterable<? extends LFeature> _filter_22 = IterableExtensions.filter(_allFeatures_24, _function_22);
-      for(final LFeature feature_24 : _filter_22) {
-        _builder.append("\t");
-        _builder.append("// excluded: m");
-        String _name_360 = this._cppExtensions.toName(feature_24);
-        String _firstUpper_115 = StringExtensions.toFirstUpper(_name_360);
-        _builder.append(_firstUpper_115, "\t");
-        _builder.newLineIfNotEmpty();
-      }
-    }
-    _builder.append("\t");
-    _builder.append("return ");
-    String _name_361 = this._cppExtensions.toName(dto);
-    String _firstLower_148 = StringExtensions.toFirstLower(_name_361);
-    _builder.append(_firstLower_148, "\t");
-    _builder.append("Map;");
-    _builder.newLineIfNotEmpty();
     _builder.append("}");
     _builder.newLine();
     {
