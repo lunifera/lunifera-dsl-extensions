@@ -35,13 +35,13 @@ class CppManagerGenerator {
 	@Inject extension ManagerExtensions
 
 	def String toFileName(LTypedPackage pkg) {
-		"DTOManager.cpp"
+		"DataManager.cpp"
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''
 #include <QObject>
 
-#include "DTOManager.hpp"
+#include "DataManager.hpp"
 
 #include <bb/cascades/Application>
 #include <bb/cascades/AbstractPane>
@@ -61,7 +61,7 @@ static QString dataPath(const QString& fileName)
 // cache«dto.toName» is tree of  «dto.toName»
 // there's also a plain list (in memory only) useful for easy filtering
 		«ENDIF»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
 static QString cache«dto.toName» = "cache«dto.toName».json";
 		«ENDIF»
 	«ENDFOR»
@@ -69,22 +69,22 @@ static QString cache«dto.toName» = "cache«dto.toName».json";
 using namespace bb::cascades;
 using namespace bb::data;
 
-DTOManager::DTOManager(QObject *parent) :
+DataManager::DataManager(QObject *parent) :
         QObject(parent)
 {
-    // ApplicationUI is parent of DTOManager
-    // DTOManager is parent of all root DTOs
-    // ROOT DTOs are parent of contained DTOs
+    // ApplicationUI is parent of DataManager
+    // DataManager is parent of all root DataObjects
+    // ROOT DataObjects are parent of contained DataObjects
     // ROOT:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
     	// «dto.toName»
 		«ENDIF»
 	«ENDFOR»
 
-    // register all DTOs to get access to properties from QML:	
+    // register all DataObjects to get access to properties from QML:	
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-		qmlRegisterType<«dto.toName»>("org.ekkescorner.dto", 1, 0, "«dto.toName»");
+		qmlRegisterType<«dto.toName»>("org.ekkescorner.data", 1, 0, "«dto.toName»");
 	«ENDFOR»
 	// register all ENUMs to get access from QML
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
@@ -96,22 +96,22 @@ DTOManager::DTOManager(QObject *parent) :
  * loads all data from cache.
  * tip: call from main.qml with delay using QTimer
  */
-void DTOManager::init()
+void DataManager::init()
 {
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
     	init«dto.toName»();
 		«ENDIF»
 	«ENDFOR»
 }
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
 /*
  * reads «dto.toName»'s in from stored cache
  * creates List of QObject* containing «dto.toName»'s
  */
-void DTOManager::init«dto.toName»()
+void DataManager::init«dto.toName»()
 {
     mAll«dto.toName».clear();
     QVariantList cacheList;
@@ -121,7 +121,7 @@ void DTOManager::init«dto.toName»()
         QVariantMap cacheMap;
         cacheMap = cacheList.at(i).toMap();
         «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
-        // Important: DTOManager must be parent of all root DTOs
+        // Important: DataManager must be parent of all root DTOs
         «dto.toName.toFirstLower»->setParent(this);
         «dto.toName.toFirstLower»->fillFromMap(cacheMap);
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
@@ -129,7 +129,7 @@ void DTOManager::init«dto.toName»()
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
 }
 
-void DTOManager::fill«dto.toName»DataModel(QString objectName)
+void DataManager::fill«dto.toName»DataModel(QString objectName)
 {
     GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
             objectName);
@@ -151,7 +151,7 @@ void DTOManager::fill«dto.toName»DataModel(QString objectName)
  * reads data in from stored cache
  * if no cache found tries to get data from assets/datamodel
  */
-QVariantList DTOManager::readCache(QString& fileName)
+QVariantList DataManager::readCache(QString& fileName)
 {
     JsonDataAccess jda;
     QVariantList cacheList;
@@ -175,7 +175,7 @@ QVariantList DTOManager::readCache(QString& fileName)
     return cacheList;
 }
 
-DTOManager::~DTOManager()
+DataManager::~DataManager()
 {
     // clean up
 }

@@ -657,6 +657,11 @@ public class HppGenerator {
                 boolean _isTypeOfDates = this._cppExtensions.isTypeOfDates(feature_3);
                 if (_isTypeOfDates) {
                   _builder.append("\t");
+                  _builder.newLine();
+                  _builder.append("\t");
+                  _builder.append("Q_INVOKABLE");
+                  _builder.newLine();
+                  _builder.append("\t");
                   _builder.append("bool has");
                   String _name_49 = this._cppExtensions.toName(feature_3);
                   String _firstUpper_15 = StringExtensions.toFirstUpper(_name_49);

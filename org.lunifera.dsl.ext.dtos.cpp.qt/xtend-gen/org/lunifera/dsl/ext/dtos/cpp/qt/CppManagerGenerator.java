@@ -45,7 +45,7 @@ public class CppManagerGenerator {
   private ManagerExtensions _managerExtensions;
   
   public String toFileName(final LTypedPackage pkg) {
-    return "DTOManager.cpp";
+    return "DataManager.cpp";
   }
   
   public CharSequence toContent(final LTypedPackage pkg) {
@@ -53,7 +53,7 @@ public class CppManagerGenerator {
     _builder.append("#include <QObject>");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("#include \"DTOManager.hpp\"");
+    _builder.append("#include \"DataManager.hpp\"");
     _builder.newLine();
     _builder.newLine();
     _builder.append("#include <bb/cascades/Application>");
@@ -113,8 +113,8 @@ public class CppManagerGenerator {
           }
         }
         {
-          boolean _isRootDTO = this._managerExtensions.isRootDTO(dto);
-          if (_isRootDTO) {
+          boolean _isRootDataObject = this._managerExtensions.isRootDataObject(dto);
+          if (_isRootDataObject) {
             _builder.append("static QString cache");
             String _name_2 = this._cppExtensions.toName(dto);
             _builder.append(_name_2, "");
@@ -133,7 +133,7 @@ public class CppManagerGenerator {
     _builder.append("using namespace bb::data;");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("DTOManager::DTOManager(QObject *parent) :");
+    _builder.append("DataManager::DataManager(QObject *parent) :");
     _builder.newLine();
     _builder.append("        ");
     _builder.append("QObject(parent)");
@@ -141,13 +141,13 @@ public class CppManagerGenerator {
     _builder.append("{");
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("// ApplicationUI is parent of DTOManager");
+    _builder.append("// ApplicationUI is parent of DataManager");
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("// DTOManager is parent of all root DTOs");
+    _builder.append("// DataManager is parent of all root DataObjects");
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("// ROOT DTOs are parent of contained DTOs");
+    _builder.append("// ROOT DataObjects are parent of contained DataObjects");
     _builder.newLine();
     _builder.append("    ");
     _builder.append("// ROOT:");
@@ -168,8 +168,8 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
       for(final LDto dto_1 : _map_1) {
         {
-          boolean _isRootDTO_1 = this._managerExtensions.isRootDTO(dto_1);
-          if (_isRootDTO_1) {
+          boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_1);
+          if (_isRootDataObject_1) {
             _builder.append("    ");
             _builder.append("// ");
             String _name_4 = this._cppExtensions.toName(dto_1);
@@ -181,7 +181,7 @@ public class CppManagerGenerator {
     }
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("// register all DTOs to get access to properties from QML:\t");
+    _builder.append("// register all DataObjects to get access to properties from QML:\t");
     _builder.newLine();
     {
       EList<LType> _types_2 = pkg.getTypes();
@@ -202,7 +202,7 @@ public class CppManagerGenerator {
         _builder.append("qmlRegisterType<");
         String _name_5 = this._cppExtensions.toName(dto_2);
         _builder.append(_name_5, "\t");
-        _builder.append(">(\"org.ekkescorner.dto\", 1, 0, \"");
+        _builder.append(">(\"org.ekkescorner.data\", 1, 0, \"");
         String _name_6 = this._cppExtensions.toName(dto_2);
         _builder.append(_name_6, "\t");
         _builder.append("\");");
@@ -252,7 +252,7 @@ public class CppManagerGenerator {
     _builder.append(" ");
     _builder.append("*/");
     _builder.newLine();
-    _builder.append("void DTOManager::init()");
+    _builder.append("void DataManager::init()");
     _builder.newLine();
     _builder.append("{");
     _builder.newLine();
@@ -272,8 +272,8 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_4 = IterableExtensions.<LType, LDto>map(_filter_4, _function_9);
       for(final LDto dto_3 : _map_4) {
         {
-          boolean _isRootDTO_2 = this._managerExtensions.isRootDTO(dto_3);
-          if (_isRootDTO_2) {
+          boolean _isRootDataObject_2 = this._managerExtensions.isRootDataObject(dto_3);
+          if (_isRootDataObject_2) {
             _builder.append("    ");
             _builder.append("init");
             String _name_9 = this._cppExtensions.toName(dto_3);
@@ -303,8 +303,8 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_5 = IterableExtensions.<LType, LDto>map(_filter_5, _function_11);
       for(final LDto dto_4 : _map_5) {
         {
-          boolean _isRootDTO_3 = this._managerExtensions.isRootDTO(dto_4);
-          if (_isRootDTO_3) {
+          boolean _isRootDataObject_3 = this._managerExtensions.isRootDataObject(dto_4);
+          if (_isRootDataObject_3) {
             _builder.append("/*");
             _builder.newLine();
             _builder.append(" ");
@@ -322,7 +322,7 @@ public class CppManagerGenerator {
             _builder.append(" ");
             _builder.append("*/");
             _builder.newLine();
-            _builder.append("void DTOManager::init");
+            _builder.append("void DataManager::init");
             String _name_12 = this._cppExtensions.toName(dto_4);
             _builder.append(_name_12, "");
             _builder.append("()");
@@ -372,7 +372,7 @@ public class CppManagerGenerator {
             _builder.append("();");
             _builder.newLineIfNotEmpty();
             _builder.append("        ");
-            _builder.append("// Important: DTOManager must be parent of all root DTOs");
+            _builder.append("// Important: DataManager must be parent of all root DTOs");
             _builder.newLine();
             _builder.append("        ");
             String _name_19 = this._cppExtensions.toName(dto_4);
@@ -411,7 +411,7 @@ public class CppManagerGenerator {
             _builder.append("}");
             _builder.newLine();
             _builder.newLine();
-            _builder.append("void DTOManager::fill");
+            _builder.append("void DataManager::fill");
             String _name_25 = this._cppExtensions.toName(dto_4);
             _builder.append(_name_25, "");
             _builder.append("DataModel(QString objectName)");
@@ -481,7 +481,7 @@ public class CppManagerGenerator {
     _builder.append(" ");
     _builder.append("*/");
     _builder.newLine();
-    _builder.append("QVariantList DTOManager::readCache(QString& fileName)");
+    _builder.append("QVariantList DataManager::readCache(QString& fileName)");
     _builder.newLine();
     _builder.append("{");
     _builder.newLine();
@@ -548,7 +548,7 @@ public class CppManagerGenerator {
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("DTOManager::~DTOManager()");
+    _builder.append("DataManager::~DataManager()");
     _builder.newLine();
     _builder.append("{");
     _builder.newLine();

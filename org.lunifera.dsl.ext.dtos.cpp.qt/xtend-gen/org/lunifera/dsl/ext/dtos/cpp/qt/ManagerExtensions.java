@@ -48,7 +48,7 @@ public class ManagerExtensions {
   @Extension
   private CppExtensions _cppExtensions;
   
-  public boolean isRootDTO(final LDto dto) {
+  public boolean isRootDataObject(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
       boolean _isContained = this._cppExtensions.isContained(feature);

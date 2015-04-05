@@ -30,12 +30,12 @@ class HppManagerGenerator {
 	@Inject extension ManagerExtensions
 
 	def String toFileName(LTypedPackage pkg) {
-		"DTOManager.hpp"
+		"DataManager.hpp"
 	}
 
 	def CharSequence toContent(LTypedPackage pkg) '''
-#ifndef DTOMANAGER_HPP_
-#define DTOMANAGER_HPP_
+#ifndef DATAMANAGER_HPP_
+#define DATAMANAGER_HPP_
 
 #include <qobject.h>
 
@@ -43,18 +43,18 @@ class HppManagerGenerator {
 #include "«dto.toName».hpp"
 «ENDFOR»
 
-class DTOManager: public QObject
+class DataManager: public QObject
 {
 Q_OBJECT
 
 public:
-    DTOManager(QObject *parent = 0);
-    virtual ~DTOManager();
+    DataManager(QObject *parent = 0);
+    virtual ~DataManager();
     Q_INVOKABLE
     void init();
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-	«IF dto.isRootDTO»
+	«IF dto.isRootDataObject»
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
@@ -63,7 +63,7 @@ public:
 private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
     	QList<QObject*> mAll«dto.toName»;
 		«ENDIF»
     	«IF dto.isTree»
@@ -72,7 +72,7 @@ private:
 	«ENDFOR»
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDTO»
+    	«IF dto.isRootDataObject»
     	void init«dto.toName»();
 		«ENDIF»
 	«ENDFOR»
@@ -80,6 +80,6 @@ private:
 	QVariantList readCache(QString& fileName);
 };
 
-#endif /* DTOMANAGER_HPP_ */
+#endif /* DATAMANAGER_HPP_ */
 		'''
 }

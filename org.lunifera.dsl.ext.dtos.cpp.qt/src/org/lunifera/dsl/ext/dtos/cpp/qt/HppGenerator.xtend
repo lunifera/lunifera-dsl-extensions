@@ -141,6 +141,8 @@ class HppGenerator {
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDates»
+		
+		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»();
 		«ENDIF»
 		«IF feature.isTypeOfDataObject && feature.isContained»

@@ -43,14 +43,14 @@ public class HppManagerGenerator {
   private ManagerExtensions _managerExtensions;
   
   public String toFileName(final LTypedPackage pkg) {
-    return "DTOManager.hpp";
+    return "DataManager.hpp";
   }
   
   public CharSequence toContent(final LTypedPackage pkg) {
     StringConcatenation _builder = new StringConcatenation();
-    _builder.append("#ifndef DTOMANAGER_HPP_");
+    _builder.append("#ifndef DATAMANAGER_HPP_");
     _builder.newLine();
-    _builder.append("#define DTOMANAGER_HPP_");
+    _builder.append("#define DATAMANAGER_HPP_");
     _builder.newLine();
     _builder.newLine();
     _builder.append("#include <qobject.h>");
@@ -79,7 +79,7 @@ public class HppManagerGenerator {
       }
     }
     _builder.newLine();
-    _builder.append("class DTOManager: public QObject");
+    _builder.append("class DataManager: public QObject");
     _builder.newLine();
     _builder.append("{");
     _builder.newLine();
@@ -89,10 +89,10 @@ public class HppManagerGenerator {
     _builder.append("public:");
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("DTOManager(QObject *parent = 0);");
+    _builder.append("DataManager(QObject *parent = 0);");
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("virtual ~DTOManager();");
+    _builder.append("virtual ~DataManager();");
     _builder.newLine();
     _builder.append("    ");
     _builder.append("Q_INVOKABLE");
@@ -117,8 +117,8 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
       for(final LDto dto_1 : _map_1) {
         {
-          boolean _isRootDTO = this._managerExtensions.isRootDTO(dto_1);
-          if (_isRootDTO) {
+          boolean _isRootDataObject = this._managerExtensions.isRootDataObject(dto_1);
+          if (_isRootDataObject) {
             _builder.append("\t");
             _builder.append("Q_INVOKABLE");
             _builder.newLine();
@@ -152,8 +152,8 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
       for(final LDto dto_2 : _map_2) {
         {
-          boolean _isRootDTO_1 = this._managerExtensions.isRootDTO(dto_2);
-          if (_isRootDTO_1) {
+          boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_2);
+          if (_isRootDataObject_1) {
             _builder.append("    ");
             _builder.append("QList<QObject*> mAll");
             String _name_2 = this._cppExtensions.toName(dto_2);
@@ -192,8 +192,8 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_3 = IterableExtensions.<LType, LDto>map(_filter_3, _function_7);
       for(final LDto dto_3 : _map_3) {
         {
-          boolean _isRootDTO_2 = this._managerExtensions.isRootDTO(dto_3);
-          if (_isRootDTO_2) {
+          boolean _isRootDataObject_2 = this._managerExtensions.isRootDataObject(dto_3);
+          if (_isRootDataObject_2) {
             _builder.append("    ");
             _builder.append("void init");
             String _name_4 = this._cppExtensions.toName(dto_3);
@@ -211,7 +211,7 @@ public class HppManagerGenerator {
     _builder.append("};");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("#endif /* DTOMANAGER_HPP_ */");
+    _builder.append("#endif /* DATAMANAGER_HPP_ */");
     _builder.newLine();
     return _builder;
   }

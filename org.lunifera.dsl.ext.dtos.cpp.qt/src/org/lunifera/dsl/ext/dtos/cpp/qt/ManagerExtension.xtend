@@ -45,7 +45,7 @@ class ManagerExtensions {
 	@Inject extension AnnotationExtension
 	@Inject extension CppExtensions
 	
-	def boolean isRootDTO(LDto dto){
+	def boolean isRootDataObject(LDto dto){
 		for (feature : dto.allFeatures){
 			if(feature.isContained){
 				if(feature.toTypeName == dto.name) {
