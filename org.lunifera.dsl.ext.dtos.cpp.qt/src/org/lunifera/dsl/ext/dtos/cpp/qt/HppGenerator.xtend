@@ -272,8 +272,6 @@ class HppGenerator {
 	
 	private:
 	
-		QVariantMap m«dto.toName.toFirstUpper»Map;
-		
 		«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDataObject && feature.isContained»
 		// no MEMBER m«feature.toName.toFirstUpper» it's the parent

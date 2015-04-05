@@ -102,18 +102,19 @@ class CppGenerator {
 /*
  * initialize «dto.toName» from QVariantMap
  * Map got from JsonDataAccess or so
+ * includes also transient values
+ * uses own property names
  */
 void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map)
 {
-	m«dto.toName.toFirstUpper»Map = «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDataObject»
 			«IF feature.isContained»
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSEIF feature.isLazy»
 			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName»Key)) {
-				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 					// SIGNAL to request a pointer to the corresponding Data Object
 					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
@@ -121,9 +122,9 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			}
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
-			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName»Key)) {
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
 				QVariantMap «feature.toName»Map;
-				«feature.toName»Map = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toMap();
+				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toMap();
 				if (!«feature.toName»Map.isEmpty()) {
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
@@ -134,27 +135,27 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 		«ELSE» 
 			«IF feature.isTransient»
 			// m«feature.toName.toFirstUpper» is transient
-			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)) {
-				m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.mapToType»();
 			}
 			«ELSEIF feature.isEnum»
 			// ENUM
-			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)) {
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
 				bool* ok;
 				ok = false;
-				m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
+				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
 				if (ok) {
-					m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toInt();
+					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
 				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toString());
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
 				}
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
 			«ELSEIF feature.isTypeOfDates»
-			if (m«dto.toName.toFirstUpper»Map.contains(«feature.toName.toFirstLower»Key)) {
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
 				// always getting the Date as a String (from server or JSON)
-				QString «feature.toName.toFirstLower»AsString = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toString();
+				QString «feature.toName.toFirstLower»AsString = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, «feature.toDateFormatString»);
 				if (!m«feature.toName.toFirstUpper».isValid()) {
 					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
@@ -162,7 +163,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 				}
 			}
 			«ELSE»
-			m«feature.toName.toFirstUpper» = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.mapToType»();
 			«ENDIF»
 			«IF feature.toName == "uuid"»
 			if (mUuid.isEmpty()) {
@@ -176,7 +177,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
 		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
 		QVariantList «feature.toName.toFirstLower»List;
-		«feature.toName.toFirstLower»List = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toList();
+		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toList();
 		m«feature.toName.toFirstUpper».clear();
 		for (int i = 0; i < «feature.toName.toFirstLower»List.size(); ++i) {
 			QVariantMap «feature.toName.toFirstLower»Map;
@@ -189,11 +190,11 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 	«ENDFOR»	
 	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
 		«IF feature.toTypeName == "QString"»
-		m«feature.toName.toFirstUpper»StringList = m«dto.toName.toFirstUpper»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
 		«ELSE»
 		// m«feature.toName.toFirstUpper» is Array of «feature.toTypeName»
 		QVariantList «feature.toName»List;
-		«feature.toName»List = m«dto.toName.toFirstUpper»Map.value(«feature.toName»Key).toList();
+		«feature.toName»List = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toList();
 		m«feature.toName.toFirstUpper».clear();
 		for (int i = 0; i < «feature.toName»List.size(); ++i) {
 			m«feature.toName.toFirstUpper».append(«feature.toName»List.at(i).to«feature.mapToSingleType»());
@@ -240,10 +241,11 @@ bool «dto.toName»::isValid()
  */
 QVariantMap «dto.toName»::toMap()
 {
+	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		if (has«feature.toName.toFirstUpper»()) {
-			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isLazy]»
@@ -251,10 +253,10 @@ QVariantMap «dto.toName»::toMap()
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
-					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 				}
 			«ENDIF»
 			«ELSE»
@@ -264,23 +266,23 @@ QVariantMap «dto.toName»::toMap()
 			«IF feature.isArrayList»
 				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
-				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
-				m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, «feature.toName»List());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»List());
 				«ENDIF»
 			«ELSEIF feature.isTypeOfDates»
 				if (has«feature.toName.toFirstUpper»()) {
-					m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
 			«IF feature.isEnum»
 			// ENUM always as  int
 			«ENDIF»
-			m«dto.toName.toFirstUpper»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
-	return m«dto.toName.toFirstUpper»Map;
+	return «dto.toName.toFirstLower»Map;
 }
 
 «IF dto.existsForeignPropertyName»
@@ -291,11 +293,11 @@ QVariantMap «dto.toName»::toMap()
  */
 QVariantMap «dto.toName»::toForeignMap()
 {
-	QVariantMap foreignMap;
+	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		if (has«feature.toName.toFirstUpper»()) {
-			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isLazy]»
@@ -303,10 +305,10 @@ QVariantMap «dto.toName»::toForeignMap()
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-			foreignMap.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
 			«ELSE»
 			if (m«feature.toName.toFirstUpper») {
-				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 			}
 			«ENDIF»
 			«ELSE»
@@ -316,23 +318,23 @@ QVariantMap «dto.toName»::toForeignMap()
 			«IF feature.isArrayList»
 				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
-				foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»StringList);
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
-				foreignMap.insert(«feature.toName»ForeignKey, «feature.toName»List());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»List());
 				«ENDIF»
 			«ELSEIF feature.isTypeOfDates»
 				if (has«feature.toName.toFirstUpper»()) {
-					foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
 			«IF feature.isEnum»
 			// ENUM always as  int
 			«ENDIF»
-			foreignMap.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»	
 	«ENDFOR»
-	return foreignMap;
+	return «dto.toName.toFirstLower»Map;
 }
 «ENDIF»
 
@@ -344,11 +346,11 @@ QVariantMap «dto.toName»::toForeignMap()
  */
 QVariantMap «dto.toName»::toCacheMap()
 {
-	QVariantMap cacheMap;
+	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		if (has«feature.toName.toFirstUpper»()) {
-			cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy]»
@@ -356,10 +358,10 @@ QVariantMap «dto.toName»::toCacheMap()
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				cacheMap.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
-					cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 				}
 			«ENDIF»
 			«ELSE»
@@ -369,26 +371,26 @@ QVariantMap «dto.toName»::toCacheMap()
 			«IF feature.isArrayList»
 				// Array of «feature.toTypeName»
 				«IF feature.toTypeName == "QString"»
-				cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
 				«ELSE»
-				cacheMap.insert(«feature.toName»Key, «feature.toName»List());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»List());
 				«ENDIF»
 			«ELSEIF feature.isTypeOfDates»
 				if (has«feature.toName.toFirstUpper»()) {
-					cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
 				}
 			«ELSE»
 			«IF feature.isEnum»
 			// ENUM always as  int
 			«ENDIF»
-			cacheMap.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isTransient]»
 		// excluded: m«feature.toName.toFirstUpper»
 	«ENDFOR»
-	return cacheMap;
+	return «dto.toName.toFirstLower»Map;
 }
 «FOR feature : dto.allFeatures.filter[!isToMany && isLazy]»
 «feature.foo»
