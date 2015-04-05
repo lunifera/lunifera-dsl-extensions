@@ -60,6 +60,9 @@ public:
 	«ENDIF»
 	«ENDFOR»
 
+public slots:
+    void onManualExit();
+
 private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -73,7 +76,7 @@ private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
-    	void init«dto.toName»();
+    	void init«dto.toName»FromCache();
 		«ENDIF»
 	«ENDFOR»
 

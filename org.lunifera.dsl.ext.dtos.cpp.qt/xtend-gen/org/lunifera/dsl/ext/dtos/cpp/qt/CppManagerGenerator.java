@@ -181,7 +181,7 @@ public class CppManagerGenerator {
     }
     _builder.newLine();
     _builder.append("    ");
-    _builder.append("// register all DataObjects to get access to properties from QML:\t");
+    _builder.append("// register all DataObjects to get access to properties from QML:");
     _builder.newLine();
     {
       EList<LType> _types_2 = pkg.getTypes();
@@ -238,6 +238,32 @@ public class CppManagerGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
+    _builder.append("\t");
+    _builder.append("// useful Types for all APPs dealing with data");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("// QTimer");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("qmlRegisterType<QTimer>(\"org.ekkescorner.common\", 1, 0, \"QTimer\");");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("// no auto exit: we must persist the cache before");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("bb::Application::instance()->setAutoExit(false);");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("bool res = QObject::connect(bb::Application::instance(), SIGNAL(manualExit()), this, SLOT(onManualExit()));");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("Q_ASSERT(res);");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("Q_UNUSED(res);");
+    _builder.newLine();
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();
@@ -247,7 +273,7 @@ public class CppManagerGenerator {
     _builder.append("* loads all data from cache.");
     _builder.newLine();
     _builder.append(" ");
-    _builder.append("* tip: call from main.qml with delay using QTimer");
+    _builder.append("* called from main.qml with delay using QTimer");
     _builder.newLine();
     _builder.append(" ");
     _builder.append("*/");
@@ -278,7 +304,7 @@ public class CppManagerGenerator {
             _builder.append("init");
             String _name_9 = this._cppExtensions.toName(dto_3);
             _builder.append(_name_9, "    ");
-            _builder.append("();");
+            _builder.append("FromCache();");
             _builder.newLineIfNotEmpty();
           }
         }
@@ -325,7 +351,7 @@ public class CppManagerGenerator {
             _builder.append("void DataManager::init");
             String _name_12 = this._cppExtensions.toName(dto_4);
             _builder.append(_name_12, "");
-            _builder.append("()");
+            _builder.append("FromCache()");
             _builder.newLineIfNotEmpty();
             _builder.append("{");
             _builder.newLine();
@@ -384,7 +410,7 @@ public class CppManagerGenerator {
             String _name_20 = this._cppExtensions.toName(dto_4);
             String _firstLower_2 = StringExtensions.toFirstLower(_name_20);
             _builder.append(_firstLower_2, "        ");
-            _builder.append("->fillFromMap(cacheMap);");
+            _builder.append("->fillFromCacheMap(cacheMap);");
             _builder.newLineIfNotEmpty();
             _builder.append("        ");
             _builder.append("mAll");
@@ -425,7 +451,7 @@ public class CppManagerGenerator {
             _builder.append("objectName);");
             _builder.newLine();
             _builder.append("    ");
-            _builder.append("if(dataModel) {");
+            _builder.append("if (dataModel) {");
             _builder.newLine();
             _builder.append("        ");
             _builder.append("QList<QObject*> theList;");
@@ -544,6 +570,19 @@ public class CppManagerGenerator {
     _builder.newLine();
     _builder.append("    ");
     _builder.append("return cacheList;");
+    _builder.newLine();
+    _builder.append("}");
+    _builder.newLine();
+    _builder.newLine();
+    _builder.append("void DataManager::onManualExit()");
+    _builder.newLine();
+    _builder.append("{");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("qDebug() << \"## DataManager ## MANUAL EXIT\";");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("bb::Application::instance()->exit(0);");
     _builder.newLine();
     _builder.append("}");
     _builder.newLine();

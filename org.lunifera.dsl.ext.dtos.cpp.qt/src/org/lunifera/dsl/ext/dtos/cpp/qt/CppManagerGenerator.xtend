@@ -82,7 +82,7 @@ DataManager::DataManager(QObject *parent) :
 		«ENDIF»
 	«ENDFOR»
 
-    // register all DataObjects to get access to properties from QML:	
+    // register all DataObjects to get access to properties from QML:
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 		qmlRegisterType<«dto.toName»>("org.ekkescorner.data", 1, 0, "«dto.toName»");
 	«ENDFOR»
@@ -90,17 +90,27 @@ DataManager::DataManager(QObject *parent) :
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
 		qmlRegisterType<«en.toName»>("org.ekkescorner.enums", 1, 0, "«en.toName»");
 	«ENDFOR»
+	// useful Types for all APPs dealing with data
+	// QTimer
+	qmlRegisterType<QTimer>("org.ekkescorner.common", 1, 0, "QTimer");
+
+	// no auto exit: we must persist the cache before
+    bb::Application::instance()->setAutoExit(false);
+    bool res = QObject::connect(bb::Application::instance(), SIGNAL(manualExit()), this, SLOT(onManualExit()));
+    Q_ASSERT(res);
+
+    Q_UNUSED(res);
 }
 
 /*
  * loads all data from cache.
- * tip: call from main.qml with delay using QTimer
+ * called from main.qml with delay using QTimer
  */
 void DataManager::init()
 {
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
-    	init«dto.toName»();
+    	init«dto.toName»FromCache();
 		«ENDIF»
 	«ENDFOR»
 }
@@ -111,7 +121,7 @@ void DataManager::init()
  * reads «dto.toName»'s in from stored cache
  * creates List of QObject* containing «dto.toName»'s
  */
-void DataManager::init«dto.toName»()
+void DataManager::init«dto.toName»FromCache()
 {
     mAll«dto.toName».clear();
     QVariantList cacheList;
@@ -123,7 +133,7 @@ void DataManager::init«dto.toName»()
         «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
         // Important: DataManager must be parent of all root DTOs
         «dto.toName.toFirstLower»->setParent(this);
-        «dto.toName.toFirstLower»->fillFromMap(cacheMap);
+        «dto.toName.toFirstLower»->fillFromCacheMap(cacheMap);
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
     }
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
@@ -133,7 +143,7 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
 {
     GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
             objectName);
-    if(dataModel) {
+    if (dataModel) {
         QList<QObject*> theList;
         for (int i = 0; i < mAll«dto.toName».size(); ++i) {
             theList.append(mAll«dto.toName».at(i));
@@ -173,6 +183,12 @@ QVariantList DataManager::readCache(QString& fileName)
     }
     cacheList = jda.load(dataPath(fileName)).toList();
     return cacheList;
+}
+
+void DataManager::onManualExit()
+{
+    qDebug() << "## DataManager ## MANUAL EXIT";
+    bb::Application::instance()->exit(0);
 }
 
 DataManager::~DataManager()

@@ -133,6 +133,12 @@ public class HppManagerGenerator {
       }
     }
     _builder.newLine();
+    _builder.append("public slots:");
+    _builder.newLine();
+    _builder.append("    ");
+    _builder.append("void onManualExit();");
+    _builder.newLine();
+    _builder.newLine();
     _builder.append("private:");
     _builder.newLine();
     _builder.newLine();
@@ -198,7 +204,7 @@ public class HppManagerGenerator {
             _builder.append("void init");
             String _name_4 = this._cppExtensions.toName(dto_3);
             _builder.append(_name_4, "    ");
-            _builder.append("();");
+            _builder.append("FromCache();");
             _builder.newLineIfNotEmpty();
           }
         }
