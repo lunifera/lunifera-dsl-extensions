@@ -104,6 +104,7 @@ class CppGenerator {
  * Map got from JsonDataAccess or so
  * includes also transient values
  * uses own property names
+ * corresponding export method: toMap()
  */
 void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map)
 {
@@ -201,6 +202,223 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 		}
 		«ENDIF»
 	«ENDFOR»
+}
+/*
+ * initialize OrderData from QVariantMap
+ * Map got from JsonDataAccess or so
+ * includes also transient values
+ * uses foreign property names - per ex. from Server API
+ * corresponding export method: toForeignMap()
+ */
+void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstLower»Map)
+{
+	«IF dto.existsForeignPropertyName»
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDataObject»
+			«IF feature.isContained»
+			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
+			«ELSEIF feature.isLazy»
+			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»ForeignKey)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+					// SIGNAL to request a pointer to the corresponding Data Object
+					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
+				}
+			}
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»ForeignKey)) {
+				QVariantMap «feature.toName»Map;
+				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).toMap();
+				if (!«feature.toName»Map.isEmpty()) {
+					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					m«feature.toName.toFirstUpper»->setParent(this);
+					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
+				}
+			}
+			«ENDIF»
+		«ELSE» 
+			«IF feature.isTransient»
+			// m«feature.toName.toFirstUpper» is transient
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»ForeignKey)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.mapToType»();
+			}
+			«ELSEIF feature.isEnum»
+			// ENUM
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»ForeignKey)) {
+				bool* ok;
+				ok = false;
+				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toInt(ok);
+				if (ok) {
+					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toInt();
+				} else {
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toString());
+				}
+			} else {
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
+			}
+			«ELSEIF feature.isTypeOfDates»
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»ForeignKey)) {
+				// always getting the Date as a String (from server or JSON)
+				QString «feature.toName.toFirstLower»AsString = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toString();
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, «feature.toDateFormatString»);
+				if (!m«feature.toName.toFirstUpper».isValid()) {
+					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
+					qDebug() << "m«feature.toName.toFirstUpper» is not valid for String: " << «feature.toName.toFirstLower»AsString;
+				}
+			}
+			«ELSE»
+			m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.mapToType»();
+			«ENDIF»
+			«IF feature.toName == "uuid"»
+			if (mUuid.isEmpty()) {
+				mUuid = QUuid::createUuid().toString();
+				mUuid = mUuid.right(mUuid.length() - 1);
+				mUuid = mUuid.left(mUuid.length() - 1);
+			}	
+			«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
+		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
+		QVariantList «feature.toName.toFirstLower»List;
+		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName.toFirstLower»List.size(); ++i) {
+			QVariantMap «feature.toName.toFirstLower»Map;
+			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+			«feature.toTypeName.toFirstLower»->setParent(this);
+			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
+			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+		}
+	«ENDFOR»	
+	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
+		«IF feature.toTypeName == "QString"»
+		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toStringList();
+		«ELSE»
+		// m«feature.toName.toFirstUpper» is Array of «feature.toTypeName»
+		QVariantList «feature.toName»List;
+		«feature.toName»List = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName»List.size(); ++i) {
+			m«feature.toName.toFirstUpper».append(«feature.toName»List.at(i).to«feature.mapToSingleType»());
+		}
+		«ENDIF»
+	«ENDFOR»
+	«ELSE»
+	// no Foreign Properties found in data model
+	// use default method
+	fillFromMap(«dto.toName.toFirstLower»Map);
+	«ENDIF»
+}
+/*
+ * initialize OrderData from QVariantMap
+ * Map got from JsonDataAccess or so
+ * excludes transient values
+ * uses own property names
+ * corresponding export method: toCacheMap()
+ */
+void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLower»Map)
+{
+	«IF dto.existsTransient»
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDataObject»
+			«IF feature.isContained»
+			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
+			«ELSEIF feature.isLazy»
+			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+					// SIGNAL to request a pointer to the corresponding Data Object
+					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
+				}
+			}
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+				QVariantMap «feature.toName»Map;
+				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toMap();
+				if (!«feature.toName»Map.isEmpty()) {
+					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					m«feature.toName.toFirstUpper»->setParent(this);
+					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
+				}
+			}
+			«ENDIF»
+		«ELSE» 
+			«IF feature.isTransient»
+			// m«feature.toName.toFirstUpper» is transient - don't forget to initialize
+			«ELSEIF feature.isEnum»
+			// ENUM
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+				bool* ok;
+				ok = false;
+				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
+				if (ok) {
+					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
+				} else {
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
+				}
+			} else {
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
+			}
+			«ELSEIF feature.isTypeOfDates»
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+				// always getting the Date as a String (from server or JSON)
+				QString «feature.toName.toFirstLower»AsString = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, «feature.toDateFormatString»);
+				if (!m«feature.toName.toFirstUpper».isValid()) {
+					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
+					qDebug() << "m«feature.toName.toFirstUpper» is not valid for String: " << «feature.toName.toFirstLower»AsString;
+				}
+			}
+			«ELSE»
+			m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			«ENDIF»
+			«IF feature.toName == "uuid"»
+			if (mUuid.isEmpty()) {
+				mUuid = QUuid::createUuid().toString();
+				mUuid = mUuid.right(mUuid.length() - 1);
+				mUuid = mUuid.left(mUuid.length() - 1);
+			}	
+			«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
+		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
+		QVariantList «feature.toName.toFirstLower»List;
+		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName.toFirstLower»List.size(); ++i) {
+			QVariantMap «feature.toName.toFirstLower»Map;
+			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+			«feature.toTypeName.toFirstLower»->setParent(this);
+			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
+			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+		}
+	«ENDFOR»	
+	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
+		«IF feature.toTypeName == "QString"»
+		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		«ELSE»
+		// m«feature.toName.toFirstUpper» is Array of «feature.toTypeName»
+		QVariantList «feature.toName»List;
+		«feature.toName»List = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName»List.size(); ++i) {
+			m«feature.toName.toFirstUpper».append(«feature.toName»List.at(i).to«feature.mapToSingleType»());
+		}
+		«ENDIF»
+	«ENDFOR»
+	«ELSE»
+	// no Transient Properties found in data model
+	// use default method for cache
+	fillFromMap(«dto.toName.toFirstLower»Map);
+	«ENDIF»
 }
 
 void «dto.toName»::prepareNew()

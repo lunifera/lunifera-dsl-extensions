@@ -106,7 +106,11 @@ class HppGenerator {
 		«dto.toName»(QObject *parent = 0);
 		
 		void fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map);
+		void fillFromForeignMap(const QVariantMap& «dto.toName.toFirstLower»Map);
+		void fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLower»Map);
+		
 		void prepareNew();
+		
 		bool isValid();
 	
 		Q_INVOKABLE
