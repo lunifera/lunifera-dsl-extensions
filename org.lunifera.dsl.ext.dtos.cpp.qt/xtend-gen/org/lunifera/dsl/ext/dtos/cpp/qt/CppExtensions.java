@@ -579,13 +579,30 @@ public class CppExtensions {
   }
   
   public boolean isOptional(final LFeature feature) {
+    boolean _and = false;
     Bounds _bounds = this.getBounds(feature);
-    return _bounds.isOptional();
+    boolean _isOptional = _bounds.isOptional();
+    if (!_isOptional) {
+      _and = false;
+    } else {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      boolean _not = (!_isDomainKey);
+      _and = _not;
+    }
+    return _and;
   }
   
   public boolean isMandatory(final LFeature feature) {
+    boolean _or = false;
     Bounds _bounds = this.getBounds(feature);
-    return _bounds.isRequired();
+    boolean _isRequired = _bounds.isRequired();
+    if (_isRequired) {
+      _or = true;
+    } else {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      _or = _isDomainKey;
+    }
+    return _or;
   }
   
   public String toValidate(final LFeature feature) {
@@ -1050,6 +1067,29 @@ public class CppExtensions {
     for (final LFeature feature : _allFeatures) {
       boolean _isTransient = this.isTransient(feature);
       if (_isTransient) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean hasUuid(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      String _name = this.toName(feature);
+      boolean _equals = Objects.equal(_name, "uuid");
+      if (_equals) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean hasDomainKey(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isDomainKey = this.isDomainKey(feature);
+      if (_isDomainKey) {
         return true;
       }
     }

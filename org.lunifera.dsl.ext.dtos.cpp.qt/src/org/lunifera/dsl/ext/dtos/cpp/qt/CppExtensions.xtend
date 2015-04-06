@@ -378,11 +378,11 @@ class CppExtensions {
 	}
 
 	def boolean isOptional(LFeature feature) {
-		return feature.bounds.isOptional;
+		return feature.bounds.isOptional && !(feature.isDomainKey);
 	}
 
 	def boolean isMandatory(LFeature feature) {
-		return feature.bounds.isRequired;
+		return feature.bounds.isRequired || feature.isDomainKey;
 	}
 
 	def toValidate(LFeature feature) {
@@ -623,6 +623,24 @@ class CppExtensions {
 	def boolean existsTransient(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isTransient) {
+				return true
+			}
+		}
+		return false
+	}
+	
+	def boolean hasUuid(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.toName == "uuid") {
+				return true
+			}
+		}
+		return false
+	}
+	
+	def boolean hasDomainKey(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isDomainKey) {
 				return true
 			}
 		}
