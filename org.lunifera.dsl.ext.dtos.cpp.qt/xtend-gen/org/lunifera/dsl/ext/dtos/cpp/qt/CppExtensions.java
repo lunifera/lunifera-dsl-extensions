@@ -37,6 +37,7 @@ import org.eclipse.xtext.xbase.lib.Extension;
 import org.eclipse.xtext.xbase.lib.StringExtensions;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName;
@@ -952,6 +953,19 @@ public class CppExtensions {
     return "QString";
   }
   
+  public boolean isReadOnlyCache(final LDto dto) {
+    String _cachePolicyValue = this.getCachePolicyValue(dto);
+    boolean _notEquals = (!Objects.equal(_cachePolicyValue, null));
+    if (_notEquals) {
+      String _cachePolicyValue_1 = this.getCachePolicyValue(dto);
+      boolean _equals = Objects.equal(_cachePolicyValue_1, "R");
+      if (_equals) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public boolean existsForeignPropertyName(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
@@ -1064,6 +1078,24 @@ public class CppExtensions {
     StringConcatenation _builder_1 = new StringConcatenation();
     _builder_1.append("Map");
     return _builder_1.toString();
+  }
+  
+  public String getCachePolicyValue(final LDto member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(CachePolicy.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
   }
   
   public String getDateFormatStrngValue(final LFeature member) {

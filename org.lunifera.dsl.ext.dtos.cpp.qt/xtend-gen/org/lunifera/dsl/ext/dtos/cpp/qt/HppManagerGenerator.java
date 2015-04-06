@@ -145,6 +145,9 @@ public class HppManagerGenerator {
     _builder.append("\t");
     _builder.append("// DataObject stored in List of QObject*");
     _builder.newLine();
+    _builder.append("\t");
+    _builder.append("// GroupDataModel only supports QObject*");
+    _builder.newLine();
     {
       EList<LType> _types_2 = pkg.getTypes();
       final Function1<LType, Boolean> _function_4 = new Function1<LType, Boolean>() {
@@ -160,9 +163,6 @@ public class HppManagerGenerator {
       };
       Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
       for(final LDto dto_2 : _map_2) {
-        _builder.append("    ");
-        _builder.append("// GroupDataModel only supports QObject*");
-        _builder.newLine();
         {
           boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_2);
           if (_isRootDataObject_1) {

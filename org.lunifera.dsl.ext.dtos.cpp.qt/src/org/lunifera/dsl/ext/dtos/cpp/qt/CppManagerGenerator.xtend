@@ -119,7 +119,11 @@ void DataManager::finish()
 {
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
-    	save«dto.toName»ToCache();
+    		«IF dto.isReadOnlyCache»
+    		// «dto.toName» is read-only - not saved to cache
+    		«ELSE»
+    		save«dto.toName»ToCache();
+    		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 }
@@ -153,6 +157,7 @@ void DataManager::init«dto.toName»FromCache()
  * save List of «dto.toName»* to JSON cache
  * convert list of «dto.toName»* to QVariantList
  * toCacheMap stores all properties without transient values
+«IF dto.isReadOnlyCache» * «dto.toName» is read-only Cache - so it's not saved automatically at exit«ENDIF»
  */
 void DataManager::save«dto.toName»ToCache()
 {

@@ -41,6 +41,7 @@ import org.lunifera.dsl.semantic.common.types.LEnumLiteral
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy
 
 class CppExtensions {
 
@@ -563,6 +564,16 @@ class CppExtensions {
 		}
 		return "QString"
 	}
+	
+	// can be 'R' or 'RW'
+	def boolean isReadOnlyCache(LDto dto){
+		if(dto.cachePolicyValue != null){
+			if(dto.cachePolicyValue == "R") {
+				return true
+			}
+		}
+		return false;
+	}
 
 	def boolean existsForeignPropertyName(LDto dto) {
 		for (feature : dto.allFeatures) {
@@ -630,6 +641,17 @@ class CppExtensions {
 			return '''List'''.toString
 		}
 		return '''Map'''.toString
+	}
+	
+	def String getCachePolicyValue(LDto member) {
+		val annoDef = typeof(CachePolicy).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
 	}
 
 	def String getDateFormatStrngValue(LFeature member) {
