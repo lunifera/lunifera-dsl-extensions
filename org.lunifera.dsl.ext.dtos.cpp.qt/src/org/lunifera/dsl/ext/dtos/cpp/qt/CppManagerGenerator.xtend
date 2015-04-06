@@ -46,7 +46,7 @@ class CppManagerGenerator {
 #include <bb/cascades/Application>
 #include <bb/cascades/AbstractPane>
 #include <bb/data/JsonDataAccess>
-#include  <bb/cascades/GroupDataModel>
+#include <bb/cascades/GroupDataModel>
 
 static QString dataAssetsPath(const QString& fileName)
 {
@@ -115,17 +115,27 @@ void DataManager::init()
 	«ENDFOR»
 }
 
+void DataManager::finish()
+{
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject»
+    	save«dto.toName»ToCache();
+		«ENDIF»
+	«ENDFOR»
+}
+
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
 /*
- * reads «dto.toName»'s in from stored cache
- * creates List of QObject* containing «dto.toName»'s
+ * reads Maps of «dto.toName» in from JSON cache
+ * creates List of «dto.toName»*  from QVariantList
+ * List declared as list of QObject* - only way to use in GroupDataModel
  */
 void DataManager::init«dto.toName»FromCache()
 {
     mAll«dto.toName».clear();
     QVariantList cacheList;
-    cacheList = readCache(cache«dto.toName»);
+    cacheList = readFromCache(cache«dto.toName»);
     qDebug() << "read «dto.toName» from cache #" << cacheList.size();
     for (int i = 0; i < cacheList.size(); ++i) {
         QVariantMap cacheMap;
@@ -137,6 +147,26 @@ void DataManager::init«dto.toName»FromCache()
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
     }
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+}
+
+/*
+ * save List of «dto.toName»* to JSON cache
+ * convert list of «dto.toName»* to QVariantList
+ * toCacheMap stores all properties without transient values
+ */
+void DataManager::save«dto.toName»ToCache()
+{
+    QVariantList cacheList;
+    qDebug() << "now caching «dto.toName»* #" << mAll«dto.toName».size();
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        QVariantMap cacheMap;
+        cacheMap = «dto.toName.toFirstLower»->toCacheMap();
+        cacheList.append(cacheMap);
+    }
+    qDebug() << "«dto.toName»* converted to JSON cache #" << cacheList.size();
+    writeToCache(cache«dto.toName», cacheList);
 }
 
 void DataManager::fill«dto.toName»DataModel(QString objectName)
@@ -161,7 +191,7 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
  * reads data in from stored cache
  * if no cache found tries to get data from assets/datamodel
  */
-QVariantList DataManager::readCache(QString& fileName)
+QVariantList DataManager::readFromCache(QString& fileName)
 {
     JsonDataAccess jda;
     QVariantList cacheList;
@@ -185,9 +215,18 @@ QVariantList DataManager::readCache(QString& fileName)
     return cacheList;
 }
 
+void DataManager::writeToCache(QString& fileName, QVariantList& data)
+{
+    QString filePath;
+    filePath = dataPath(fileName);
+    JsonDataAccess jda;
+    jda.save(data, filePath);
+}
+
 void DataManager::onManualExit()
 {
     qDebug() << "## DataManager ## MANUAL EXIT";
+    finish();
     bb::Application::instance()->exit(0);
 }
 

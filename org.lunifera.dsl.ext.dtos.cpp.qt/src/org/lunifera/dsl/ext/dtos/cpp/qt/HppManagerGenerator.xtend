@@ -65,7 +65,9 @@ public slots:
 
 private:
 
+	// DataObject stored in List of QObject*
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	// GroupDataModel only supports QObject*
     	«IF dto.isRootDataObject»
     	QList<QObject*> mAll«dto.toName»;
 		«ENDIF»
@@ -77,10 +79,13 @@ private:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	void init«dto.toName»FromCache();
+    	void save«dto.toName»ToCache();
 		«ENDIF»
 	«ENDFOR»
 
-	QVariantList readCache(QString& fileName);
+	QVariantList readFromCache(QString& fileName);
+	void writeToCache(QString& fileName, QVariantList& data);
+	void finish();
 };
 
 #endif /* DATAMANAGER_HPP_ */

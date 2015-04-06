@@ -142,6 +142,9 @@ public class HppManagerGenerator {
     _builder.append("private:");
     _builder.newLine();
     _builder.newLine();
+    _builder.append("\t");
+    _builder.append("// DataObject stored in List of QObject*");
+    _builder.newLine();
     {
       EList<LType> _types_2 = pkg.getTypes();
       final Function1<LType, Boolean> _function_4 = new Function1<LType, Boolean>() {
@@ -157,6 +160,9 @@ public class HppManagerGenerator {
       };
       Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
       for(final LDto dto_2 : _map_2) {
+        _builder.append("    ");
+        _builder.append("// GroupDataModel only supports QObject*");
+        _builder.newLine();
         {
           boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_2);
           if (_isRootDataObject_1) {
@@ -206,13 +212,25 @@ public class HppManagerGenerator {
             _builder.append(_name_4, "    ");
             _builder.append("FromCache();");
             _builder.newLineIfNotEmpty();
+            _builder.append("    ");
+            _builder.append("void save");
+            String _name_5 = this._cppExtensions.toName(dto_3);
+            _builder.append(_name_5, "    ");
+            _builder.append("ToCache();");
+            _builder.newLineIfNotEmpty();
           }
         }
       }
     }
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("QVariantList readCache(QString& fileName);");
+    _builder.append("QVariantList readFromCache(QString& fileName);");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("void writeToCache(QString& fileName, QVariantList& data);");
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("void finish();");
     _builder.newLine();
     _builder.append("};");
     _builder.newLine();
