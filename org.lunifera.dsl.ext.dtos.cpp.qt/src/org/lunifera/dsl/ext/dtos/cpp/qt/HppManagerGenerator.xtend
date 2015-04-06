@@ -55,8 +55,19 @@ public:
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
+	
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
+	«IF dto.hasUuid»
+	
+	Q_INVOKABLE
+	«dto.toName»* find«dto.toName»ByUuid(const QString& uuid);
+	«ENDIF»
+	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
+	
+	Q_INVOKABLE
+    «dto.toName»* find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
+    «ENDIF»
 	«ENDIF»
 	«ENDFOR»
 

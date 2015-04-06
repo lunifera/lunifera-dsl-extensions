@@ -189,6 +189,38 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
         qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
     }
 }
+«IF dto.hasUuid»
+«dto.toName»* DataManager::find«dto.toName»ByUuid(const QString& uuid){
+    if (uuid.isNull() || uuid.isEmpty()) {
+        qDebug() << "cannot find «dto.toName» from empty uuid";
+        return 0;
+    }
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        if(«dto.toName.toFirstLower»->uuid() == uuid){
+            return «dto.toName.toFirstLower»;
+        }
+    }
+    qDebug() << "no «dto.toName» found for uuid " << uuid;
+    return 0;
+}
+«ENDIF»
+
+«IF dto.hasDomainKey && dto.domainKey != "uuid"»
+// nr is DomainKey
+«dto.toName»* DataManager::find«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»){
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        if(«dto.toName.toFirstLower»->«dto.domainKey»() == «dto.domainKey»){
+            return «dto.toName.toFirstLower»;
+        }
+    }
+    qDebug() << "no «dto.toName» found for «dto.domainKey» " << «dto.domainKey»;
+    return 0;
+}
+«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 
