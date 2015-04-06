@@ -590,6 +590,15 @@ class CppExtensions {
 		}
 		return false
 	}
+	
+	def boolean existsTypeOfDataObject(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isTypeOfDataObject && !(feature.isToMany) && !(feature.isLazy)  && !(feature.isContained)) {
+				return true
+			}
+		}
+		return false
+	}
 
 	def boolean existsLazy(LDto dto) {
 		for (feature : dto.allFeatures) {

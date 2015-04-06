@@ -985,6 +985,41 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean existsTypeOfDataObject(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _and = false;
+      boolean _and_1 = false;
+      boolean _and_2 = false;
+      boolean _isTypeOfDataObject = this.isTypeOfDataObject(feature);
+      if (!_isTypeOfDataObject) {
+        _and_2 = false;
+      } else {
+        boolean _isToMany = this.isToMany(feature);
+        boolean _not = (!_isToMany);
+        _and_2 = _not;
+      }
+      if (!_and_2) {
+        _and_1 = false;
+      } else {
+        boolean _isLazy = this.isLazy(feature);
+        boolean _not_1 = (!_isLazy);
+        _and_1 = _not_1;
+      }
+      if (!_and_1) {
+        _and = false;
+      } else {
+        boolean _isContained = this.isContained(feature);
+        boolean _not_2 = (!_isContained);
+        _and = _not_2;
+      }
+      if (_and) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public boolean existsLazy(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {

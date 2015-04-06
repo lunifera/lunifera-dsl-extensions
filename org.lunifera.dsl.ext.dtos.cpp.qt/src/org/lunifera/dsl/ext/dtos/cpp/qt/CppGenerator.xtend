@@ -73,6 +73,12 @@ class CppGenerator {
 		!isToMany && !isTypeOfDataObject && !typeOfDates && !isContained &&!isEnum
 	]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
 {
+	«IF dto.existsTypeOfDataObject»
+		// set Types of DataObject* to NULL:
+		«FOR feature : dto.allFeatures.filter[!isLazy && isTypeOfDataObject && !toMany && !isContained]»
+		m«feature.toName.toFirstUpper» = 0;
+		«ENDFOR»
+	«ENDIF»
 	«IF dto.existsLazy»
 		// lazy references:
 		«FOR feature : dto.allFeatures.filter[isLazy]»
