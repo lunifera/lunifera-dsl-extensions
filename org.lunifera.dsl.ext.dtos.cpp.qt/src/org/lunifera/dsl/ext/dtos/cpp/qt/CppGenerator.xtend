@@ -123,8 +123,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-					// SIGNAL to request a pointer to the corresponding Data Object
-					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
+					// resolve the corresponding Data Object on demand from DataManager
 				}
 			}
 			«ELSE»
@@ -228,8 +227,7 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»ForeignKey)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-					// SIGNAL to request a pointer to the corresponding Data Object
-					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
+					// resolve the corresponding Data Object on demand from DataManager
 				}
 			}
 			«ELSE»
@@ -338,8 +336,7 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-					// SIGNAL to request a pointer to the corresponding Data Object
-					emit request«feature.toName.toFirstUpper»AsDataObject(m«feature.toName.toFirstUpper»);
+					// resolve the corresponding Data Object on demand from DataManager
 				}
 			}
 			«ELSE»
@@ -641,12 +638,14 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomai
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
 		if («feature.toName» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-            // connected from DataManager to lookup for Data Object
-            emit request«feature.toName.toFirstUpper»AsDataObject(«feature.toName»);
+            // resolve the corresponding Data Object on demand from DataManager
         } else {
-            // reset pointer, don't delete the independent object !
-            m«feature.toName.toFirstUpper»AsDataObject = 0;
-            emit «feature.toName»Removed(m«feature.toName.toFirstUpper»);
+        	// remove old Data Object
+        	if (mTopicIdAsDataObject) {
+            	// reset pointer, don't delete the independent object !
+            	m«feature.toName.toFirstUpper»AsDataObject = 0;
+            	emit «feature.toName»Removed(m«feature.toName.toFirstUpper»);
+            }
         }
         m«feature.toName.toFirstUpper» = «feature.toName»;
         emit «feature.toName»Changed(«feature.toName»);
@@ -654,7 +653,9 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomai
 }
 void «dto.toName»::remove«feature.toName.toFirstUpper»()
 {
-	set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType.defaultForLazyTypeName»);
+	if (m«feature.toName.toFirstUpper» != -1) {
+		set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType.defaultForLazyTypeName»);
+	}
 }
 bool «dto.toName»::has«feature.toName.toFirstUpper»()
 {
@@ -664,7 +665,7 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»()
         return false;
     }
 }
-bool «dto.toName»::has«feature.toName.toFirstUpper»AsDataObject()
+bool «dto.toName»::is«feature.toName.toFirstUpper»ResolvedAsDataObject()
 {
     if (m«feature.toName.toFirstUpper»AsDataObject) {
         return true;
@@ -672,22 +673,13 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»AsDataObject()
         return false;
     }
 }
-// SLOT : set lazy bound Object requested by known «feature.referenceDomainKey»
-void «dto.toName»::onRequested«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeOrQObject» «feature.toTypeName.
-		toFirstLower»)
+
+// lazy bound Data Object was resolved. overwrite «feature.referenceDomainKey» if different
+void «dto.toName»::resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     if («feature.toTypeName.toFirstLower») {
-        if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() == m«feature.toName.toFirstUpper») {
-            m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
-        }
-    }
-}
-// set lazy bound Object from anywhere and overwrite «feature.referenceDomainKey»
-void «dto.toName»::set«feature.toName.toFirstUpper»FromDataObject(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
-{
-    if («feature.toTypeName.toFirstLower») {
+    	m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
         if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() != m«feature.toName.toFirstUpper») {
-            m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
             m«feature.toName.toFirstUpper» = «feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»();
             emit «feature.toName.toFirstLower»Changed(m«feature.toName.toFirstUpper»);
         }

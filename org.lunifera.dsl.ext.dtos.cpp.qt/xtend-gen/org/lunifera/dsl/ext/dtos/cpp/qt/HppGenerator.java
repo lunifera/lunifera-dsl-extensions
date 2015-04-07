@@ -308,11 +308,11 @@ public class HppGenerator {
               _builder.append("AsDataObject READ ");
               String _name_12 = this._cppExtensions.toName(feature);
               _builder.append(_name_12, "\t");
-              _builder.append("AsDataObject WRITE set");
+              _builder.append("AsDataObject WRITE resolve");
               String _name_13 = this._cppExtensions.toName(feature);
               String _firstUpper_2 = StringExtensions.toFirstUpper(_name_13);
               _builder.append(_firstUpper_2, "\t");
-              _builder.append("FromDataObject)");
+              _builder.append("AsDataObject)");
               _builder.newLineIfNotEmpty();
             } else {
               boolean _isEnum = this._cppExtensions.isEnum(feature);
@@ -574,11 +574,11 @@ public class HppGenerator {
             _builder.append("AsDataObject() const;");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
-            _builder.append("void set");
+            _builder.append("void resolve");
             String _name_41 = this._cppExtensions.toName(feature_3);
             String _firstUpper_8 = StringExtensions.toFirstUpper(_name_41);
             _builder.append(_firstUpper_8, "\t");
-            _builder.append("FromDataObject(");
+            _builder.append("AsDataObject(");
             String _typeName_8 = this._cppExtensions.toTypeName(feature_3);
             String _firstUpper_9 = StringExtensions.toFirstUpper(_typeName_8);
             _builder.append(_firstUpper_9, "\t");
@@ -618,11 +618,11 @@ public class HppGenerator {
             _builder.append("Q_INVOKABLE");
             _builder.newLine();
             _builder.append("\t");
-            _builder.append("bool has");
+            _builder.append("bool is");
             String _name_44 = this._cppExtensions.toName(feature_3);
             String _firstUpper_12 = StringExtensions.toFirstUpper(_name_44);
             _builder.append(_firstUpper_12, "\t");
-            _builder.append("AsDataObject();");
+            _builder.append("ResolvedAsDataObject();");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.newLine();
@@ -1142,29 +1142,16 @@ public class HppGenerator {
             _builder.append(_name_90, "\t");
             _builder.append(");");
             _builder.newLineIfNotEmpty();
-            _builder.append("\t");
-            _builder.append("void request");
-            String _name_91 = this._cppExtensions.toName(feature_5);
-            String _firstUpper_35 = StringExtensions.toFirstUpper(_name_91);
-            _builder.append(_firstUpper_35, "\t");
-            _builder.append("AsDataObject(");
-            String _referenceDomainKeyType_5 = this._cppExtensions.referenceDomainKeyType(feature_5);
-            _builder.append(_referenceDomainKeyType_5, "\t");
-            _builder.append(" ");
-            String _name_92 = this._cppExtensions.toName(feature_5);
-            _builder.append(_name_92, "\t");
-            _builder.append(");");
-            _builder.newLineIfNotEmpty();
           } else {
             boolean _isEnum_2 = this._cppExtensions.isEnum(feature_5);
             if (_isEnum_2) {
               _builder.append("\t");
               _builder.append("void ");
-              String _name_93 = this._cppExtensions.toName(feature_5);
-              _builder.append(_name_93, "\t");
+              String _name_91 = this._cppExtensions.toName(feature_5);
+              _builder.append(_name_91, "\t");
               _builder.append("Changed(int ");
-              String _name_94 = this._cppExtensions.toName(feature_5);
-              _builder.append(_name_94, "\t");
+              String _name_92 = this._cppExtensions.toName(feature_5);
+              _builder.append(_name_92, "\t");
               _builder.append(");");
               _builder.newLineIfNotEmpty();
             } else {
@@ -1180,21 +1167,21 @@ public class HppGenerator {
                 if (_and_2) {
                   _builder.append("\t");
                   _builder.append("// no SIGNAL ");
-                  String _name_95 = this._cppExtensions.toName(feature_5);
-                  _builder.append(_name_95, "\t");
+                  String _name_93 = this._cppExtensions.toName(feature_5);
+                  _builder.append(_name_93, "\t");
                   _builder.append(" is only convenience way to get the parent");
                   _builder.newLineIfNotEmpty();
                 } else {
                   _builder.append("\t");
                   _builder.append("void ");
-                  String _name_96 = this._cppExtensions.toName(feature_5);
-                  _builder.append(_name_96, "\t");
+                  String _name_94 = this._cppExtensions.toName(feature_5);
+                  _builder.append(_name_94, "\t");
                   _builder.append("Changed(");
                   String _typeOrQObject_9 = this._cppExtensions.toTypeOrQObject(feature_5);
                   _builder.append(_typeOrQObject_9, "\t");
                   _builder.append(" ");
-                  String _name_97 = this._cppExtensions.toName(feature_5);
-                  _builder.append(_name_97, "\t");
+                  String _name_95 = this._cppExtensions.toName(feature_5);
+                  _builder.append(_name_95, "\t");
                   _builder.append(");");
                   _builder.newLineIfNotEmpty();
                   {
@@ -1202,8 +1189,8 @@ public class HppGenerator {
                     if (_isTypeOfDataObject_4) {
                       _builder.append("\t");
                       _builder.append("void ");
-                      String _name_98 = this._cppExtensions.toName(feature_5);
-                      String _firstLower_10 = StringExtensions.toFirstLower(_name_98);
+                      String _name_96 = this._cppExtensions.toName(feature_5);
+                      String _firstLower_10 = StringExtensions.toFirstLower(_name_96);
                       _builder.append(_firstLower_10, "\t");
                       _builder.append("Deleted(QString uuid);");
                       _builder.newLineIfNotEmpty();
@@ -1231,21 +1218,21 @@ public class HppGenerator {
           if (_not_3) {
             _builder.append("\t");
             _builder.append("void ");
-            String _name_99 = this._cppExtensions.toName(feature_6);
-            _builder.append(_name_99, "\t");
+            String _name_97 = this._cppExtensions.toName(feature_6);
+            _builder.append(_name_97, "\t");
             _builder.append("Changed(QList<");
             String _typeName_31 = this._cppExtensions.toTypeName(feature_6);
             _builder.append(_typeName_31, "\t");
             _builder.append("*> ");
-            String _name_100 = this._cppExtensions.toName(feature_6);
-            _builder.append(_name_100, "\t");
+            String _name_98 = this._cppExtensions.toName(feature_6);
+            _builder.append(_name_98, "\t");
             _builder.append(");");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("void addedTo");
-            String _name_101 = this._cppExtensions.toName(feature_6);
-            String _firstUpper_36 = StringExtensions.toFirstUpper(_name_101);
-            _builder.append(_firstUpper_36, "\t");
+            String _name_99 = this._cppExtensions.toName(feature_6);
+            String _firstUpper_35 = StringExtensions.toFirstUpper(_name_99);
+            _builder.append(_firstUpper_35, "\t");
             _builder.append("(");
             String _typeName_32 = this._cppExtensions.toTypeName(feature_6);
             _builder.append(_typeName_32, "\t");
@@ -1257,9 +1244,9 @@ public class HppGenerator {
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("void removedFrom");
-            String _name_102 = this._cppExtensions.toName(feature_6);
-            String _firstUpper_37 = StringExtensions.toFirstUpper(_name_102);
-            _builder.append(_firstUpper_37, "\t");
+            String _name_100 = this._cppExtensions.toName(feature_6);
+            String _firstUpper_36 = StringExtensions.toFirstUpper(_name_100);
+            _builder.append(_firstUpper_36, "\t");
             _builder.append("(QString uuid);");
             _builder.newLineIfNotEmpty();
           } else {
@@ -1269,18 +1256,18 @@ public class HppGenerator {
               if (_equals_3) {
                 _builder.append("\t");
                 _builder.append("void ");
-                String _name_103 = this._cppExtensions.toName(feature_6);
-                _builder.append(_name_103, "\t");
+                String _name_101 = this._cppExtensions.toName(feature_6);
+                _builder.append(_name_101, "\t");
                 _builder.append("StringListChanged(QStringList ");
-                String _name_104 = this._cppExtensions.toName(feature_6);
-                _builder.append(_name_104, "\t");
+                String _name_102 = this._cppExtensions.toName(feature_6);
+                _builder.append(_name_102, "\t");
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
                 _builder.append("void addedTo");
-                String _name_105 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_38 = StringExtensions.toFirstUpper(_name_105);
-                _builder.append(_firstUpper_38, "\t");
+                String _name_103 = this._cppExtensions.toName(feature_6);
+                String _firstUpper_37 = StringExtensions.toFirstUpper(_name_103);
+                _builder.append(_firstUpper_37, "\t");
                 _builder.append("StringList(");
                 String _typeName_35 = this._cppExtensions.toTypeName(feature_6);
                 _builder.append(_typeName_35, "\t");
@@ -1292,9 +1279,9 @@ public class HppGenerator {
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
                 _builder.append("void removedFrom");
-                String _name_106 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_39 = StringExtensions.toFirstUpper(_name_106);
-                _builder.append(_firstUpper_39, "\t");
+                String _name_104 = this._cppExtensions.toName(feature_6);
+                String _firstUpper_38 = StringExtensions.toFirstUpper(_name_104);
+                _builder.append(_firstUpper_38, "\t");
                 _builder.append("StringList(");
                 String _typeName_37 = this._cppExtensions.toTypeName(feature_6);
                 _builder.append(_typeName_37, "\t");
@@ -1307,39 +1294,39 @@ public class HppGenerator {
               } else {
                 _builder.append("\t");
                 _builder.append("void ");
-                String _name_107 = this._cppExtensions.toName(feature_6);
-                _builder.append(_name_107, "\t");
+                String _name_105 = this._cppExtensions.toName(feature_6);
+                _builder.append(_name_105, "\t");
                 _builder.append("ListChanged(QVariantList ");
-                String _name_108 = this._cppExtensions.toName(feature_6);
-                _builder.append(_name_108, "\t");
+                String _name_106 = this._cppExtensions.toName(feature_6);
+                _builder.append(_name_106, "\t");
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
                 _builder.append("void addedTo");
-                String _name_109 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_40 = StringExtensions.toFirstUpper(_name_109);
-                _builder.append(_firstUpper_40, "\t");
+                String _name_107 = this._cppExtensions.toName(feature_6);
+                String _firstUpper_39 = StringExtensions.toFirstUpper(_name_107);
+                _builder.append(_firstUpper_39, "\t");
                 _builder.append("List(");
                 String _typeName_39 = this._cppExtensions.toTypeName(feature_6);
                 _builder.append(_typeName_39, "\t");
                 _builder.append(" the");
                 String _typeName_40 = this._cppExtensions.toTypeName(feature_6);
-                String _firstUpper_41 = StringExtensions.toFirstUpper(_typeName_40);
-                _builder.append(_firstUpper_41, "\t");
+                String _firstUpper_40 = StringExtensions.toFirstUpper(_typeName_40);
+                _builder.append(_firstUpper_40, "\t");
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
                 _builder.append("void removedFrom");
-                String _name_110 = this._cppExtensions.toName(feature_6);
-                String _firstUpper_42 = StringExtensions.toFirstUpper(_name_110);
-                _builder.append(_firstUpper_42, "\t");
+                String _name_108 = this._cppExtensions.toName(feature_6);
+                String _firstUpper_41 = StringExtensions.toFirstUpper(_name_108);
+                _builder.append(_firstUpper_41, "\t");
                 _builder.append("List(");
                 String _typeName_41 = this._cppExtensions.toTypeName(feature_6);
                 _builder.append(_typeName_41, "\t");
                 _builder.append(" the");
                 String _typeName_42 = this._cppExtensions.toTypeName(feature_6);
-                String _firstUpper_43 = StringExtensions.toFirstUpper(_typeName_42);
-                _builder.append(_firstUpper_43, "\t");
+                String _firstUpper_42 = StringExtensions.toFirstUpper(_typeName_42);
+                _builder.append(_firstUpper_42, "\t");
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
               }
@@ -1350,125 +1337,87 @@ public class HppGenerator {
     }
     _builder.append("\t");
     _builder.newLine();
-    {
-      boolean _existsLazy = this._cppExtensions.existsLazy(dto);
-      if (_existsLazy) {
-        _builder.append("public slots:");
-        _builder.newLine();
-        {
-          List<? extends LFeature> _allFeatures_14 = dto.getAllFeatures();
-          final Function1<LFeature, Boolean> _function_14 = new Function1<LFeature, Boolean>() {
-            public Boolean apply(final LFeature it) {
-              boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
-              return Boolean.valueOf((!_isToMany));
-            }
-          };
-          Iterable<? extends LFeature> _filter_14 = IterableExtensions.filter(_allFeatures_14, _function_14);
-          for(final LFeature feature_7 : _filter_14) {
-            {
-              boolean _isLazy_3 = this._cppExtensions.isLazy(feature_7);
-              if (_isLazy_3) {
-                _builder.append("\t");
-                _builder.append("void onRequested");
-                String _name_111 = this._cppExtensions.toName(feature_7);
-                String _firstUpper_44 = StringExtensions.toFirstUpper(_name_111);
-                _builder.append(_firstUpper_44, "\t");
-                _builder.append("AsDataObject(");
-                String _typeOrQObject_10 = this._cppExtensions.toTypeOrQObject(feature_7);
-                _builder.append(_typeOrQObject_10, "\t");
-                _builder.append(" ");
-                String _typeName_43 = this._cppExtensions.toTypeName(feature_7);
-                String _firstLower_14 = StringExtensions.toFirstLower(_typeName_43);
-                _builder.append(_firstLower_14, "\t");
-                _builder.append(");");
-                _builder.newLineIfNotEmpty();
-              }
-            }
-          }
-        }
-      }
-    }
     _builder.newLine();
     _builder.append("private:");
     _builder.newLine();
     _builder.newLine();
     {
-      List<? extends LFeature> _allFeatures_15 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_15 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_14 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_14 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _isToMany = HppGenerator.this._cppExtensions.isToMany(it);
           return Boolean.valueOf((!_isToMany));
         }
       };
-      Iterable<? extends LFeature> _filter_15 = IterableExtensions.filter(_allFeatures_15, _function_15);
-      for(final LFeature feature_8 : _filter_15) {
+      Iterable<? extends LFeature> _filter_14 = IterableExtensions.filter(_allFeatures_14, _function_14);
+      for(final LFeature feature_7 : _filter_14) {
         {
           boolean _and_3 = false;
-          boolean _isTypeOfDataObject_5 = this._cppExtensions.isTypeOfDataObject(feature_8);
+          boolean _isTypeOfDataObject_5 = this._cppExtensions.isTypeOfDataObject(feature_7);
           if (!_isTypeOfDataObject_5) {
             _and_3 = false;
           } else {
-            boolean _isContained_4 = this._cppExtensions.isContained(feature_8);
+            boolean _isContained_4 = this._cppExtensions.isContained(feature_7);
             _and_3 = _isContained_4;
           }
           if (_and_3) {
             _builder.append("\t");
             _builder.append("// no MEMBER m");
-            String _name_112 = this._cppExtensions.toName(feature_8);
-            String _firstUpper_45 = StringExtensions.toFirstUpper(_name_112);
-            _builder.append(_firstUpper_45, "\t");
+            String _name_109 = this._cppExtensions.toName(feature_7);
+            String _firstUpper_43 = StringExtensions.toFirstUpper(_name_109);
+            _builder.append(_firstUpper_43, "\t");
             _builder.append(" it\'s the parent");
             _builder.newLineIfNotEmpty();
           } else {
-            boolean _isLazy_4 = this._cppExtensions.isLazy(feature_8);
-            if (_isLazy_4) {
+            boolean _isLazy_3 = this._cppExtensions.isLazy(feature_7);
+            if (_isLazy_3) {
               _builder.append("\t");
-              String _referenceDomainKeyType_6 = this._cppExtensions.referenceDomainKeyType(feature_8);
-              _builder.append(_referenceDomainKeyType_6, "\t");
+              String _referenceDomainKeyType_5 = this._cppExtensions.referenceDomainKeyType(feature_7);
+              _builder.append(_referenceDomainKeyType_5, "\t");
               _builder.append(" m");
-              String _name_113 = this._cppExtensions.toName(feature_8);
-              String _firstUpper_46 = StringExtensions.toFirstUpper(_name_113);
-              _builder.append(_firstUpper_46, "\t");
+              String _name_110 = this._cppExtensions.toName(feature_7);
+              String _firstUpper_44 = StringExtensions.toFirstUpper(_name_110);
+              _builder.append(_firstUpper_44, "\t");
               _builder.append(";");
               _builder.newLineIfNotEmpty();
               _builder.append("\t");
-              String _typeOrQObject_11 = this._cppExtensions.toTypeOrQObject(feature_8);
-              _builder.append(_typeOrQObject_11, "\t");
+              String _typeOrQObject_10 = this._cppExtensions.toTypeOrQObject(feature_7);
+              _builder.append(_typeOrQObject_10, "\t");
               _builder.append(" m");
-              String _name_114 = this._cppExtensions.toName(feature_8);
-              String _firstUpper_47 = StringExtensions.toFirstUpper(_name_114);
-              _builder.append(_firstUpper_47, "\t");
+              String _name_111 = this._cppExtensions.toName(feature_7);
+              String _firstUpper_45 = StringExtensions.toFirstUpper(_name_111);
+              _builder.append(_firstUpper_45, "\t");
               _builder.append("AsDataObject;");
               _builder.newLineIfNotEmpty();
             } else {
-              boolean _isEnum_3 = this._cppExtensions.isEnum(feature_8);
+              boolean _isEnum_3 = this._cppExtensions.isEnum(feature_7);
               if (_isEnum_3) {
                 _builder.append("\t");
                 _builder.append("int m");
-                String _name_115 = this._cppExtensions.toName(feature_8);
-                String _firstUpper_48 = StringExtensions.toFirstUpper(_name_115);
-                _builder.append(_firstUpper_48, "\t");
+                String _name_112 = this._cppExtensions.toName(feature_7);
+                String _firstUpper_46 = StringExtensions.toFirstUpper(_name_112);
+                _builder.append(_firstUpper_46, "\t");
                 _builder.append(";");
                 _builder.newLineIfNotEmpty();
                 _builder.append("\t");
                 _builder.append("int ");
-                String _name_116 = this._cppExtensions.toName(feature_8);
-                String _firstLower_15 = StringExtensions.toFirstLower(_name_116);
-                _builder.append(_firstLower_15, "\t");
+                String _name_113 = this._cppExtensions.toName(feature_7);
+                String _firstLower_14 = StringExtensions.toFirstLower(_name_113);
+                _builder.append(_firstLower_14, "\t");
                 _builder.append("StringToInt(QString ");
-                String _name_117 = this._cppExtensions.toName(feature_8);
-                String _firstLower_16 = StringExtensions.toFirstLower(_name_117);
-                _builder.append(_firstLower_16, "\t");
+                String _name_114 = this._cppExtensions.toName(feature_7);
+                String _firstLower_15 = StringExtensions.toFirstLower(_name_114);
+                _builder.append(_firstLower_15, "\t");
                 _builder.append(");");
                 _builder.newLineIfNotEmpty();
               } else {
                 _builder.append("\t");
-                String _typeOrQObject_12 = this._cppExtensions.toTypeOrQObject(feature_8);
-                _builder.append(_typeOrQObject_12, "\t");
+                String _typeOrQObject_11 = this._cppExtensions.toTypeOrQObject(feature_7);
+                _builder.append(_typeOrQObject_11, "\t");
                 _builder.append(" m");
-                String _name_118 = this._cppExtensions.toName(feature_8);
-                String _firstUpper_49 = StringExtensions.toFirstUpper(_name_118);
-                _builder.append(_firstUpper_49, "\t");
+                String _name_115 = this._cppExtensions.toName(feature_7);
+                String _firstUpper_47 = StringExtensions.toFirstUpper(_name_115);
+                _builder.append(_firstUpper_47, "\t");
                 _builder.append(";");
                 _builder.newLineIfNotEmpty();
               }
@@ -1478,26 +1427,26 @@ public class HppGenerator {
       }
     }
     {
-      List<? extends LFeature> _allFeatures_16 = dto.getAllFeatures();
-      final Function1<LFeature, Boolean> _function_16 = new Function1<LFeature, Boolean>() {
+      List<? extends LFeature> _allFeatures_15 = dto.getAllFeatures();
+      final Function1<LFeature, Boolean> _function_15 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           return Boolean.valueOf(HppGenerator.this._cppExtensions.isToMany(it));
         }
       };
-      Iterable<? extends LFeature> _filter_16 = IterableExtensions.filter(_allFeatures_16, _function_16);
-      for(final LFeature feature_9 : _filter_16) {
+      Iterable<? extends LFeature> _filter_15 = IterableExtensions.filter(_allFeatures_15, _function_15);
+      for(final LFeature feature_8 : _filter_15) {
         {
-          boolean _isArrayList_3 = this._cppExtensions.isArrayList(feature_9);
+          boolean _isArrayList_3 = this._cppExtensions.isArrayList(feature_8);
           boolean _not_4 = (!_isArrayList_3);
           if (_not_4) {
             _builder.append("\t");
             _builder.append("QList<");
-            String _typeName_44 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_44, "\t");
+            String _typeName_43 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_43, "\t");
             _builder.append("*> m");
-            String _name_119 = this._cppExtensions.toName(feature_9);
-            String _firstUpper_50 = StringExtensions.toFirstUpper(_name_119);
-            _builder.append(_firstUpper_50, "\t");
+            String _name_116 = this._cppExtensions.toName(feature_8);
+            String _firstUpper_48 = StringExtensions.toFirstUpper(_name_116);
+            _builder.append(_firstUpper_48, "\t");
             _builder.append(";");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
@@ -1505,95 +1454,95 @@ public class HppGenerator {
             _builder.newLine();
             _builder.append("\t");
             _builder.append("// QML functions for List of ");
-            String _typeName_45 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_45, "\t");
+            String _typeName_44 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_44, "\t");
             _builder.append("*");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("static void appendTo");
-            String _name_120 = this._cppExtensions.toName(feature_9);
-            String _firstUpper_51 = StringExtensions.toFirstUpper(_name_120);
-            _builder.append(_firstUpper_51, "\t");
+            String _name_117 = this._cppExtensions.toName(feature_8);
+            String _firstUpper_49 = StringExtensions.toFirstUpper(_name_117);
+            _builder.append(_firstUpper_49, "\t");
             _builder.append("Property(QDeclarativeListProperty<");
-            String _typeName_46 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_46, "\t");
+            String _typeName_45 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_45, "\t");
             _builder.append("> *");
-            String _name_121 = this._cppExtensions.toName(feature_9);
-            _builder.append(_name_121, "\t");
+            String _name_118 = this._cppExtensions.toName(feature_8);
+            _builder.append(_name_118, "\t");
             _builder.append("List,");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("\t");
-            String _typeName_47 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_47, "\t\t");
+            String _typeName_46 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_46, "\t\t");
             _builder.append("* ");
-            String _typeName_48 = this._cppExtensions.toTypeName(feature_9);
-            String _firstLower_17 = StringExtensions.toFirstLower(_typeName_48);
-            _builder.append(_firstLower_17, "\t\t");
+            String _typeName_47 = this._cppExtensions.toTypeName(feature_8);
+            String _firstLower_16 = StringExtensions.toFirstLower(_typeName_47);
+            _builder.append(_firstLower_16, "\t\t");
             _builder.append(");");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("static int ");
-            String _name_122 = this._cppExtensions.toName(feature_9);
-            _builder.append(_name_122, "\t");
+            String _name_119 = this._cppExtensions.toName(feature_8);
+            _builder.append(_name_119, "\t");
             _builder.append("PropertyCount(QDeclarativeListProperty<");
-            String _typeName_49 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_49, "\t");
+            String _typeName_48 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_48, "\t");
             _builder.append("> *");
-            String _name_123 = this._cppExtensions.toName(feature_9);
-            _builder.append(_name_123, "\t");
+            String _name_120 = this._cppExtensions.toName(feature_8);
+            _builder.append(_name_120, "\t");
             _builder.append("List);");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("static ");
-            String _typeName_50 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_50, "\t");
+            String _typeName_49 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_49, "\t");
             _builder.append("* at");
-            String _name_124 = this._cppExtensions.toName(feature_9);
-            String _firstUpper_52 = StringExtensions.toFirstUpper(_name_124);
-            _builder.append(_firstUpper_52, "\t");
+            String _name_121 = this._cppExtensions.toName(feature_8);
+            String _firstUpper_50 = StringExtensions.toFirstUpper(_name_121);
+            _builder.append(_firstUpper_50, "\t");
             _builder.append("Property(QDeclarativeListProperty<");
-            String _typeName_51 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_51, "\t");
+            String _typeName_50 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_50, "\t");
             _builder.append("> *");
-            String _name_125 = this._cppExtensions.toName(feature_9);
-            _builder.append(_name_125, "\t");
+            String _name_122 = this._cppExtensions.toName(feature_8);
+            _builder.append(_name_122, "\t");
             _builder.append("List, int pos);");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
             _builder.append("static void clear");
-            String _name_126 = this._cppExtensions.toName(feature_9);
-            String _firstUpper_53 = StringExtensions.toFirstUpper(_name_126);
-            _builder.append(_firstUpper_53, "\t");
+            String _name_123 = this._cppExtensions.toName(feature_8);
+            String _firstUpper_51 = StringExtensions.toFirstUpper(_name_123);
+            _builder.append(_firstUpper_51, "\t");
             _builder.append("Property(QDeclarativeListProperty<");
-            String _typeName_52 = this._cppExtensions.toTypeName(feature_9);
-            _builder.append(_typeName_52, "\t");
+            String _typeName_51 = this._cppExtensions.toTypeName(feature_8);
+            _builder.append(_typeName_51, "\t");
             _builder.append("> *");
-            String _name_127 = this._cppExtensions.toName(feature_9);
-            _builder.append(_name_127, "\t");
+            String _name_124 = this._cppExtensions.toName(feature_8);
+            _builder.append(_name_124, "\t");
             _builder.append("List);");
             _builder.newLineIfNotEmpty();
           } else {
             {
-              String _typeName_53 = this._cppExtensions.toTypeName(feature_9);
-              boolean _equals_4 = Objects.equal(_typeName_53, "QString");
+              String _typeName_52 = this._cppExtensions.toTypeName(feature_8);
+              boolean _equals_4 = Objects.equal(_typeName_52, "QString");
               if (_equals_4) {
                 _builder.append("\t");
                 _builder.append("QStringList m");
-                String _name_128 = this._cppExtensions.toName(feature_9);
-                String _firstUpper_54 = StringExtensions.toFirstUpper(_name_128);
-                _builder.append(_firstUpper_54, "\t");
+                String _name_125 = this._cppExtensions.toName(feature_8);
+                String _firstUpper_52 = StringExtensions.toFirstUpper(_name_125);
+                _builder.append(_firstUpper_52, "\t");
                 _builder.append("StringList;");
                 _builder.newLineIfNotEmpty();
               } else {
                 _builder.append("\t");
                 _builder.append("QList<");
-                String _typeName_54 = this._cppExtensions.toTypeName(feature_9);
-                _builder.append(_typeName_54, "\t");
+                String _typeName_53 = this._cppExtensions.toTypeName(feature_8);
+                _builder.append(_typeName_53, "\t");
                 _builder.append("> m");
-                String _name_129 = this._cppExtensions.toName(feature_9);
-                String _firstUpper_55 = StringExtensions.toFirstUpper(_name_129);
-                _builder.append(_firstUpper_55, "\t");
+                String _name_126 = this._cppExtensions.toName(feature_8);
+                String _firstUpper_53 = StringExtensions.toFirstUpper(_name_126);
+                _builder.append(_firstUpper_53, "\t");
                 _builder.append(";");
                 _builder.newLineIfNotEmpty();
               }
@@ -1605,23 +1554,23 @@ public class HppGenerator {
     _builder.newLine();
     _builder.append("\t");
     _builder.append("Q_DISABLE_COPY (");
-    String _name_130 = this._cppExtensions.toName(dto);
-    String _firstUpper_56 = StringExtensions.toFirstUpper(_name_130);
-    _builder.append(_firstUpper_56, "\t");
+    String _name_127 = this._cppExtensions.toName(dto);
+    String _firstUpper_54 = StringExtensions.toFirstUpper(_name_127);
+    _builder.append(_firstUpper_54, "\t");
     _builder.append(")");
     _builder.newLineIfNotEmpty();
     _builder.append("};");
     _builder.newLine();
     _builder.append("Q_DECLARE_METATYPE(");
-    String _name_131 = this._cppExtensions.toName(dto);
-    String _firstUpper_57 = StringExtensions.toFirstUpper(_name_131);
-    _builder.append(_firstUpper_57, "");
+    String _name_128 = this._cppExtensions.toName(dto);
+    String _firstUpper_55 = StringExtensions.toFirstUpper(_name_128);
+    _builder.append(_firstUpper_55, "");
     _builder.append("*)");
     _builder.newLineIfNotEmpty();
     _builder.newLine();
     _builder.append("#endif /* ");
-    String _name_132 = this._cppExtensions.toName(dto);
-    String _upperCase_2 = _name_132.toUpperCase();
+    String _name_129 = this._cppExtensions.toName(dto);
+    String _upperCase_2 = _name_129.toUpperCase();
     _builder.append(_upperCase_2, "");
     _builder.append("_HPP_ */");
     _builder.newLineIfNotEmpty();

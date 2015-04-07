@@ -80,7 +80,7 @@ class HppGenerator {
 		«ELSEIF feature.isLazy»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
-		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject WRITE set«feature.toName.toFirstUpper»FromDataObject)
+		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject WRITE resolve«feature.toName.toFirstUpper»AsDataObject)
 		«ELSEIF feature.isEnum»
 		// int ENUM «feature.toTypeName»
 		Q_PROPERTY(int «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
@@ -124,7 +124,7 @@ class HppGenerator {
 		«feature.referenceDomainKeyType» «feature.toName»() const;
 		void set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»);
 		«feature.toTypeOrQObject» «feature.toName»AsDataObject() const;
-		void set«feature.toName.toFirstUpper»FromDataObject(«feature.toTypeName.toFirstUpper»* «feature.toTypeName.toFirstLower»);
+		void resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName.toFirstUpper»* «feature.toTypeName.toFirstLower»);
 		
 		Q_INVOKABLE
 		void remove«feature.toName.toFirstUpper»();
@@ -133,7 +133,7 @@ class HppGenerator {
 		bool has«feature.toName.toFirstUpper»();
 		
 		Q_INVOKABLE
-		bool has«feature.toName.toFirstUpper»AsDataObject();
+		bool is«feature.toName.toFirstUpper»ResolvedAsDataObject();
 		
 		«ELSEIF feature.isEnum»
 		int «feature.toName»() const;
@@ -235,7 +235,6 @@ class HppGenerator {
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		void «feature.toName»Changed(«feature.referenceDomainKeyType» «feature.toName»);
 		void «feature.toName»Removed(«feature.referenceDomainKeyType» «feature.toName»);
-		void request«feature.toName.toFirstUpper»AsDataObject(«feature.referenceDomainKeyType» «feature.toName»);
 		«ELSEIF feature.isEnum»
 		void «feature.toName»Changed(int «feature.toName»);
 		«ELSE»
@@ -267,14 +266,6 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		
-	«IF dto.existsLazy»
-	public slots:
-		«FOR feature : dto.allFeatures.filter[!isToMany]»
-		«IF feature.isLazy»
-		void onRequested«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeOrQObject» «feature.toTypeName.toFirstLower»);
-		«ENDIF»
-		«ENDFOR»
-	«ENDIF»
 	
 	private:
 	
