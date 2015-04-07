@@ -1192,6 +1192,22 @@ public class CppExtensions {
     }
   }
   
+  public boolean isTree(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isContained = this.isContained(feature);
+      if (_isContained) {
+        String _typeName = this.toTypeName(feature);
+        String _name = dto.getName();
+        boolean _equals = Objects.equal(_typeName, _name);
+        if (_equals) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   public String toForeignPropertyName(final LAnnotationTarget target) {
     if (target instanceof LAttribute) {
       return _toForeignPropertyName((LAttribute)target);

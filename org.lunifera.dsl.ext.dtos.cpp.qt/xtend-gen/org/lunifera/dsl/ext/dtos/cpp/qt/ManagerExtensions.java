@@ -64,20 +64,4 @@ public class ManagerExtensions {
     }
     return true;
   }
-  
-  public boolean isTree(final LDto dto) {
-    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
-    for (final LFeature feature : _allFeatures) {
-      boolean _isContained = this._cppExtensions.isContained(feature);
-      if (_isContained) {
-        String _typeName = this._cppExtensions.toTypeName(feature);
-        String _name = dto.getName();
-        boolean _equals = Objects.equal(_typeName, _name);
-        if (_equals) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
 }

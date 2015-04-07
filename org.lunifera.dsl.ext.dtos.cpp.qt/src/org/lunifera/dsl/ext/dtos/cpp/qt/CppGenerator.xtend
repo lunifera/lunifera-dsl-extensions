@@ -1025,7 +1025,23 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
     }
 }
 «ENDFOR»
-	
+
+«IF dto.isTree»
+// it's a Tree of «dto.toName»*
+// get a flat list of all children
+QList<QObject*> «dto.toName»::all«dto.toName»Children(){
+    QList<QObject*> allChildren;
+    for (int i = 0; i < this->children().size(); ++i) {
+        if (qobject_cast<«dto.toName»*>(this->children().at(i))) {
+            allChildren.append(this->children().at(i));
+            «dto.toName»* «dto.toName.toFirstLower» = («dto.toName»*)this->children().at(i);
+            allChildren.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+        }
+    }
+    return allChildren;
+}
+«ENDIF»
+
 «dto.toName»::~«dto.toName»()
 {
 	// place cleanUp code here

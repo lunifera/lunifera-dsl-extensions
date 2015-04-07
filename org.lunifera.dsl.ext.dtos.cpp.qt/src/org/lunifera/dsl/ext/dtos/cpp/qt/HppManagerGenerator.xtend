@@ -56,8 +56,16 @@ public:
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
 	
+	«IF dto.isTree»
+	Q_INVOKABLE
+	void fill«dto.toName»TreeDataModel(QString objectName);
+
+	Q_INVOKABLE
+	void fill«dto.toName»FlatDataModel(QString objectName);
+	«ELSE»
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
+	«ENDIF»
 	«IF dto.hasUuid»
 	
 	Q_INVOKABLE
@@ -83,7 +91,7 @@ private:
     	QList<QObject*> mAll«dto.toName»;
 		«ENDIF»
     	«IF dto.isTree»
-    	QList<QObject*> mAll«dto.toName»asTree;
+    	QList<QObject*> mAll«dto.toName»Flat;
 		«ENDIF»
 	«ENDFOR»
 

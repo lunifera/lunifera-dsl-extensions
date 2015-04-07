@@ -220,6 +220,11 @@ class HppGenerator {
 		 	«ENDIF»
 		 «ENDIF»
 		«ENDFOR»
+
+		«IF dto.isTree»
+			// tree with children of same type - get all as flat list
+			QList<QObject*> all«dto.toName.toFirstUpper»Children();
+		«ENDIF»
 	
 		virtual ~«dto.toName.toFirstUpper»();
 	

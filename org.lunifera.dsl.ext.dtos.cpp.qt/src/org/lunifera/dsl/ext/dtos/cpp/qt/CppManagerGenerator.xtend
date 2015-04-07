@@ -59,7 +59,7 @@ static QString dataPath(const QString& fileName)
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isTree»
 // cache«dto.toName» is tree of  «dto.toName»
-// there's also a plain list (in memory only) useful for easy filtering
+// there's also a flat list (in memory only) useful for easy filtering
 		«ENDIF»
     	«IF dto.isRootDataObject»
 static QString cache«dto.toName» = "cache«dto.toName».json";
@@ -138,6 +138,9 @@ void DataManager::finish()
 void DataManager::init«dto.toName»FromCache()
 {
     mAll«dto.toName».clear();
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.clear();
+    «ENDIF»
     QVariantList cacheList;
     cacheList = readFromCache(cache«dto.toName»);
     qDebug() << "read «dto.toName» from cache #" << cacheList.size();
@@ -149,8 +152,17 @@ void DataManager::init«dto.toName»FromCache()
         «dto.toName.toFirstLower»->setParent(this);
         «dto.toName.toFirstLower»->fillFromCacheMap(cacheMap);
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
+        «IF dto.isTree»
+        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+        «ENDIF»
     }
+    «IF dto.isTree»
+    qDebug() << "created Tree of «dto.toName»* #" << mAll«dto.toName».size();
+    qDebug() << "created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
+    «ELSE»
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+    «ENDIF»
 }
 
 /*
@@ -174,6 +186,38 @@ void DataManager::save«dto.toName»ToCache()
     writeToCache(cache«dto.toName», cacheList);
 }
 
+«IF dto.isTree»
+void DataManager::fill«dto.toName»TreeDataModel(QString objectName)
+{
+    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
+            objectName);
+    if (dataModel) {
+        QList<QObject*> theList;
+        for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+            theList.append(mAll«dto.toName».at(i));
+        }
+        dataModel->clear();
+        dataModel->insertList(theList);
+    } else {
+        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    }
+}
+void DataManager::fill«dto.toName»FlatDataModel(QString objectName)
+{
+    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
+            objectName);
+    if (dataModel) {
+        QList<QObject*> theList;
+        for (int i = 0; i < mAll«dto.toName»Flat.size(); ++i) {
+            theList.append(mAll«dto.toName»Flat.at(i));
+        }
+        dataModel->clear();
+        dataModel->insertList(theList);
+    } else {
+        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    }
+}
+«ELSE»
 void DataManager::fill«dto.toName»DataModel(QString objectName)
 {
     GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
@@ -189,15 +233,16 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
         qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
     }
 }
+«ENDIF»
 «IF dto.hasUuid»
 «dto.toName»* DataManager::find«dto.toName»ByUuid(const QString& uuid){
     if (uuid.isNull() || uuid.isEmpty()) {
         qDebug() << "cannot find «dto.toName» from empty uuid";
         return 0;
     }
-    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+    for (int i = 0; i < mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
-        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».at(i);
         if(«dto.toName.toFirstLower»->uuid() == uuid){
             return «dto.toName.toFirstLower»;
         }
@@ -210,9 +255,9 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
 «IF dto.hasDomainKey && dto.domainKey != "uuid"»
 // nr is DomainKey
 «dto.toName»* DataManager::find«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»){
-    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+    for (int i = 0; i < mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
-        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».at(i);
         if(«dto.toName.toFirstLower»->«dto.domainKey»() == «dto.domainKey»){
             return «dto.toName.toFirstLower»;
         }
