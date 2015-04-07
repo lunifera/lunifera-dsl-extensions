@@ -186,6 +186,100 @@ void DataManager::save«dto.toName»ToCache()
     writeToCache(cache«dto.toName», cacheList);
 }
 
+void DataManager::insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
+{
+    // Important: DataManager must be parent of all root DTOs
+    «dto.toName.toFirstLower»->setParent(this);
+    mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+    «ENDIF»
+    emit addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+}
+
+void DataManager::insert«dto.toName»FromMap(const QVariantMap& «dto.toName.toFirstLower»Map,
+        const bool& useForeignProperties)
+{
+    «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+    «dto.toName.toFirstLower»->setParent(this);
+    if (useForeignProperties) {
+        «dto.toName.toFirstLower»->fillFromForeignMap(«dto.toName.toFirstLower»Map);
+    } else {
+        «dto.toName.toFirstLower»->fillFromMap(«dto.toName.toFirstLower»Map);
+    }
+    mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+    «ENDIF»
+    emit addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+}
+
+bool DataManager::delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
+{
+    bool ok = false;
+    ok = mAll«dto.toName».removeOne(«dto.toName.toFirstLower»);
+    if (!ok) {
+        return ok;
+    }
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.removeOne(«dto.toName.toFirstLower»);
+    «ENDIF»
+    «IF dto.hasUuid»
+    emit deletedFromAll«dto.toName»ByUuid(«dto.toName.toFirstLower»->uuid());
+    «ELSEIF dto.hasDomainKey»
+    emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
+    «ENDIF»
+    «dto.toName.toFirstLower»->deleteLater();
+    «dto.toName.toFirstLower» = 0;
+    return ok;
+}
+
+«IF dto.hasUuid»
+bool DataManager::delete«dto.toName»ByUuid(const QString& uuid)
+{
+    if (uuid.isNull() || uuid.isEmpty()) {
+        qDebug() << "cannot delete «dto.toName» from empty uuid";
+        return false;
+    }
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*) mAll«dto.toName».at(i);
+        if («dto.toName.toFirstLower»->uuid() == uuid) {
+            mAll«dto.toName».removeAt(i);
+            «IF dto.isTree»
+            mAll«dto.toName»Flat.removeOne(«dto.toName.toFirstLower»);
+            «ENDIF»
+            emit deletedFromAll«dto.toName»ByUuid(uuid);
+            «dto.toName.toFirstLower»->deleteLater();
+            «dto.toName.toFirstLower» = 0;
+            return true;
+        }
+    }
+    return false;
+}
+«ENDIF»
+
+«IF dto.hasDomainKey && dto.domainKey != "uuid"»
+bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»)
+{
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*) mAll«dto.toName».at(i);
+        if («dto.toName.toFirstLower»->«dto.domainKey»() == «dto.domainKey») {
+            mAll«dto.toName».removeAt(i);
+            «IF dto.isTree»
+            mAll«dto.toName»Flat.removeOne(«dto.toName.toFirstLower»);
+            «ENDIF»
+            emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKey»);
+            «dto.toName.toFirstLower»->deleteLater();
+            «dto.toName.toFirstLower» = 0;
+            return true;
+        }
+    }
+    return false;
+}
+«ENDIF»
+
 «IF dto.isTree»
 void DataManager::fill«dto.toName»TreeDataModel(QString objectName)
 {

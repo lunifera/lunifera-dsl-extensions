@@ -66,19 +66,48 @@ public:
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
+
+	Q_INVOKABLE
+	void insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
+
+	Q_INVOKABLE
+	void insert«dto.toName»FromMap(const QVariantMap& «dto.toName.toFirstLower»Map, const bool& useForeignProperties);
+
+	Q_INVOKABLE
+	bool delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 	«IF dto.hasUuid»
-	
+
+	Q_INVOKABLE
+	bool delete«dto.toName»ByUuid(const QString& uuid);
+
 	Q_INVOKABLE
 	«dto.toName»* find«dto.toName»ByUuid(const QString& uuid);
 	«ENDIF»
 	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
-	
+
+	Q_INVOKABLE
+	bool delete«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»);
+
 	Q_INVOKABLE
     «dto.toName»* find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
     «ENDIF»
 	«ENDIF»
 	«ENDFOR»
 
+Q_SIGNALS:
+
+	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+	«IF dto.isRootDataObject»
+	void addedToAll«dto.toName»(«dto.toName»* orderData);
+	«IF dto.hasUuid»
+	void deletedFromAll«dto.toName»ByUuid(QString uuid);
+	«ENDIF»
+	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
+	void deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(int «dto.domainKey»);
+	«ENDIF»
+	«ENDIF»
+    «ENDFOR»
+    
 public slots:
     void onManualExit();
 
