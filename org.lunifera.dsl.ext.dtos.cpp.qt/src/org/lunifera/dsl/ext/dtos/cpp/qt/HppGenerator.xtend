@@ -173,34 +173,34 @@ class HppGenerator {
 		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
 		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		bool removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
 		«IF feature.referenceHasUuid»
 		
 		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»ByUuid(const QString& uuid);
+		bool removeFrom«feature.toName.toFirstUpper»ByUuid(const QString& uuid);
 		«ENDIF»
 		«IF feature.referenceHasDomainKey && feature.referenceDomainKey != "uuid"»
 		
 		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(const «feature.referenceDomainKeyType»& «feature.referenceDomainKey»);
+		bool removeFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(const «feature.referenceDomainKeyType»& «feature.referenceDomainKey»);
 		«ENDIF»
 		«ELSE»
 			
 			«IF feature.toTypeName == "QString"»
 			Q_INVOKABLE
-			void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+			void addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& stringValue);
 			
 			Q_INVOKABLE
-			void removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»);
+			bool removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& stringValue);
 			«ELSE»
 			Q_INVOKABLE
-			void addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»);
+			void addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»Value);
 			
 			Q_INVOKABLE
-			void removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»);
+			bool removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»Value);
 			«ENDIF»
 		«ENDIF»
 		
@@ -268,12 +268,12 @@ class HppGenerator {
 		«ELSE»
 			«IF feature.toTypeName == "QString"»
 			void «feature.toName»StringListChanged(QStringList «feature.toName»);
-			void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
-			void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName» «feature.toTypeName.toFirstLower»);
+			void addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName» stringValue);
+			void removedFrom«feature.toName.toFirstUpper»StringList(«feature.toTypeName» stringValue);
 			«ELSE»
 			void «feature.toName»ListChanged(QVariantList «feature.toName»);
-			void addedTo«feature.toName.toFirstUpper»List(«feature.toTypeName» the«feature.toTypeName.toFirstUpper»);
-			void removedFrom«feature.toName.toFirstUpper»List(«feature.toTypeName» the«feature.toTypeName.toFirstUpper»);
+			void addedTo«feature.toName.toFirstUpper»List(«feature.toTypeName» «feature.toTypeName.toFirstLower»Value);
+			void removedFrom«feature.toName.toFirstUpper»List(«feature.toTypeName» «feature.toTypeName.toFirstLower»Value);
 			«ENDIF»
 		«ENDIF»
 		«ENDFOR»
