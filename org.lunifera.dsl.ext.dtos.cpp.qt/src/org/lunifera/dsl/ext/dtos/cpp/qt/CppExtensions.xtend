@@ -255,11 +255,23 @@ class CppExtensions {
 				} else {
 					return "Double"
 				}
+			case "float":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "Float"
+				}
 			case "QString":
 				if (feature.isToMany) {
 					return "StringList"
 				} else {
 					return "String"
+				}
+			case "QByteArray":
+				if (feature.isToMany) {
+					return "List"
+				} else {
+					return "ByteArray"
 				}
 			case "QDate":
 				if (feature.isToMany) {
@@ -297,8 +309,12 @@ class CppExtensions {
 				return "Int"
 			case "double":
 				return "Double"
+			case "float":
+				return "Float"
 			case "QString":
 				return "String"
+			case "QByteArray":
+				return "ByteArray"
 			case "QDate":
 				return "Date"
 			case "QTime":
@@ -335,6 +351,12 @@ class CppExtensions {
 				} else {
 					return "0.0"
 				}
+			case "float":
+				if (feature.isMandatory || feature.isDomainKey) {
+					return "-1.0"
+				} else {
+					return "0.0"
+				}
 			case "QString":
 				return "\"\""
 		}
@@ -361,9 +383,13 @@ class CppExtensions {
 					return true
 				case "double":
 					return true
+				case "float":
+					return true
 				case "bool":
 					return true
 				case "QString":
+					return true
+				case "QByteArray":
 					return true
 			}
 		}
@@ -401,7 +427,19 @@ class CppExtensions {
 						return false;
 					}
 				'''.toString
+			case "float":
+				return '''
+					if (m«feature.toName.toFirstUpper» == -1.0) {
+						return false;
+					}
+				'''.toString
 			case "QString":
+				return '''
+					if (m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty()) {
+						return false;
+					}
+				'''.toString
+			case "QByteArray":
 				return '''
 					if (m«feature.toName.toFirstUpper».isNull() || m«feature.toName.toFirstUpper».isEmpty()) {
 						return false;
@@ -440,6 +478,12 @@ class CppExtensions {
 					}
 				'''.toString
 			case "double":
+				return '''
+					if (m«featureName.toFirstUpper» == -1.0) {
+						return false;
+					}
+				'''.toString
+			case "float":
 				return '''
 					if (m«featureName.toFirstUpper» == -1.0) {
 						return false;
