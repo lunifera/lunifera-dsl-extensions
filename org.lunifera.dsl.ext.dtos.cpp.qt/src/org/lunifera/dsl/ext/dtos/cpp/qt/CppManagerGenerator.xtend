@@ -186,6 +186,21 @@ void DataManager::save«dto.toName»ToCache()
     writeToCache(cache«dto.toName», cacheList);
 }
 
+«IF dto.existsLazy»
+void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»)
+{
+	if (!«dto.toName.toFirstLower») {
+        qDebug() << "cannot resolve«dto.toName»References with «dto.toName.toFirstLower» NULL";
+        return;
+    }
+    «FOR feature : dto.allFeatures.filter[isLazy]»
+    if («dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»() && !«dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
+        «dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»AsDataObject(find«feature.toTypeName»By«feature.referenceDomainKey.toFirstUpper»(«dto.toName.toFirstLower»->«feature.toName»()));
+    }
+    «ENDFOR»
+}
+«ENDIF»
+
 void DataManager::insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
 {
     // Important: DataManager must be parent of all root DTOs

@@ -66,6 +66,11 @@ public:
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
+	«IF dto.existsLazy»
+
+	Q_INVOKABLE
+	void resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»);
+	«ENDIF»
 
 	Q_INVOKABLE
 	void insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
