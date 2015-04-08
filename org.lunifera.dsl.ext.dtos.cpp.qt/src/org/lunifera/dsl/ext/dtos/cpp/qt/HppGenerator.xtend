@@ -104,6 +104,11 @@ class HppGenerator {
 
 	public:
 		«dto.toName»(QObject *parent = 0);
+
+		«IF dto.existsLazy»
+		Q_INVOKABLE
+		bool isAllResolved();
+		«ENDIF»
 		
 		void fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map);
 		void fillFromForeignMap(const QVariantMap& «dto.toName.toFirstLower»Map);

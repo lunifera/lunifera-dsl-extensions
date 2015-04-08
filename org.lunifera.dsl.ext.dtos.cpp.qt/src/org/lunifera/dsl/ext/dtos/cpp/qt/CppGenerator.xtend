@@ -104,6 +104,18 @@ class CppGenerator {
 		«ENDFOR»
 	«ENDIF»
 }
+«IF dto.existsLazy»
+
+bool «dto.toName»::isAllResolved()
+{
+	«FOR feature : dto.allFeatures.filter[isLazy]»
+	if (has«feature.toName.toFirstUpper»() && !is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
+		return false;
+	}
+    «ENDFOR»
+    return true;
+}
+«ENDIF»
 
 /*
  * initialize «dto.toName» from QVariantMap

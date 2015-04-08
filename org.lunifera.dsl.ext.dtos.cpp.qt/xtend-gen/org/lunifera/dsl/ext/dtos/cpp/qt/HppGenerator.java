@@ -472,6 +472,18 @@ public class HppGenerator {
     _builder.append(_name_32, "\t");
     _builder.append("(QObject *parent = 0);");
     _builder.newLineIfNotEmpty();
+    _builder.newLine();
+    {
+      boolean _existsLazy = this._cppExtensions.existsLazy(dto);
+      if (_existsLazy) {
+        _builder.append("\t");
+        _builder.append("Q_INVOKABLE");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("bool isAllResolved();");
+        _builder.newLine();
+      }
+    }
     _builder.append("\t");
     _builder.newLine();
     _builder.append("\t");

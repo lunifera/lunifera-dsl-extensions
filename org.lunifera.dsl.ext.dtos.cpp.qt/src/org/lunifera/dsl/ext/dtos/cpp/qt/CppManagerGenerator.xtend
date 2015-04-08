@@ -193,6 +193,10 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
         qDebug() << "cannot resolve«dto.toName»References with «dto.toName.toFirstLower» NULL";
         return;
     }
+    if(«dto.toName.toFirstLower»->isAllResolved()) {
+	    qDebug() << "nothing to do: all is resolved";
+	    return;
+	}
     «FOR feature : dto.allFeatures.filter[isLazy]»
     if («dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»() && !«dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
         «dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»AsDataObject(find«feature.toTypeName»By«feature.referenceDomainKey.toFirstUpper»(«dto.toName.toFirstLower»->«feature.toName»()));
