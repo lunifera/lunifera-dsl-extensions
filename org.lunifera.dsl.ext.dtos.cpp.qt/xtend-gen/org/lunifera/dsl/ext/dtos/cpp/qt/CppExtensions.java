@@ -939,6 +939,24 @@ public class CppExtensions {
     return this.domainKey(((LDto) _type));
   }
   
+  protected boolean _referenceHasDomainKey(final LFeature feature) {
+    return false;
+  }
+  
+  protected boolean _referenceHasDomainKey(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.hasDomainKey(((LDto) _type));
+  }
+  
+  protected boolean _referenceHasUuid(final LFeature feature) {
+    return false;
+  }
+  
+  protected boolean _referenceHasUuid(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.hasUuid(((LDto) _type));
+  }
+  
   public String domainKey(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
@@ -1376,6 +1394,28 @@ public class CppExtensions {
       return _referenceDomainKey((LDtoReference)reference);
     } else if (reference != null) {
       return _referenceDomainKey(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public boolean referenceHasDomainKey(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceHasDomainKey((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceHasDomainKey(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public boolean referenceHasUuid(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceHasUuid((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceHasUuid(reference);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(reference).toString());

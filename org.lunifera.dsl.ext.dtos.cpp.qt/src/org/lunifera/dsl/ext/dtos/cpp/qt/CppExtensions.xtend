@@ -187,17 +187,19 @@ class CppExtensions {
 	}
 
 	def dispatch boolean isTypeOfDataObject(LDtoAbstractAttribute att) {
-		if(att.type instanceof LDto) {
+		if (att.type instanceof LDto) {
 			return true
 		}
 		return false
 	}
+
 	def dispatch boolean isTypeOfDataObject(LDtoAbstractReference ref) {
-		if(ref.type instanceof LDto) {
+		if (ref.type instanceof LDto) {
 			return true
 		}
 		return false
 	}
+
 	def dispatch boolean isTypeOfDataObject(LFeature feature) {
 		return false
 	}
@@ -539,6 +541,22 @@ class CppExtensions {
 		return (reference.type as LDto).domainKey
 	}
 
+	def dispatch boolean referenceHasDomainKey(LFeature feature) {
+		return false
+	}
+
+	def dispatch boolean referenceHasDomainKey(LDtoReference reference) {
+		return (reference.type as LDto).hasDomainKey
+	}
+	
+	def dispatch boolean referenceHasUuid(LFeature feature) {
+		return false
+	}
+
+	def dispatch boolean referenceHasUuid(LDtoReference reference) {
+		return (reference.type as LDto).hasUuid
+	}
+
 	def String domainKey(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isDomainKey) {
@@ -564,11 +582,11 @@ class CppExtensions {
 		}
 		return "QString"
 	}
-	
+
 	// can be 'R' or 'RW'
-	def boolean isReadOnlyCache(LDto dto){
-		if(dto.cachePolicyValue != null){
-			if(dto.cachePolicyValue == "R") {
+	def boolean isReadOnlyCache(LDto dto) {
+		if (dto.cachePolicyValue != null) {
+			if (dto.cachePolicyValue == "R") {
 				return true
 			}
 		}
@@ -601,10 +619,10 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean existsTypeOfDataObject(LDto dto) {
 		for (feature : dto.allFeatures) {
-			if (feature.isTypeOfDataObject && !(feature.isToMany) && !(feature.isLazy)  && !(feature.isContained)) {
+			if (feature.isTypeOfDataObject && !(feature.isToMany) && !(feature.isLazy) && !(feature.isContained)) {
 				return true
 			}
 		}
@@ -628,7 +646,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean hasUuid(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.toName == "uuid") {
@@ -637,7 +655,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean hasDomainKey(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isDomainKey) {
@@ -660,7 +678,7 @@ class CppExtensions {
 		}
 		return '''Map'''.toString
 	}
-	
+
 	def String getCachePolicyValue(LDto member) {
 		val annoDef = typeof(CachePolicy).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
@@ -704,14 +722,15 @@ class CppExtensions {
 			return null
 		}
 	}
-	
-	def boolean isTree(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isContained){
-				if(feature.toTypeName == dto.name) {
+
+	def boolean isTree(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isContained) {
+				if (feature.toTypeName == dto.name) {
+
 					// self contained - tree structure - children - parent of same Type
 					return true
-				} 
+				}
 			}
 		}
 		return false

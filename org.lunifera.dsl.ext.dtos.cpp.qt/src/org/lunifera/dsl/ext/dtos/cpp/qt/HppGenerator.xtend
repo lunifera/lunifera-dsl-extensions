@@ -177,9 +177,16 @@ class HppGenerator {
 		
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
+		«IF feature.referenceHasUuid»
 		
 		Q_INVOKABLE
-		void removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid);
+		void removeFrom«feature.toName.toFirstUpper»ByUuid(const QString& uuid);
+		«ENDIF»
+		«IF feature.referenceHasDomainKey && feature.referenceDomainKey != "uuid"»
+		
+		Q_INVOKABLE
+		void removeFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(const «feature.referenceDomainKeyType»& «feature.referenceDomainKey»);
+		«ENDIF»
 		«ELSE»
 			
 			«IF feature.toTypeName == "QString"»
@@ -234,7 +241,6 @@ class HppGenerator {
 		«IF feature.isLazy»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		void «feature.toName»Changed(«feature.referenceDomainKeyType» «feature.toName»);
-		void «feature.toName»Removed(«feature.referenceDomainKeyType» «feature.toName»);
 		«ELSEIF feature.isEnum»
 		void «feature.toName»Changed(int «feature.toName»);
 		«ELSE»
@@ -252,7 +258,13 @@ class HppGenerator {
 		«IF !(feature.isArrayList)»
 		void «feature.toName»Changed(QList<«feature.toTypeName»*> «feature.toName»);
 		void addedTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
-		void removedFrom«feature.toName.toFirstUpper»(QString uuid);
+		«IF feature.referenceHasUuid»
+		void removedFrom«feature.toName.toFirstUpper»ByUuid(QString uuid);
+		«ENDIF»
+		«IF feature.referenceHasDomainKey && feature.referenceDomainKey != "uuid"»
+		void removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.referenceDomainKeyType» «feature.referenceDomainKey»);
+		«ENDIF»
+		
 		«ELSE»
 			«IF feature.toTypeName == "QString"»
 			void «feature.toName»StringListChanged(QStringList «feature.toName»);

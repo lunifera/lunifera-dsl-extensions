@@ -70,7 +70,7 @@ class CppGenerator {
  */
 «dto.toName»::«dto.toName»(QObject *parent) :
         QObject(parent)«FOR feature : dto.allFeatures.filter [
-		!isToMany && !isTypeOfDataObject && !typeOfDates && !isContained &&!isEnum
+		!isToMany && !isTypeOfDataObject && !typeOfDates && !isContained && !isEnum
 	]», m«feature.toName.toFirstUpper»(«feature.defaultForType»)«ENDFOR»
 {
 	«IF dto.existsTypeOfDataObject»
@@ -246,7 +246,8 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			«IF feature.isTransient»
 			// m«feature.toName.toFirstUpper» is transient
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»ForeignKey)) {
-				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.mapToType»();
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.
+		mapToType»();
 			}
 			«ELSEIF feature.isEnum»
 			// ENUM
@@ -529,7 +530,8 @@ QVariantMap «dto.toName»::toForeignMap()
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
 			«ELSE»
 			if (m«feature.toName.toFirstUpper») {
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.
+		toMapOrList»());
 			}
 			«ENDIF»
 			«ELSE»
@@ -566,7 +568,8 @@ QVariantMap «dto.toName»::toForeignMap()
 /*
  * Exports Properties from «dto.toName» as QVariantMap
  * transient properties are excluded:
- «IF dto.existsTransient»* «FOR feature : dto.allFeatures.filter[isTransient] SEPARATOR ", "»m«feature.toName.toFirstUpper»«ENDFOR»«ENDIF»
+ «IF dto.existsTransient»* «FOR feature : dto.allFeatures.filter[isTransient] SEPARATOR ", "»m«feature.toName.
+		toFirstUpper»«ENDFOR»«ENDIF»
  * To export ALL data use toMap()
  */
 QVariantMap «dto.toName»::toCacheMap()
@@ -637,18 +640,17 @@ QVariantMap «dto.toName»::toCacheMap()
 void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»)
 {
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
-		if («feature.toName» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-            // resolve the corresponding Data Object on demand from DataManager
-        } else {
-        	// remove old Data Object
-        	if (mTopicIdAsDataObject) {
-            	// reset pointer, don't delete the independent object !
-            	m«feature.toName.toFirstUpper»AsDataObject = 0;
-            	emit «feature.toName»Removed(m«feature.toName.toFirstUpper»);
-            }
+        // remove old Data Object if one was resolved
+        if (m«feature.toName.toFirstUpper»AsDataObject) {
+            // reset pointer, don't delete the independent object !
+            m«feature.toName.toFirstUpper»AsDataObject = 0;
         }
+        // set the new lazy reference
         m«feature.toName.toFirstUpper» = «feature.toName»;
         emit «feature.toName»Changed(«feature.toName»);
+        if («feature.toName» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+            // resolve the corresponding Data Object on demand from DataManager
+        }
     }
 }
 void «dto.toName»::remove«feature.toName.toFirstUpper»()
@@ -675,14 +677,14 @@ bool «dto.toName»::is«feature.toName.toFirstUpper»ResolvedAsDataObject()
 }
 
 // lazy bound Data Object was resolved. overwrite «feature.referenceDomainKey» if different
-void «dto.toName»::resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+void «dto.toName»::resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName»* «feature.toTypeName.
+		toFirstLower»)
 {
     if («feature.toTypeName.toFirstLower») {
-    	m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
         if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() != m«feature.toName.toFirstUpper») {
-            m«feature.toName.toFirstUpper» = «feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»();
-            emit «feature.toName.toFirstLower»Changed(m«feature.toName.toFirstUpper»);
+            set«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»());
         }
+        m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
     }
 }
 «ENDFOR»
@@ -771,13 +773,15 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»()
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isArrayList && toTypeName == "QString"]»
 «feature.foo»
-void «dto.toName»::addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»)
+void «dto.toName»::addTo«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.
+		toFirstLower»)
 {
     m«feature.toName.toFirstUpper»StringList.append(«feature.toTypeName.toFirstLower»);
     emit addedTo«feature.toName.toFirstUpper»StringList(«feature.toTypeName.toFirstLower»);
 }
 
-void «dto.toName»::removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.toFirstLower»)
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»StringList(const «feature.toTypeName»& «feature.toTypeName.
+		toFirstLower»)
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper»StringList.size(); ++i) {
         if (m«feature.toName.toFirstUpper»StringList.at(i) == «feature.toTypeName.toFirstLower») {
@@ -807,13 +811,15 @@ void «dto.toName»::set«feature.toName.toFirstUpper»StringList(const QStringL
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[isArrayList && toTypeName != "QString"]»
 «feature.foo»
-void «dto.toName»::addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»)
+void «dto.toName»::addTo«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.
+		toFirstUpper»)
 {
     m«feature.toName.toFirstUpper».append(the«feature.toTypeName.toFirstUpper»);
     emit addedTo«feature.toName.toFirstUpper»List(the«feature.toTypeName.toFirstUpper»);
 }
 
-void «dto.toName»::removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.toFirstUpper»)
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& the«feature.toTypeName.
+		toFirstUpper»)
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
         if (m«feature.toName.toFirstUpper».at(i) == the«feature.toTypeName.toFirstUpper») {
@@ -879,21 +885,25 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»
 
 void «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
-    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-        if (m«feature.toName.toFirstUpper».at(i) == «feature.toTypeName.toFirstLower») {
-            m«feature.toName.toFirstUpper».removeAt(i);
-            emit removedFrom«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»->uuid());
-            «IF feature.hasOpposite»
-            // «feature.toName» are contained - so we must delete them
-            «feature.toTypeName.toFirstLower»->deleteLater();
-            «ELSE»
-            // «feature.toName» are independent - DON'T delete them
-            «ENDIF»
-            return;
-        }
+    bool ok = false;
+    ok = m«feature.toName.toFirstUpper».removeOne(«feature.toTypeName.toFirstLower»);
+    if (!ok) {
+    	qDebug() << "«feature.toTypeName»* not found in «feature.toName.toFirstLower»";
+    	// TODO signal error
+    	return;
     }
-    qDebug() << "«feature.toTypeName»* not found in «feature.toName.toFirstLower»";
-    // TODO signal error
+    «IF feature.referenceHasUuid»
+    emit removedFrom«feature.toName.toFirstUpper»ByUuid(«feature.toTypeName.toFirstLower»->uuid());
+    «ELSEIF feature.referenceHasDomainKey»
+    emit removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»());
+    «ENDIF»
+    «IF feature.hasOpposite»
+    // «feature.toName» are contained - so we must delete them
+    «feature.toTypeName.toFirstLower»->deleteLater();
+    «feature.toTypeName.toFirstLower» = 0;
+    «ELSE»
+    // «feature.toName» are independent - DON'T delete them
+    «ENDIF»
 }
 
 void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map)
@@ -905,28 +915,54 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantM
     emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
 }
 
-void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByKey(const QString& uuid)
+«IF feature.referenceHasUuid»
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByUuid(const QString& uuid)
 {
     for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-        if ((m«feature.toName.toFirstUpper».at(i))->toMap().value(uuidKey).toString() == uuid) {
-            «IF feature.hasOpposite»
-            «feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-            «feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-            m«feature.toName.toFirstUpper».removeAt(i);
-            emit removedFrom«feature.toName.toFirstUpper»(uuid);
-            // «feature.toName» are contained - so we must delete them
-            «feature.toTypeName.toFirstLower»->deleteLater();
-            «ELSE»
-            m«feature.toName.toFirstUpper».removeAt(i);
-            emit removedFrom«feature.toName.toFirstUpper»(uuid);
-            // «feature.toName» are independent - DON'T delete them
-            «ENDIF»
-            return;
+    	«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+        «feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+        if («feature.toTypeName.toFirstLower»->uuid() == uuid) {
+        	m«feature.toName.toFirstUpper».removeAt(i);
+        	emit removedFrom«feature.toName.toFirstUpper»ByUuid(uuid);
+        	«IF feature.hasOpposite»
+        	// «feature.toName» are contained - so we must delete them
+        	«feature.toTypeName.toFirstLower»->deleteLater();
+        	«feature.toTypeName.toFirstLower» = 0;
+        	«ELSE»
+        	// «feature.toName» are independent - DON'T delete them
+        	«ENDIF»
+        	return;
         }
     }
     qDebug() << "uuid not found in «feature.toName.toFirstLower»: " << uuid;
     // TODO signal error
 }
+«ENDIF»
+
+«IF feature.referenceHasDomainKey && feature.referenceDomainKey != "uuid"»
+void «dto.toName»::removeFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(const «feature.referenceDomainKeyType»& «feature.referenceDomainKey»)
+{
+    for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+    	«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+        «feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+        if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() == «feature.referenceDomainKey») {
+        	m«feature.toName.toFirstUpper».removeAt(i);
+        	emit removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.referenceDomainKey»);
+        	«IF feature.hasOpposite»
+        	// «feature.toName» are contained - so we must delete them
+        	«feature.toTypeName.toFirstLower»->deleteLater();
+        	«feature.toTypeName.toFirstLower» = 0;
+        	«ELSE»
+        	// «feature.toName» are independent - DON'T delete them
+        	«ENDIF»
+        	return;
+        }
+    }
+    qDebug() << "«feature.referenceDomainKey» not found in «feature.toName.toFirstLower»: " << «feature.referenceDomainKey»;
+    // TODO signal error
+}
+«ENDIF»
+
 int «dto.toName»::«feature.toName.toFirstLower»Count()
 {
     return m«feature.toName.toFirstUpper».size();
