@@ -439,9 +439,11 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 
 void «dto.toName»::prepareNew()
 {
+	«IF dto.hasUuid»
 	mUuid = QUuid::createUuid().toString();
 	mUuid = mUuid.right(mUuid.length() - 1);
 	mUuid = mUuid.left(mUuid.length() - 1);
+	«ENDIF»
 }
 
 /*

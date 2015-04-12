@@ -178,6 +178,8 @@ class CppExtensions {
 				return "QTime"
 			case "Timestamp":
 				return "QDateTime"
+			case "QString":
+				return "QString"
 		}
 		return modelExtension.toTypeName(att as LDtoAbstractAttribute)
 	}

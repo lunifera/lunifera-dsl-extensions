@@ -91,7 +91,7 @@ public:
 	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
 
 	Q_INVOKABLE
-	bool delete«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»);
+	bool delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
 
 	Q_INVOKABLE
     «dto.toName»* find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
@@ -108,7 +108,7 @@ Q_SIGNALS:
 	void deletedFromAll«dto.toName»ByUuid(QString uuid);
 	«ENDIF»
 	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
-	void deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(int «dto.domainKey»);
+	void deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKeyType» «dto.domainKey»);
 	«ENDIF»
 	«ENDIF»
     «ENDFOR»

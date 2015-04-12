@@ -279,7 +279,7 @@ bool DataManager::delete«dto.toName»ByUuid(const QString& uuid)
 «ENDIF»
 
 «IF dto.hasDomainKey && dto.domainKey != "uuid"»
-bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»)
+bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»)
 {
     for (int i = 0; i < mAll«dto.toName».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
@@ -367,7 +367,7 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
 
 «IF dto.hasDomainKey && dto.domainKey != "uuid"»
 // nr is DomainKey
-«dto.toName»* DataManager::find«dto.toName»By«dto.domainKey.toFirstUpper»(const int& «dto.domainKey»){
+«dto.toName»* DataManager::find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»){
     for (int i = 0; i < mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
         «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName»«IF dto.isTree»Flat«ENDIF».at(i);

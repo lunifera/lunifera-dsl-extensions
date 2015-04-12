@@ -277,7 +277,10 @@ public class HppManagerGenerator {
                 String _domainKey_1 = this._cppExtensions.domainKey(dto_1);
                 String _firstUpper = StringExtensions.toFirstUpper(_domainKey_1);
                 _builder.append(_firstUpper, "\t");
-                _builder.append("(const int& ");
+                _builder.append("(const ");
+                String _domainKeyType = this._cppExtensions.domainKeyType(dto_1);
+                _builder.append(_domainKeyType, "\t");
+                _builder.append("& ");
                 String _domainKey_2 = this._cppExtensions.domainKey(dto_1);
                 _builder.append(_domainKey_2, "\t");
                 _builder.append(");");
@@ -297,8 +300,8 @@ public class HppManagerGenerator {
                 String _firstUpper_1 = StringExtensions.toFirstUpper(_domainKey_3);
                 _builder.append(_firstUpper_1, "    ");
                 _builder.append("(const ");
-                String _domainKeyType = this._cppExtensions.domainKeyType(dto_1);
-                _builder.append(_domainKeyType, "    ");
+                String _domainKeyType_1 = this._cppExtensions.domainKeyType(dto_1);
+                _builder.append(_domainKeyType_1, "    ");
                 _builder.append("& ");
                 String _domainKey_4 = this._cppExtensions.domainKey(dto_1);
                 _builder.append(_domainKey_4, "    ");
@@ -371,7 +374,10 @@ public class HppManagerGenerator {
                 String _domainKey_6 = this._cppExtensions.domainKey(dto_2);
                 String _firstUpper_2 = StringExtensions.toFirstUpper(_domainKey_6);
                 _builder.append(_firstUpper_2, "\t");
-                _builder.append("(int ");
+                _builder.append("(");
+                String _domainKeyType_2 = this._cppExtensions.domainKeyType(dto_2);
+                _builder.append(_domainKeyType_2, "\t");
+                _builder.append(" ");
                 String _domainKey_7 = this._cppExtensions.domainKey(dto_2);
                 _builder.append(_domainKey_7, "\t");
                 _builder.append(");");

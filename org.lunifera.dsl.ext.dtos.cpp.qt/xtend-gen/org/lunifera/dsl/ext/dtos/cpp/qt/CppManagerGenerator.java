@@ -1177,7 +1177,10 @@ public class CppManagerGenerator {
                 String _domainKey_3 = this._cppExtensions.domainKey(dto_5);
                 String _firstUpper_5 = StringExtensions.toFirstUpper(_domainKey_3);
                 _builder.append(_firstUpper_5, "");
-                _builder.append("(const int& ");
+                _builder.append("(const ");
+                String _domainKeyType = this._cppExtensions.domainKeyType(dto_5);
+                _builder.append(_domainKeyType, "");
+                _builder.append("& ");
                 String _domainKey_4 = this._cppExtensions.domainKey(dto_5);
                 _builder.append(_domainKey_4, "");
                 _builder.append(")");
@@ -1575,7 +1578,10 @@ public class CppManagerGenerator {
                 String _domainKey_10 = this._cppExtensions.domainKey(dto_5);
                 String _firstUpper_7 = StringExtensions.toFirstUpper(_domainKey_10);
                 _builder.append(_firstUpper_7, "");
-                _builder.append("(const int& ");
+                _builder.append("(const ");
+                String _domainKeyType_1 = this._cppExtensions.domainKeyType(dto_5);
+                _builder.append(_domainKeyType_1, "");
+                _builder.append("& ");
                 String _domainKey_11 = this._cppExtensions.domainKey(dto_5);
                 _builder.append(_domainKey_11, "");
                 _builder.append("){");

@@ -2646,15 +2646,20 @@ public class CppGenerator {
     _builder.newLineIfNotEmpty();
     _builder.append("{");
     _builder.newLine();
-    _builder.append("\t");
-    _builder.append("mUuid = QUuid::createUuid().toString();");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("mUuid = mUuid.right(mUuid.length() - 1);");
-    _builder.newLine();
-    _builder.append("\t");
-    _builder.append("mUuid = mUuid.left(mUuid.length() - 1);");
-    _builder.newLine();
+    {
+      boolean _hasUuid = this._cppExtensions.hasUuid(dto);
+      if (_hasUuid) {
+        _builder.append("\t");
+        _builder.append("mUuid = QUuid::createUuid().toString();");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("mUuid = mUuid.right(mUuid.length() - 1);");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("mUuid = mUuid.left(mUuid.length() - 1);");
+        _builder.newLine();
+      }
+    }
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();

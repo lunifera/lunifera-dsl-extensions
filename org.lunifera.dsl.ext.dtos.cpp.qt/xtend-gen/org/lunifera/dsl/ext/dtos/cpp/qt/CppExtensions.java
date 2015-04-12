@@ -226,6 +226,12 @@ public class CppExtensions {
         return "QDateTime";
       }
     }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return "QString";
+      }
+    }
     return this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
   }
   
