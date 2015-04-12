@@ -669,7 +669,7 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomai
 }
 void «dto.toName»::remove«feature.toName.toFirstUpper»()
 {
-	if (m«feature.toName.toFirstUpper» != -1) {
+	if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyFeature.defaultForType») {
 		set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType.defaultForLazyTypeName»);
 	}
 }

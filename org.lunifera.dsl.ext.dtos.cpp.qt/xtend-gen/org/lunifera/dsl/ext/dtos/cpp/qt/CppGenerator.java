@@ -3876,7 +3876,11 @@ public class CppGenerator {
         String _name_381 = this._cppExtensions.toName(feature_27);
         String _firstUpper_121 = StringExtensions.toFirstUpper(_name_381);
         _builder.append(_firstUpper_121, "\t");
-        _builder.append(" != -1) {");
+        _builder.append(" != ");
+        LFeature _referenceDomainKeyFeature_1 = this._cppExtensions.referenceDomainKeyFeature(feature_27);
+        String _defaultForType_1 = this._cppExtensions.defaultForType(_referenceDomainKeyFeature_1);
+        _builder.append(_defaultForType_1, "\t");
+        _builder.append(") {");
         _builder.newLineIfNotEmpty();
         _builder.append("\t\t");
         _builder.append("set");
