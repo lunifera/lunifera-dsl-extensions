@@ -83,6 +83,7 @@ class CppGenerator {
 		// lazy references:
 		«FOR feature : dto.allFeatures.filter[isLazy]»
 		m«feature.toName.toFirstUpper» = «feature.referenceDomainKeyType.defaultForLazyTypeName»;
+		m«feature.toName.toFirstUpper»AsDataObject = 0;
 		«ENDFOR»
 	«ENDIF»
 	«IF dto.existsEnum»

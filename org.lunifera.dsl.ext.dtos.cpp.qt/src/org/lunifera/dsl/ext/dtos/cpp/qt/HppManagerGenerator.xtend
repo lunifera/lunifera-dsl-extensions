@@ -70,6 +70,9 @@ public:
 
 	Q_INVOKABLE
 	void resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»);
+
+	Q_INVOKABLE
+	void resolveReferencesForAll«dto.toName»();
 	«ENDIF»
 
 	Q_INVOKABLE
