@@ -142,6 +142,9 @@ class HppGenerator {
 		Q_INVOKABLE
 		bool is«feature.toName.toFirstUpper»ResolvedAsDataObject();
 		
+		Q_INVOKABLE
+		void mark«feature.toName.toFirstUpper»AsInvalid();
+		
 		«ELSEIF feature.isEnum»
 		int «feature.toName»() const;
 		void set«feature.toName.toFirstUpper»(int «feature.toName»);
@@ -294,6 +297,7 @@ class HppGenerator {
 		// no MEMBER m«feature.toName.toFirstUpper» it's the parent
 		«ELSEIF feature.isLazy»
 		«feature.referenceDomainKeyType» m«feature.toName.toFirstUpper»;
+		bool m«feature.toName.toFirstUpper»Invalid;
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»AsDataObject;
 		«ELSEIF feature.isEnum»
 		int m«feature.toName.toFirstUpper»;

@@ -84,6 +84,7 @@ class CppGenerator {
 		«FOR feature : dto.allFeatures.filter[isLazy]»
 		m«feature.toName.toFirstUpper» = «feature.referenceDomainKeyType.defaultForLazyTypeName»;
 		m«feature.toName.toFirstUpper»AsDataObject = 0;
+		m«feature.toName.toFirstUpper»Invalid = false;
 		«ENDFOR»
 	«ENDIF»
 	«IF dto.existsEnum»
@@ -662,6 +663,7 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomai
         }
         // set the new lazy reference
         m«feature.toName.toFirstUpper» = «feature.toName»;
+        m«feature.toName.toFirstUpper»Invalid = false;
         emit «feature.toName»Changed(«feature.toName»);
         if («feature.toName» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
             // resolve the corresponding Data Object on demand from DataManager
@@ -676,7 +678,7 @@ void «dto.toName»::remove«feature.toName.toFirstUpper»()
 }
 bool «dto.toName»::has«feature.toName.toFirstUpper»()
 {
-    if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+    if (!m«feature.toName.toFirstUpper»Invalid && m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
         return true;
     } else {
         return false;
@@ -684,7 +686,7 @@ bool «dto.toName»::has«feature.toName.toFirstUpper»()
 }
 bool «dto.toName»::is«feature.toName.toFirstUpper»ResolvedAsDataObject()
 {
-    if (m«feature.toName.toFirstUpper»AsDataObject) {
+    if (!m«feature.toName.toFirstUpper»Invalid && m«feature.toName.toFirstUpper»AsDataObject) {
         return true;
     } else {
         return false;
@@ -700,7 +702,12 @@ void «dto.toName»::resolve«feature.toName.toFirstUpper»AsDataObject(«featur
             set«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»());
         }
         m«feature.toName.toFirstUpper»AsDataObject = «feature.toTypeName.toFirstLower»;
+        m«feature.toName.toFirstUpper»Invalid = false;
     }
+}
+void «dto.toName»::mark«feature.toName.toFirstUpper»AsInvalid()
+{
+    m«feature.toName.toFirstUpper»Invalid = true;
 }
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[!isToMany && !isLazy]»
