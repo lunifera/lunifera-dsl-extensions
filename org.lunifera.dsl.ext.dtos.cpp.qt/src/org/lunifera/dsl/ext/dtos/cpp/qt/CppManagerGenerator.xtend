@@ -199,7 +199,14 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
 	}
     «FOR feature : dto.allFeatures.filter[isLazy]»
     if («dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»() && !«dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
-        «dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»AsDataObject(find«feature.toTypeName»By«feature.referenceDomainKey.toFirstUpper»(«dto.toName.toFirstLower»->«feature.toName»()));
+    	«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+   		«feature.toTypeName.toFirstLower» = find«feature.toTypeName»By«feature.referenceDomainKey.toFirstUpper»(«dto.toName.toFirstLower»->«feature.toName.toFirstLower»());
+    	if («feature.toTypeName.toFirstLower») {
+    		«dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName.toFirstLower»);
+    	} else {
+    		qDebug() << "mark«feature.toName.toFirstUpper»AsInvalid: " << «dto.toName.toFirstLower»->«feature.toName.toFirstLower»();
+    		«dto.toName.toFirstLower»->mark«feature.toName.toFirstUpper»AsInvalid();
+    	}
     }
     «ENDFOR»
 }
@@ -208,11 +215,7 @@ void DataManager::resolveReferencesForAll«dto.toName»()
     for (int i = 0; i < mAll«dto.toName».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
         «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
-    	«FOR feature : dto.allFeatures.filter[isLazy]»
-    	if («dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»() && !«dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
-        	«dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»AsDataObject(find«feature.toTypeName»By«feature.referenceDomainKey.toFirstUpper»(«dto.toName.toFirstLower»->«feature.toName»()));
-    	}
-    	«ENDFOR»
+    	resolve«dto.toName»References(«dto.toName.toFirstLower»);
     }
 }
 «ENDIF»
