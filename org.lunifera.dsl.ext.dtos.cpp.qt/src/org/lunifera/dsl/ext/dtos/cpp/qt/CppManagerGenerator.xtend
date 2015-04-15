@@ -86,6 +86,15 @@ DataManager::DataManager(QObject *parent) :
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 		qmlRegisterType<«dto.toName»>("org.ekkescorner.data", 1, 0, "«dto.toName»");
 	«ENDFOR»
+	«IF pkg.hasGeo»
+	// QGeo... classes wrapped as QObject* to be able to access via Q_PROPERTY
+	«IF pkg.hasGeoCoordinate»
+		qmlRegisterType<GeoCoordinate>("org.ekkescorner.data", 1, 0, "GeoCoordinate");
+	«ENDIF»
+	«IF pkg.hasGeoAddress»
+		qmlRegisterType<GeoAddress>("org.ekkescorner.data", 1, 0, "GeoAddress");
+	«ENDIF»
+	«ENDIF»
 	// register all ENUMs to get access from QML
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
 		qmlRegisterType<«en.toName»>("org.ekkescorner.enums", 1, 0, "«en.toName»");

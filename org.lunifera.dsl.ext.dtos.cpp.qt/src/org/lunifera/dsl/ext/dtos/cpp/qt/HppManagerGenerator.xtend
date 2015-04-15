@@ -42,6 +42,12 @@ class HppManagerGenerator {
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 #include "«dto.toName».hpp"
 «ENDFOR»
+«IF pkg.hasGeoCoordinate»
+#include  "GeoCoordinate.hpp"
+«ENDIF»
+«IF pkg.hasGeoAddress»
+#include  "GeoAddress.hpp"
+«ENDIF»
 
 class DataManager: public QObject
 {

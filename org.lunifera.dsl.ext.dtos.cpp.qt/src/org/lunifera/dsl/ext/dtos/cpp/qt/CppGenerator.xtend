@@ -77,6 +77,9 @@ class CppGenerator {
 		// set Types of DataObject* to NULL:
 		«FOR feature : dto.allFeatures.filter[!isLazy && isTypeOfDataObject && !toMany && !isContained]»
 		m«feature.toName.toFirstUpper» = 0;
+		«IF feature.toTypeName == "GeoCoordinate" || feature.toTypeName == "GeoAddress"»
+		m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+		«ENDIF»
 		«ENDFOR»
 	«ENDIF»
 	«IF dto.existsLazy»
@@ -146,6 +149,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 				QVariantMap «feature.toName»Map;
 				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toMap();
 				if (!«feature.toName»Map.isEmpty()) {
+					m«feature.toName.toFirstUpper» = 0;
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
 					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
@@ -250,6 +254,7 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 				QVariantMap «feature.toName»Map;
 				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).toMap();
 				if (!«feature.toName»Map.isEmpty()) {
+					m«feature.toName.toFirstUpper» = 0;
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
 					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);

@@ -164,6 +164,20 @@ public class HppGenerator {
         _builder.newLine();
       }
     }
+    {
+      boolean _existsGeoCoordinate = this._cppExtensions.existsGeoCoordinate(dto);
+      if (_existsGeoCoordinate) {
+        _builder.append("// #include <QtLocationSubset/QGeoCoordinate>");
+        _builder.newLine();
+      }
+    }
+    {
+      boolean _existsGeoAddress = this._cppExtensions.existsGeoAddress(dto);
+      if (_existsGeoAddress) {
+        _builder.append("// #include <QtLocationSubset/QGeoAddress>");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       List<? extends LFeature> _allFeatures_5 = dto.getAllFeatures();
@@ -218,6 +232,14 @@ public class HppGenerator {
             _builder.newLineIfNotEmpty();
           }
         }
+      }
+    }
+    _builder.newLine();
+    {
+      boolean _existsGeo = this._cppExtensions.existsGeo(dto);
+      if (_existsGeo) {
+        _builder.append("// using namespace QtMobilitySubset;\t");
+        _builder.newLine();
       }
     }
     _builder.newLine();

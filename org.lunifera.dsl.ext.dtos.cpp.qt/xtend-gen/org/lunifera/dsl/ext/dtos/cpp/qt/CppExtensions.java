@@ -244,6 +244,19 @@ public class CppExtensions {
     if ((_type instanceof LDto)) {
       return true;
     }
+    boolean _or = false;
+    String _typeName = this.toTypeName(att);
+    boolean _equals = Objects.equal(_typeName, "GeoCoordinate");
+    if (_equals) {
+      _or = true;
+    } else {
+      String _typeName_1 = this.toTypeName(att);
+      boolean _equals_1 = Objects.equal(_typeName_1, "GeoAddress");
+      _or = _equals_1;
+    }
+    if (_or) {
+      return true;
+    }
     return false;
   }
   
@@ -1144,6 +1157,45 @@ public class CppExtensions {
     for (final LFeature feature : _allFeatures) {
       boolean _isEnum = this.isEnum(feature);
       if (_isEnum) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean existsGeoCoordinate(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      String _typeName = this.toTypeName(feature);
+      boolean _equals = Objects.equal(_typeName, "GeoCoordinate");
+      if (_equals) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean existsGeo(final LDto dto) {
+    boolean _or = false;
+    boolean _existsGeoCoordinate = this.existsGeoCoordinate(dto);
+    if (_existsGeoCoordinate) {
+      _or = true;
+    } else {
+      boolean _existsGeoAddress = this.existsGeoAddress(dto);
+      _or = _existsGeoAddress;
+    }
+    if (_or) {
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean existsGeoAddress(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      String _typeName = this.toTypeName(feature);
+      boolean _equals = Objects.equal(_typeName, "GeoAddress");
+      if (_equals) {
         return true;
       }
     }

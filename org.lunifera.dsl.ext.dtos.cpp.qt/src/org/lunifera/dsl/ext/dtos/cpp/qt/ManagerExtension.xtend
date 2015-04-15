@@ -37,6 +37,7 @@ import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference
 import org.lunifera.dsl.semantic.dto.LDtoReference
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
+import org.lunifera.dsl.semantic.common.types.LTypedPackage
 
 class ManagerExtensions {
 
@@ -44,11 +45,11 @@ class ManagerExtensions {
 	@Inject DtoModelExtensions modelExtension
 	@Inject extension AnnotationExtension
 	@Inject extension CppExtensions
-	
-	def boolean isRootDataObject(LDto dto){
-		for (feature : dto.allFeatures){
-			if(feature.isContained){
-				if(feature.toTypeName == dto.name) {
+
+	def boolean isRootDataObject(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isContained) {
+				if (feature.toTypeName == dto.name) {
 					// self contained - tree structure - children - parent of same Type
 				} else {
 					return false
@@ -57,5 +58,34 @@ class ManagerExtensions {
 		}
 		return true
 	}
-	
+
+	def boolean hasGeoCoordinate(LTypedPackage pkg) {
+		for (lt : pkg.types) {
+			if (lt instanceof LDto) {
+				if (lt.existsGeoCoordinate) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	def boolean hasGeoAddress(LTypedPackage pkg) {
+		for (lt : pkg.types) {
+			if (lt instanceof LDto) {
+				if (lt.existsGeoAddress) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	def boolean hasGeo(LTypedPackage pkg) {
+		if (pkg.hasGeoCoordinate || pkg.hasGeoAddress) {
+			return true
+		}
+		return false
+	}
+
 }

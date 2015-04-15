@@ -192,6 +192,9 @@ class CppExtensions {
 		if (att.type instanceof LDto) {
 			return true
 		}
+		if( att.toTypeName == "GeoCoordinate" || att.toTypeName == "GeoAddress"){
+			return true
+		}
 		return false
 	}
 
@@ -594,7 +597,7 @@ class CppExtensions {
 	def dispatch boolean referenceHasDomainKey(LDtoReference reference) {
 		return (reference.type as LDto).hasDomainKey
 	}
-	
+
 	def dispatch boolean referenceHasUuid(LFeature feature) {
 		return false
 	}
@@ -651,6 +654,31 @@ class CppExtensions {
 	def boolean existsEnum(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isEnum) {
+				return true
+			}
+		}
+		return false
+	}
+
+	def boolean existsGeoCoordinate(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.toTypeName == "GeoCoordinate") {
+				return true
+			}
+		}
+		return false
+	}
+
+	def boolean existsGeo(LDto dto) {
+		if (dto.existsGeoCoordinate || dto.existsGeoAddress) {
+			return true
+		}
+		return false
+	}
+
+	def boolean existsGeoAddress(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.toTypeName == "GeoAddress") {
 				return true
 			}
 		}

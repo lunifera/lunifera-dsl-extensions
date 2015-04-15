@@ -212,6 +212,30 @@ public class CppManagerGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
+    {
+      boolean _hasGeo = this._managerExtensions.hasGeo(pkg);
+      if (_hasGeo) {
+        _builder.append("\t");
+        _builder.append("// QGeo... classes wrapped as QObject* to be able to access via Q_PROPERTY");
+        _builder.newLine();
+        {
+          boolean _hasGeoCoordinate = this._managerExtensions.hasGeoCoordinate(pkg);
+          if (_hasGeoCoordinate) {
+            _builder.append("\t");
+            _builder.append("qmlRegisterType<GeoCoordinate>(\"org.ekkescorner.data\", 1, 0, \"GeoCoordinate\");");
+            _builder.newLine();
+          }
+        }
+        {
+          boolean _hasGeoAddress = this._managerExtensions.hasGeoAddress(pkg);
+          if (_hasGeoAddress) {
+            _builder.append("\t");
+            _builder.append("qmlRegisterType<GeoAddress>(\"org.ekkescorner.data\", 1, 0, \"GeoAddress\");");
+            _builder.newLine();
+          }
+        }
+      }
+    }
     _builder.append("\t");
     _builder.append("// register all ENUMs to get access from QML");
     _builder.newLine();

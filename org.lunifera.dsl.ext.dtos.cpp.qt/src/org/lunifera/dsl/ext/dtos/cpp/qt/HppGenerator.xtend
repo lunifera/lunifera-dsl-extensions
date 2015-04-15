@@ -54,6 +54,12 @@ class HppGenerator {
 	«IF dto.allFeatures.filter[toTypeName == "QDateTime"].size > 0»
 	#include <QDateTime>
 	«ENDIF»
+	«IF dto.existsGeoCoordinate»
+	// #include <QtLocationSubset/QGeoCoordinate>
+	«ENDIF»
+	«IF dto.existsGeoAddress»
+	// #include <QtLocationSubset/QGeoAddress>
+	«ENDIF»
 	
 	«FOR en : dto.allFeatures.filter[isEnum]»
 	#include "«en.toTypeName».hpp"
@@ -69,6 +75,10 @@ class HppGenerator {
 	class «reference.toTypeName.toFirstUpper»;
 	«ENDIF»
 	«ENDFOR»
+	
+	«IF dto.existsGeo»
+	// using namespace QtMobilitySubset;	
+	«ENDIF»
 
 	class «dto.toName»: public QObject
 	{

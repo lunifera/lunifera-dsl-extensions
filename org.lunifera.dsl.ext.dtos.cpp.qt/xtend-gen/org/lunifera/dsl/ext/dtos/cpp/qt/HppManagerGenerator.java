@@ -80,6 +80,20 @@ public class HppManagerGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
+    {
+      boolean _hasGeoCoordinate = this._managerExtensions.hasGeoCoordinate(pkg);
+      if (_hasGeoCoordinate) {
+        _builder.append("#include  \"GeoCoordinate.hpp\"");
+        _builder.newLine();
+      }
+    }
+    {
+      boolean _hasGeoAddress = this._managerExtensions.hasGeoAddress(pkg);
+      if (_hasGeoAddress) {
+        _builder.append("#include  \"GeoAddress.hpp\"");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     _builder.append("class DataManager: public QObject");
     _builder.newLine();
