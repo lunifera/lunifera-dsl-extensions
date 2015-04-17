@@ -41,6 +41,8 @@ class HppGenerator {
 	#include <qvariant.h>
 	«IF dto.allFeatures.filter[isToMany && toTypeName != "QString"].size > 0»
 	#include <QDeclarativeListProperty>
+	«ELSEIF dto.existsHierarchy»
+	#include <QDeclarativeListProperty>
 	«ENDIF»
 	«IF dto.allFeatures.filter[isToMany && toTypeName == "QString"].size > 0»
 	#include <QStringList>
@@ -91,6 +93,12 @@ class HppGenerator {
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject WRITE resolve«feature.toName.toFirstUpper»AsDataObject NOTIFY «feature.toName»AsDataObjectChanged FINAL)
+		«IF isHierarchy(dto, feature)»
+		// QDeclarativeListProperty to get easy access to hierarchy of «feature.toName» property from QML
+		// Must always be initialized from DataManager before
+		// DataManager::init«feature.toName.toFirstUpper»HierarchyList
+		Q_PROPERTY(QDeclarativeListProperty<«dto.name»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
+		«ENDIF»
 		«ELSEIF feature.isEnum»
 		// int ENUM «feature.toTypeName»
 		Q_PROPERTY(int «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
@@ -139,6 +147,14 @@ class HppGenerator {
 		«feature.referenceDomainKeyType» «feature.toName»() const;
 		void set«feature.toName.toFirstUpper»(«feature.referenceDomainKeyType» «feature.toName»);
 		«feature.toTypeOrQObject» «feature.toName»AsDataObject() const;
+		«IF isHierarchy(dto, feature)»
+		// access to the hierarchy - must be initialized from DataManager before
+		// DataManager::init«feature.toName.toFirstUpper»HierarchyList
+		void init«feature.toName.toFirstUpper»PropertyList(QList<«dto.name»*> «feature.toName»PropertyList);
+		// if list should be cleared from C++ - from QML use QDeclarativeList function
+		void clear«feature.toName.toFirstUpper»PropertyList();
+		QDeclarativeListProperty<«dto.name»> «feature.toName»PropertyList();
+		«ENDIF»
 		
 		Q_INVOKABLE
 		void resolve«feature.toName.toFirstUpper»AsDataObject(«feature.toTypeName.toFirstUpper»* «feature.toTypeName.toFirstLower»);
@@ -309,6 +325,19 @@ class HppGenerator {
 		«feature.referenceDomainKeyType» m«feature.toName.toFirstUpper»;
 		bool m«feature.toName.toFirstUpper»Invalid;
 		«feature.toTypeOrQObject» m«feature.toName.toFirstUpper»AsDataObject;
+		«IF isHierarchy(dto, feature)»
+		// hierarchy of «dto.toName»*
+		bool mIs«feature.toName.toFirstUpper»AsPropertyListInitialized;
+		QList<«dto.toName»*> m«feature.toName.toFirstUpper»AsPropertyList;
+		// implementation for QDeclarativeListProperty to use
+		// QML functions for hierarchy of «dto.toName»*
+		static void appendTo«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
+			«dto.toName»* «dto.toName.toFirstLower»);
+		static int «feature.toName»PropertyCount(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List);
+		static «dto.toName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
+		int pos);
+		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List);
+		«ENDIF»
 		«ELSEIF feature.isEnum»
 		int m«feature.toName.toFirstUpper»;
 		int «feature.toName.toFirstLower»StringToInt(QString «feature.toName.toFirstLower»);

@@ -1276,6 +1276,26 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean existsHierarchy(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _and = false;
+      boolean _isLazy = this.isLazy(feature);
+      if (!_isLazy) {
+        _and = false;
+      } else {
+        String _typeName = this.toTypeName(feature);
+        String _name = this.toName(dto);
+        boolean _equals = Objects.equal(_typeName, _name);
+        _and = _equals;
+      }
+      if (_and) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public boolean existsTransient(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {

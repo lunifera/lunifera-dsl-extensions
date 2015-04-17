@@ -719,6 +719,15 @@ class CppExtensions {
 		return false
 	}
 
+	def boolean existsHierarchy(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isLazy && (feature.toTypeName == dto.toName)) {
+				return true
+			}
+		}
+		return false
+	}
+
 	def boolean existsTransient(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isTransient) {
