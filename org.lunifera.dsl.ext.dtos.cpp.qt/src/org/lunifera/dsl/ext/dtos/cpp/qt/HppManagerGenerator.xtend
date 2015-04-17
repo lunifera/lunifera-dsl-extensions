@@ -73,6 +73,14 @@ public:
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
 	«IF dto.existsLazy»
+	«FOR feature : dto.allFeatures.filter[isLazy]»
+	«IF isHierarchy(dto, feature)»
+
+	// isHierarchy of: «dto.toName» FEATURE: «feature.toName»
+	Q_INVOKABLE
+	void init«feature.toName.toFirstUpper»HierarchyList(«dto.toName»* «feature.toName»«dto.toName»);
+	«ENDIF»
+	«ENDFOR»
 
 	Q_INVOKABLE
 	void resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»);

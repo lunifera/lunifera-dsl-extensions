@@ -196,6 +196,39 @@ void DataManager::save«dto.toName»ToCache()
 }
 
 «IF dto.existsLazy»
+	«FOR feature : dto.allFeatures.filter[isLazy]»
+	«IF isHierarchy(dto, feature)»
+// isHierarchy of: «dto.toName» FEATURE: «feature.toName»
+void DataManager::init«feature.toName.toFirstUpper»HierarchyList(«dto.toName»* «feature.toName»«dto.toName»)
+{
+	if (!«feature.toName»«dto.toName») {
+		qDebug() << "cannot init«feature.toName.toFirstUpper»HierarchyList with «dto.toName.toFirstLower» NULL";
+		return;
+	}
+	QList<«dto.toName»*> «feature.toName»PropertyList;
+	bool more = true;
+    «dto.toName»* «dto.toName.toFirstLower»;
+    «dto.toName.toFirstLower» = «feature.toName»«dto.toName»;
+	while (more) {
+		if («dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»() && !«dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()){
+			qDebug() << "RESOLVE REFERENCES " << «dto.toName.toFirstLower»->«dto.domainKey»();
+			resolve«dto.toName»References(«dto.toName.toFirstLower»);
+		}
+		if («dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
+            «feature.toName»PropertyList.append(«dto.toName.toFirstLower»->«feature.toName»AsDataObject());
+            «dto.toName.toFirstLower» = «dto.toName.toFirstLower»->«feature.toName»AsDataObject();
+		} else {
+			more = false;
+		}
+	}
+    «dto.toName.toFirstLower» = 0;
+	qDebug() << "init«feature.toName.toFirstUpper»HierarchyList DONE with #" << «feature.toName»PropertyList.size();
+    «feature.toName»«dto.toName»->init«feature.toName.toFirstUpper»PropertyList(«feature.toName»PropertyList);
+}
+
+	«ENDIF»
+	«ENDFOR»
+
 void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»)
 {
 	if (!«dto.toName.toFirstLower») {

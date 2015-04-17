@@ -192,7 +192,7 @@ class CppExtensions {
 		if (att.type instanceof LDto) {
 			return true
 		}
-		if( att.toTypeName == "GeoCoordinate" || att.toTypeName == "GeoAddress"){
+		if (att.toTypeName == "GeoCoordinate" || att.toTypeName == "GeoAddress") {
 			return true
 		}
 		return false
@@ -708,6 +708,13 @@ class CppExtensions {
 			if (feature.isLazy) {
 				return true
 			}
+		}
+		return false
+	}
+
+	def boolean isHierarchy(LDto dto, LFeature feature) {
+		if (feature.isLazy && (feature.toTypeName == dto.toName)) {
+			return true
 		}
 		return false
 	}
