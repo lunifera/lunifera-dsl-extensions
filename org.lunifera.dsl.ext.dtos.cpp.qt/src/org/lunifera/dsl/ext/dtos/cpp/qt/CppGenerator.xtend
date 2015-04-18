@@ -88,6 +88,10 @@ class CppGenerator {
 		m«feature.toName.toFirstUpper» = «feature.referenceDomainKeyType.defaultForLazyTypeName»;
 		m«feature.toName.toFirstUpper»AsDataObject = 0;
 		m«feature.toName.toFirstUpper»Invalid = false;
+		«IF isHierarchy(dto, feature)»
+		// hierarchy of «dto.toName»*
+		mIs«feature.toName.toFirstUpper»AsPropertyListInitialized = false;
+		«ENDIF»
 		«ENDFOR»
 	«ENDIF»
 	«IF dto.existsEnum»
@@ -666,6 +670,10 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.referenceDomai
             // reset pointer, don't delete the independent object !
             m«feature.toName.toFirstUpper»AsDataObject = 0;
         }
+        «IF isHierarchy(dto, feature)»
+        // reset hierarchy of «feature.toName»
+        clear«feature.toName.toFirstUpper»PropertyList();
+        «ENDIF»
         // set the new lazy reference
         m«feature.toName.toFirstUpper» = «feature.toName»;
         m«feature.toName.toFirstUpper»Invalid = false;
@@ -714,6 +722,88 @@ void «dto.toName»::mark«feature.toName.toFirstUpper»AsInvalid()
 {
     m«feature.toName.toFirstUpper»Invalid = true;
 }
+«IF isHierarchy(dto, feature)»
+// hierarchy of «dto.toName»* (m«feature.toName.toFirstUpper»)
+// must be initialized from DataManager before use
+void «dto.toName»::init«feature.toName.toFirstUpper»PropertyList(QList<«dto.toName»*> «feature.toName»PropertyList)
+{
+    m«feature.toName.toFirstUpper»AsPropertyList = «feature.toName»PropertyList;
+    mIs«feature.toName.toFirstUpper»AsPropertyListInitialized = true;
+}
+void «dto.toName»::clear«feature.toName.toFirstUpper»PropertyList()
+{
+    m«feature.toName.toFirstUpper»AsPropertyList.clear();
+    mIs«feature.toName.toFirstUpper»AsPropertyListInitialized = false;
+}
+/**
+ * to access lists from QML we're using QDeclarativeListProperty
+ * and implement methods to count and clear
+ * because it's a special list of a hierarchy there's no append function
+ * now from QML we can use
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList.length to get the size
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2] to get «dto.toName»* at position 2
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList = [] to clear the list
+ * or get easy access to properties like
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2].myPropertyName
+ */
+QDeclarativeListProperty<«dto.toName»> «dto.toName»::«feature.toName»PropertyList()
+{
+    return QDeclarativeListProperty<«dto.toName»>(this, 0,
+            &«dto.toName»::appendTo«feature.toName.toFirstUpper»Property, &«dto.toName»::«feature.toName»PropertyCount,
+            &«dto.toName»::atTopProperty, &«dto.toName»::clearTopProperty);
+}
+void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(
+        QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
+        «dto.toName»* «dto.toName.toFirstLower»)
+{
+    qWarning() << "Not allowed to APPEND to hierarchy of «feature.toName», m«feature.toName.toFirstUpper»AsPropertyList is only a mirror of existing structures";
+}
+// implementation for QDeclarativeListProperty to use
+// QML functions for hierarchy of «dto.toName»*
+int «dto.toName»::«feature.toName»PropertyCount(
+        QDeclarativeListProperty<«dto.toName»> *«feature.toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size();
+    } else {
+        qWarning() << "cannot get size «feature.toName» hierarchy "
+                << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+«dto.toName»* «dto.toName»::at«feature.toName.toFirstUpper»Property(
+        QDeclarativeListProperty<«dto.toName»> *«feature.toName»List, int pos)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        if («dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size() > pos) {
+            return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.at(pos);
+        }
+        qWarning() << "cannot get «dto.toName»* at pos " << pos << " size is "
+                << «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size();
+    } else {
+        qWarning() << "cannot get «dto.toName»* at pos " << pos
+                << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+void «dto.toName»::clear«feature.toName.toFirstUpper»Property(
+        QDeclarativeListProperty<«dto.toName»> *«feature.toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        // nothing contained - so nothing must be deleted
+        «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.clear();
+    } else {
+        qWarning() << "cannot clear «feature.toName» hierarchy "
+                << "Object is not of type «dto.toName»*";
+    }
+}
+«ENDIF»
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[!isToMany && !isLazy]»
 «feature.foo»
