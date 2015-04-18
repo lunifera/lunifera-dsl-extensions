@@ -205,6 +205,7 @@ void DataManager::init«feature.toName.toFirstUpper»HierarchyList(«dto.toName�
 		qDebug() << "cannot init«feature.toName.toFirstUpper»HierarchyList with «dto.toName.toFirstLower» NULL";
 		return;
 	}
+	QVariantList keyList;
 	QList<«dto.toName»*> «feature.toName»PropertyList;
 	bool more = true;
     «dto.toName»* «dto.toName.toFirstLower»;
@@ -215,8 +216,15 @@ void DataManager::init«feature.toName.toFirstUpper»HierarchyList(«dto.toName�
 			resolve«dto.toName»References(«dto.toName.toFirstLower»);
 		}
 		if («dto.toName.toFirstLower»->is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
-            «feature.toName»PropertyList.append(«dto.toName.toFirstLower»->«feature.toName»AsDataObject());
-            «dto.toName.toFirstLower» = «dto.toName.toFirstLower»->«feature.toName»AsDataObject();
+			if (keyList.contains(«dto.toName.toFirstLower»->«dto.domainKey»())) {
+				// uups - avoid recursion - stop iteration
+				qWarning() << "Attention: recursive hierarchy - already got " << «dto.toName.toFirstLower»->«dto.domainKey»();
+				more = false;
+			} else {
+				keyList.append(«dto.toName.toFirstLower»->«dto.domainKey»());
+            	«feature.toName»PropertyList.append(«dto.toName.toFirstLower»->«feature.toName»AsDataObject());
+            	«dto.toName.toFirstLower» = «dto.toName.toFirstLower»->«feature.toName»AsDataObject();
+            }
 		} else {
 			more = false;
 		}

@@ -750,7 +750,7 @@ QDeclarativeListProperty<«dto.toName»> «dto.toName»::«feature.toName»Prope
 {
     return QDeclarativeListProperty<«dto.toName»>(this, 0,
             &«dto.toName»::appendTo«feature.toName.toFirstUpper»Property, &«dto.toName»::«feature.toName»PropertyCount,
-            &«dto.toName»::atTopProperty, &«dto.toName»::clearTopProperty);
+            &«dto.toName»::at«feature.toName.toFirstUpper»Property, &«dto.toName»::clear«feature.toName.toFirstUpper»Property);
 }
 void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(
         QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
