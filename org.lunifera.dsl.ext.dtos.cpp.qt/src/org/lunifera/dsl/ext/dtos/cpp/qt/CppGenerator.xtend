@@ -141,6 +141,10 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSEIF feature.isLazy»
 			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			«IF isHierarchy(dto, feature)»
+			// reset hierarchy of «feature.toName»
+			clear«feature.toName.toFirstUpper»PropertyList();
+        	«ENDIF»
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
@@ -246,6 +250,10 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSEIF feature.isLazy»
 			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			«IF isHierarchy(dto, feature)»
+			// reset hierarchy of «feature.toName»
+			clear«feature.toName.toFirstUpper»PropertyList();
+        	«ENDIF»
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»ForeignKey)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»ForeignKey).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
@@ -357,6 +365,10 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
 			«ELSEIF feature.isLazy»
 			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			«IF isHierarchy(dto, feature)»
+			// reset hierarchy of «feature.toName»
+			clear«feature.toName.toFirstUpper»PropertyList();
+        	«ENDIF»
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
 				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
