@@ -885,7 +885,13 @@ void «dto.toName»::delete«feature.toName.toFirstUpper»()
 }
 bool «dto.toName»::has«feature.toName.toFirstUpper»()
 {
-    if (m«feature.toName.toFirstUpper») {
+	«IF feature.toTypeName == "GeoAddress"»
+	if (m«feature.toName.toFirstUpper» && !m«feature.toName.toFirstUpper»->isEmpty()) {
+	«ELSEIF feature.toTypeName == "GeoCoordinate"»
+	if (m«feature.toName.toFirstUpper» && m«feature.toName.toFirstUpper»->isValid()) {
+	«ELSE»
+	if (m«feature.toName.toFirstUpper») {
+	«ENDIF»
         return true;
     } else {
         return false;
