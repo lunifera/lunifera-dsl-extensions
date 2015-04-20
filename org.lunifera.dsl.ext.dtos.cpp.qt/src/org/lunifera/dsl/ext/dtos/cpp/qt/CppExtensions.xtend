@@ -42,6 +42,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index
 
 class CppExtensions {
 
@@ -552,6 +553,13 @@ class CppExtensions {
 		return ""
 	}
 
+	def boolean hasIndex(LFeature feature) {
+		if (feature.indexValue == null) {
+			return false
+		}
+		return true
+	}
+
 	def boolean hasForeignPropertyName(LFeature feature) {
 		if (feature.foreignPropertyNameValue == null) {
 			return false
@@ -771,6 +779,17 @@ class CppExtensions {
 
 	def String getCachePolicyValue(LDto member) {
 		val annoDef = typeof(CachePolicy).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
+
+	def String getIndexValue(LFeature member) {
+		val annoDef = typeof(Index).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

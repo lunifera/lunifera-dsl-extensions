@@ -367,51 +367,98 @@ bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «d
 «IF dto.isTree»
 void DataManager::fill«dto.toName»TreeDataModel(QString objectName)
 {
-    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
-            objectName);
-    if (dataModel) {
-        QList<QObject*> theList;
-        for (int i = 0; i < mAll«dto.toName».size(); ++i) {
-            theList.append(mAll«dto.toName».at(i));
-        }
-        dataModel->clear();
-        dataModel->insertList(theList);
-    } else {
-        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+    	GroupDataModel* dataModel = dataModelList.last();
+    	if (dataModel) {
+        	QList<QObject*> theList;
+        	for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+            	theList.append(mAll«dto.toName».at(i));
+        	}
+        	dataModel->clear();
+        	dataModel->insertList(theList);
+        	return;
+    	}
     }
+    qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
 }
 void DataManager::fill«dto.toName»FlatDataModel(QString objectName)
 {
-    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
-            objectName);
-    if (dataModel) {
-        QList<QObject*> theList;
-        for (int i = 0; i < mAll«dto.toName»Flat.size(); ++i) {
-            theList.append(mAll«dto.toName»Flat.at(i));
-        }
-        dataModel->clear();
-        dataModel->insertList(theList);
-    } else {
-        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+    	GroupDataModel* dataModel = dataModelList.last();
+    	if (dataModel) {
+        	QList<QObject*> theList;
+        	for (int i = 0; i < mAll«dto.toName»Flat.size(); ++i) {
+            	theList.append(mAll«dto.toName»Flat.at(i));
+        	}
+        	dataModel->clear();
+        	dataModel->insertList(theList);
+        	return;
+    	}
     }
+    qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
 }
 «ELSE»
 void DataManager::fill«dto.toName»DataModel(QString objectName)
 {
-    GroupDataModel* dataModel = Application::instance()->scene()->findChild<GroupDataModel*>(
-            objectName);
-    if (dataModel) {
-        QList<QObject*> theList;
-        for (int i = 0; i < mAll«dto.toName».size(); ++i) {
-            theList.append(mAll«dto.toName».at(i));
-        }
-        dataModel->clear();
-        dataModel->insertList(theList);
-    } else {
-        qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+    	GroupDataModel* dataModel = dataModelList.last();
+    	if (dataModel) {
+        	QList<QObject*> theList;
+        	for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+            	theList.append(mAll«dto.toName».at(i));
+        	}
+        	dataModel->clear();
+        	dataModel->insertList(theList);
+    	}
     }
+    qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
 }
 «ENDIF»
+«FOR feature : dto.allFeatures.filter[hasIndex]»
+
+«IF feature.isLazy»
+void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(QString objectName, const «feature.referenceDomainKeyType»& «feature.toName»)
+«ELSE»
+void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(QString objectName, const «feature.toTypeName»& «feature.toName»)
+«ENDIF»
+{
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+        GroupDataModel* dataModel = dataModelList.last();
+        if (dataModel) {
+            QList<QObject*> theList;
+            for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+                «dto.toName»* «dto.toName.toFirstLower»;
+                «dto.toName.toFirstLower» = («dto.toName»*) mAll«dto.toName».at(i);
+                if («dto.toName.toFirstLower»->«feature.toName»() == «feature.toName») {
+                    theList.append(mAll«dto.toName».at(i));
+                }
+            }
+            dataModel->clear();
+            dataModel->insertList(theList);
+            qDebug() << "fill«dto.toName»DataModelBy«feature.toName.toFirstUpper» " << «feature.toName» << " (" << objectName << ") #"
+                    << theList.size();
+            return;
+        }
+    }
+    qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
+}
+«ENDFOR»
 «IF dto.hasUuid»
 «dto.toName»* DataManager::find«dto.toName»ByUuid(const QString& uuid){
     if (uuid.isNull() || uuid.isEmpty()) {

@@ -41,6 +41,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index;
 import org.lunifera.dsl.semantic.common.helper.Bounds;
 import org.lunifera.dsl.semantic.common.types.LAnnotationDef;
 import org.lunifera.dsl.semantic.common.types.LAnnotationTarget;
@@ -1032,6 +1033,15 @@ public class CppExtensions {
     return "";
   }
   
+  public boolean hasIndex(final LFeature feature) {
+    String _indexValue = this.getIndexValue(feature);
+    boolean _equals = Objects.equal(_indexValue, null);
+    if (_equals) {
+      return false;
+    }
+    return true;
+  }
+  
   public boolean hasForeignPropertyName(final LFeature feature) {
     String _foreignPropertyNameValue = this.getForeignPropertyNameValue(feature);
     boolean _equals = Objects.equal(_foreignPropertyNameValue, null);
@@ -1357,6 +1367,24 @@ public class CppExtensions {
   public String getCachePolicyValue(final LDto member) {
     EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
     final LAnnotationDef annoDef = this._annotationExtension.getRedefined(CachePolicy.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
+  }
+  
+  public String getIndexValue(final LFeature member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(Index.class, _resolvedAnnotations);
     boolean _notEquals = (!Objects.equal(annoDef, null));
     if (_notEquals) {
       XAnnotation _annotation = annoDef.getAnnotation();

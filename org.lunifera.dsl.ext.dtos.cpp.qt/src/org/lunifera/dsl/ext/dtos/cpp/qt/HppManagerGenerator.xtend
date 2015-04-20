@@ -72,6 +72,15 @@ public:
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
+	«FOR feature : dto.allFeatures.filter[hasIndex]»
+
+	Q_INVOKABLE
+	«IF feature.isLazy»
+	void fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(QString objectName, const «feature.referenceDomainKeyType»& «feature.toName»);
+	«ELSE»
+	void fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(QString objectName, const «feature.toTypeName»& «feature.toName»);
+	«ENDIF»
+	«ENDFOR»
 	«IF dto.existsLazy»
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 	«IF isHierarchy(dto, feature)»
