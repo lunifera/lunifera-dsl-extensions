@@ -1008,6 +1008,34 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
     }
 	return «feature.toName»List;
 }
+/**
+ * creates a new «feature.toTypeName»
+ * parent is this «dto.toName»
+ * if data is successfully entered you must INVOKE addTo«feature.toName.toFirstUpper»()
+ * if edit was canceled you must undoCreate«feature.toTypeName» to free up memory
+ */
+«feature.toTypeName»* «dto.toName»::create«feature.toTypeName»()
+{
+    «feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+    «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+    «feature.toTypeName.toFirstLower»->setParent(this);
+    «feature.toTypeName.toFirstLower»->prepareNew();
+    return «feature.toTypeName.toFirstLower»;
+}
+
+/**
+ * deletes «feature.toTypeName»
+ * if create«feature.toTypeName» was canceled from UI
+ * to delete a previous successfully inserted «feature.toTypeName»
+ * use removeFrom«feature.toName.toFirstUpper»
+ */
+void «dto.toName»::undoCreate«feature.toTypeName»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    if («feature.toTypeName.toFirstLower») {
+        «feature.toTypeName.toFirstLower»->deleteLater();
+        «feature.toTypeName.toFirstLower» = 0;
+    }
+}
 void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
