@@ -306,15 +306,27 @@ public class HppManagerGenerator {
             _builder.append("Q_INVOKABLE");
             _builder.newLine();
             _builder.append("\t");
-            _builder.append("void insert");
             String _name_20 = this._cppExtensions.toName(dto_1);
             _builder.append(_name_20, "\t");
-            _builder.append("(");
+            _builder.append("* create");
             String _name_21 = this._cppExtensions.toName(dto_1);
             _builder.append(_name_21, "\t");
-            _builder.append("* ");
+            _builder.append("();");
+            _builder.newLineIfNotEmpty();
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("Q_INVOKABLE");
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("void undoCreate");
             String _name_22 = this._cppExtensions.toName(dto_1);
-            String _firstLower_1 = StringExtensions.toFirstLower(_name_22);
+            _builder.append(_name_22, "\t");
+            _builder.append("(");
+            String _name_23 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_23, "\t");
+            _builder.append("* ");
+            String _name_24 = this._cppExtensions.toName(dto_1);
+            String _firstLower_1 = StringExtensions.toFirstLower(_name_24);
             _builder.append(_firstLower_1, "\t");
             _builder.append(");");
             _builder.newLineIfNotEmpty();
@@ -324,12 +336,29 @@ public class HppManagerGenerator {
             _builder.newLine();
             _builder.append("\t");
             _builder.append("void insert");
-            String _name_23 = this._cppExtensions.toName(dto_1);
-            _builder.append(_name_23, "\t");
-            _builder.append("FromMap(const QVariantMap& ");
-            String _name_24 = this._cppExtensions.toName(dto_1);
-            String _firstLower_2 = StringExtensions.toFirstLower(_name_24);
+            String _name_25 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_25, "\t");
+            _builder.append("(");
+            String _name_26 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_26, "\t");
+            _builder.append("* ");
+            String _name_27 = this._cppExtensions.toName(dto_1);
+            String _firstLower_2 = StringExtensions.toFirstLower(_name_27);
             _builder.append(_firstLower_2, "\t");
+            _builder.append(");");
+            _builder.newLineIfNotEmpty();
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("Q_INVOKABLE");
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("void insert");
+            String _name_28 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_28, "\t");
+            _builder.append("FromMap(const QVariantMap& ");
+            String _name_29 = this._cppExtensions.toName(dto_1);
+            String _firstLower_3 = StringExtensions.toFirstLower(_name_29);
+            _builder.append(_firstLower_3, "\t");
             _builder.append("Map, const bool& useForeignProperties);");
             _builder.newLineIfNotEmpty();
             _builder.newLine();
@@ -338,15 +367,15 @@ public class HppManagerGenerator {
             _builder.newLine();
             _builder.append("\t");
             _builder.append("bool delete");
-            String _name_25 = this._cppExtensions.toName(dto_1);
-            _builder.append(_name_25, "\t");
+            String _name_30 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_30, "\t");
             _builder.append("(");
-            String _name_26 = this._cppExtensions.toName(dto_1);
-            _builder.append(_name_26, "\t");
+            String _name_31 = this._cppExtensions.toName(dto_1);
+            _builder.append(_name_31, "\t");
             _builder.append("* ");
-            String _name_27 = this._cppExtensions.toName(dto_1);
-            String _firstLower_3 = StringExtensions.toFirstLower(_name_27);
-            _builder.append(_firstLower_3, "\t");
+            String _name_32 = this._cppExtensions.toName(dto_1);
+            String _firstLower_4 = StringExtensions.toFirstLower(_name_32);
+            _builder.append(_firstLower_4, "\t");
             _builder.append(");");
             _builder.newLineIfNotEmpty();
             {
@@ -358,8 +387,8 @@ public class HppManagerGenerator {
                 _builder.newLine();
                 _builder.append("\t");
                 _builder.append("bool delete");
-                String _name_28 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_28, "\t");
+                String _name_33 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_33, "\t");
                 _builder.append("ByUuid(const QString& uuid);");
                 _builder.newLineIfNotEmpty();
                 _builder.newLine();
@@ -367,11 +396,11 @@ public class HppManagerGenerator {
                 _builder.append("Q_INVOKABLE");
                 _builder.newLine();
                 _builder.append("\t");
-                String _name_29 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_29, "\t");
+                String _name_34 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_34, "\t");
                 _builder.append("* find");
-                String _name_30 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_30, "\t");
+                String _name_35 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_35, "\t");
                 _builder.append("ByUuid(const QString& uuid);");
                 _builder.newLineIfNotEmpty();
               }
@@ -393,8 +422,8 @@ public class HppManagerGenerator {
                 _builder.newLine();
                 _builder.append("\t");
                 _builder.append("bool delete");
-                String _name_31 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_31, "\t");
+                String _name_36 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_36, "\t");
                 _builder.append("By");
                 String _domainKey_1 = this._cppExtensions.domainKey(dto_1);
                 String _firstUpper_3 = StringExtensions.toFirstUpper(_domainKey_1);
@@ -412,11 +441,11 @@ public class HppManagerGenerator {
                 _builder.append("Q_INVOKABLE");
                 _builder.newLine();
                 _builder.append("    ");
-                String _name_32 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_32, "    ");
+                String _name_37 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_37, "    ");
                 _builder.append("* find");
-                String _name_33 = this._cppExtensions.toName(dto_1);
-                _builder.append(_name_33, "    ");
+                String _name_38 = this._cppExtensions.toName(dto_1);
+                _builder.append(_name_38, "    ");
                 _builder.append("By");
                 String _domainKey_3 = this._cppExtensions.domainKey(dto_1);
                 String _firstUpper_4 = StringExtensions.toFirstUpper(_domainKey_3);
@@ -459,11 +488,11 @@ public class HppManagerGenerator {
           if (_isRootDataObject_1) {
             _builder.append("\t");
             _builder.append("void addedToAll");
-            String _name_34 = this._cppExtensions.toName(dto_2);
-            _builder.append(_name_34, "\t");
+            String _name_39 = this._cppExtensions.toName(dto_2);
+            _builder.append(_name_39, "\t");
             _builder.append("(");
-            String _name_35 = this._cppExtensions.toName(dto_2);
-            _builder.append(_name_35, "\t");
+            String _name_40 = this._cppExtensions.toName(dto_2);
+            _builder.append(_name_40, "\t");
             _builder.append("* orderData);");
             _builder.newLineIfNotEmpty();
             {
@@ -471,8 +500,8 @@ public class HppManagerGenerator {
               if (_hasUuid_1) {
                 _builder.append("\t");
                 _builder.append("void deletedFromAll");
-                String _name_36 = this._cppExtensions.toName(dto_2);
-                _builder.append(_name_36, "\t");
+                String _name_41 = this._cppExtensions.toName(dto_2);
+                _builder.append(_name_41, "\t");
                 _builder.append("ByUuid(QString uuid);");
                 _builder.newLineIfNotEmpty();
               }
@@ -490,8 +519,8 @@ public class HppManagerGenerator {
               if (_and_1) {
                 _builder.append("\t");
                 _builder.append("void deletedFromAll");
-                String _name_37 = this._cppExtensions.toName(dto_2);
-                _builder.append(_name_37, "\t");
+                String _name_42 = this._cppExtensions.toName(dto_2);
+                _builder.append(_name_42, "\t");
                 _builder.append("By");
                 String _domainKey_6 = this._cppExtensions.domainKey(dto_2);
                 String _firstUpper_5 = StringExtensions.toFirstUpper(_domainKey_6);
@@ -547,8 +576,8 @@ public class HppManagerGenerator {
           if (_isRootDataObject_2) {
             _builder.append("    ");
             _builder.append("QList<QObject*> mAll");
-            String _name_38 = this._cppExtensions.toName(dto_3);
-            _builder.append(_name_38, "    ");
+            String _name_43 = this._cppExtensions.toName(dto_3);
+            _builder.append(_name_43, "    ");
             _builder.append(";");
             _builder.newLineIfNotEmpty();
           }
@@ -558,8 +587,8 @@ public class HppManagerGenerator {
           if (_isTree_1) {
             _builder.append("    ");
             _builder.append("QList<QObject*> mAll");
-            String _name_39 = this._cppExtensions.toName(dto_3);
-            _builder.append(_name_39, "    ");
+            String _name_44 = this._cppExtensions.toName(dto_3);
+            _builder.append(_name_44, "    ");
             _builder.append("Flat;");
             _builder.newLineIfNotEmpty();
           }
@@ -587,14 +616,14 @@ public class HppManagerGenerator {
           if (_isRootDataObject_3) {
             _builder.append("    ");
             _builder.append("void init");
-            String _name_40 = this._cppExtensions.toName(dto_4);
-            _builder.append(_name_40, "    ");
+            String _name_45 = this._cppExtensions.toName(dto_4);
+            _builder.append(_name_45, "    ");
             _builder.append("FromCache();");
             _builder.newLineIfNotEmpty();
             _builder.append("    ");
             _builder.append("void save");
-            String _name_41 = this._cppExtensions.toName(dto_4);
-            _builder.append(_name_41, "    ");
+            String _name_46 = this._cppExtensions.toName(dto_4);
+            _builder.append(_name_46, "    ");
             _builder.append("ToCache();");
             _builder.newLineIfNotEmpty();
           }

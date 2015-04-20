@@ -99,6 +99,12 @@ public:
 	«ENDIF»
 
 	Q_INVOKABLE
+	«dto.toName»* create«dto.toName»();
+
+	Q_INVOKABLE
+	void undoCreate«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
+
+	Q_INVOKABLE
 	void insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 
 	Q_INVOKABLE

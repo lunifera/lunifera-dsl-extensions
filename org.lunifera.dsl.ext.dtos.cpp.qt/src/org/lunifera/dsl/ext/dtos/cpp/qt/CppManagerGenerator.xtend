@@ -270,6 +270,36 @@ void DataManager::resolveReferencesForAll«dto.toName»()
 }
 «ENDIF»
 
+/**
+ * creates a new «dto.toName»
+ * parent is DataManager
+ * if data is successfully entered you must insert«dto.toName»
+ * if edit was canceled you must undoCreate«dto.toName» to free up memory
+ */
+«dto.toName»* DataManager::create«dto.toName»()
+{
+    «dto.toName»* «dto.toName.toFirstLower»;
+    «dto.toName.toFirstLower» = new «dto.toName»();
+    «dto.toName.toFirstLower»->setParent(this);
+    «dto.toName.toFirstLower»->prepareNew();
+    return «dto.toName.toFirstLower»;
+}
+
+/**
+ * deletes «dto.toName»
+ * if create«dto.toName» was canceled from UI
+ * to delete a previous successfully inserted «dto.toName»
+ * use delete«dto.toName»
+ */
+void DataManager::undoCreate«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
+{
+    if («dto.toName.toFirstLower») {
+        qDebug() << "undoCreate«dto.toName» " << «dto.toName.toFirstLower»->«dto.domainKey»();
+        «dto.toName.toFirstLower»->deleteLater();
+        «dto.toName.toFirstLower» = 0;
+    }
+}
+
 void DataManager::insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
 {
     // Important: DataManager must be parent of all root DTOs
