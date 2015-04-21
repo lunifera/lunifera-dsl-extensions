@@ -1012,9 +1012,9 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
  * creates a new «feature.toTypeName»
  * parent is this «dto.toName»
  * if data is successfully entered you must INVOKE addTo«feature.toName.toFirstUpper»()
- * if edit was canceled you must undoCreate«feature.toTypeName» to free up memory
+ * if edit was canceled you must undoCreateElementOf«feature.toName.toFirstUpper» to free up memory
  */
-«feature.toTypeName»* «dto.toName»::create«feature.toTypeName»()
+«feature.toTypeName»* «dto.toName»::createElementOf«feature.toName.toFirstUpper»()
 {
     «feature.toTypeName»* «feature.toTypeName.toFirstLower»;
     «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
@@ -1024,12 +1024,13 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
 }
 
 /**
- * deletes «feature.toTypeName»
- * if create«feature.toTypeName» was canceled from UI
- * to delete a previous successfully inserted «feature.toTypeName»
- * use removeFrom«feature.toName.toFirstUpper»
+ * if createElementOf«feature.toName.toFirstUpper» was canceled from UI
+ * this method deletes the Object of Type «feature.toTypeName»
+ * 
+ * to delete a allready into «feature.toName» inserted  «feature.toTypeName»
+ * you must use removeFrom«feature.toName.toFirstUpper»
  */
-void «dto.toName»::undoCreate«feature.toTypeName»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+void «dto.toName»::undoCreateElementOf«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     if («feature.toTypeName.toFirstLower») {
         «feature.toTypeName.toFirstLower»->deleteLater();

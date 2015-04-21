@@ -206,10 +206,10 @@ class HppGenerator {
 		QVariantList «feature.toName»AsQVariantList();
 
 		Q_INVOKABLE
-		«feature.toTypeName»* create«feature.toTypeName»();
+		«feature.toTypeName»* createElementOf«feature.toName.toFirstUpper»();
 
 		Q_INVOKABLE
-		void undoCreate«feature.toTypeName»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		void undoCreateElementOf«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 
 		
 		Q_INVOKABLE
