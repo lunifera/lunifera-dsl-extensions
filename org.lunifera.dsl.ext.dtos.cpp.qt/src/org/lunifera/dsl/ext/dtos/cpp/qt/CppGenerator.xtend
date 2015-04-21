@@ -1169,7 +1169,6 @@ void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(QDeclarativ
 }
 int «dto.toName»::«feature.toName»PropertyCount(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List)
 {
-    qDebug() << "«feature.toName»PropertyCount";
     «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
     if («dto.toName.toFirstLower») {
         return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size();
