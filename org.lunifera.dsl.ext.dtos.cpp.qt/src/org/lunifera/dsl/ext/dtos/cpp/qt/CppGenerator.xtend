@@ -503,7 +503,7 @@ QVariantMap «dto.toName»::toMap()
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		if (has«feature.toName.toFirstUpper»()) {
+		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
@@ -555,7 +555,7 @@ QVariantMap «dto.toName»::toForeignMap()
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		if (has«feature.toName.toFirstUpper»()) {
+		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
@@ -615,7 +615,7 @@ QVariantMap «dto.toName»::toCacheMap()
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		if (has«feature.toName.toFirstUpper»()) {
+		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
