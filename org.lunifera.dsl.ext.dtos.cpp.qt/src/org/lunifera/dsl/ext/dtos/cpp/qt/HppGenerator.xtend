@@ -187,7 +187,14 @@ class HppGenerator {
 		«ELSE»
 		void set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»);
 		«IF feature.isTypeOfDataObject»
+		«IF !(feature.toTypeName == "GeoAddress") && !(feature.toTypeName == "GeoCoordinate")»
+		Q_INVOKABLE
+		«feature.toTypeName»* create«feature.toName.toFirstUpper»();
+
+		Q_INVOKABLE
+		void undoCreate«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
+		«ENDIF»
 		Q_INVOKABLE
 		void delete«feature.toName.toFirstUpper»();
 		

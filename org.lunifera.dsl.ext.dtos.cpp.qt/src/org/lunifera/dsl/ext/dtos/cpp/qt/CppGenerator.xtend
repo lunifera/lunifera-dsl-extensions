@@ -859,8 +859,45 @@ int «dto.toName»::«feature.toName»StringToInt(QString «feature.toName»)
 {
 	return m«feature.toName.toFirstUpper»;
 }
+«IF feature.isTypeOfDataObject && !feature.isContained && !(feature.toTypeName == "GeoAddress") && !(feature.toTypeName == "GeoCoordinate")»
+/**
+ * creates a new «feature.toTypeName»
+ * parent is this «dto.toName»
+ * if data is successfully entered you must INVOKE set«feature.toName.toFirstUpper»()
+ * if edit was canceled you must undoCreate«feature.toName.toFirstUpper» to free up memory
+ */
+«feature.toTypeName»* «dto.toName»::create«feature.toName.toFirstUpper»()
+{
+    «feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+    «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+    «feature.toTypeName.toFirstLower»->setParent(this);
+    «feature.toTypeName.toFirstLower»->prepareNew();
+    return «feature.toTypeName.toFirstLower»;
+}
+
+/**
+ * if create«feature.toName.toFirstUpper» was canceled from UI
+ * this method deletes the Object of Type «feature.toTypeName»
+ * 
+ * to delete a  «feature.toName» allready set to  «feature.toTypeName»
+ * you must use delete«feature.toName.toFirstUpper»
+ */
+void «dto.toName»::undoCreate«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    if («feature.toTypeName.toFirstLower») {
+        «feature.toTypeName.toFirstLower»->deleteLater();
+        «feature.toTypeName.toFirstLower» = 0;
+    }
+}
+«ENDIF»
+
 void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»)
 {
+	«IF feature.isTypeOfDataObject»
+	if (!«feature.toName») {
+	    return;
+	}
+	«ENDIF»
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
 		«IF feature.isTypeOfDataObject»
 		if (m«feature.toName.toFirstUpper») {
@@ -1180,7 +1217,6 @@ int «dto.toName»::«feature.toName»PropertyCount(QDeclarativeListProperty<«f
 «feature.toTypeName»* «dto.toName»::at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.
 		toTypeName»> *«feature.toName»List, int pos)
 {
-    qDebug() << "at«feature.toName.toFirstUpper»Property #" << pos;
     «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
     if («dto.toName.toFirstLower») {
         if («dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size() > pos) {
