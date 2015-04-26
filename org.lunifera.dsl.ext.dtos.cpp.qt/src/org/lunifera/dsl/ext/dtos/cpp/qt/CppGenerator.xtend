@@ -855,6 +855,18 @@ int «dto.toName»::«feature.toName»StringToInt(QString «feature.toName»)
     return «feature.toTypeName»::NO_VALUE;
 }
 «ELSE»
+«IF feature.toTypeName == "QDate"»
+/**
+ * in QML set DateTimePicker value this way:
+ * myPicker.value = new Date(«feature.toName»)
+ */
+«ENDIF»
+«IF feature.toTypeName == "QTime"»
+/**
+ * in QML set DateTimePicker value this way:
+ * myPicker.value = myPicker.dateFromTime(«feature.toName»)
+ */
+«ENDIF»
 «feature.toTypeOrQObject» «dto.toName»::«feature.toName»() const
 {
 	return m«feature.toName.toFirstUpper»;
@@ -891,6 +903,12 @@ void «dto.toName»::undoCreate«feature.toName.toFirstUpper»(«feature.toTypeN
 }
 «ENDIF»
 
+«IF feature.toTypeName == "QDate"»
+/**
+ * from QML DateTime Picker use as parameter:
+ * «feature.toName» = new Date(myPicker.value)
+ */
+«ENDIF»
 void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObject» «feature.toName»)
 {
 	«IF feature.isTypeOfDataObject»
@@ -911,6 +929,21 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(«feature.toTypeOrQObjec
 		emit «feature.toName»Changed(«feature.toName»);
 	}
 }
+«IF feature.toTypeName == "QTime"»
+/**
+ * INVOKABLE
+ * Convenience method to make it easy to set the value from QML
+ * use myPicker.value.toTimeString() as Parameter
+ */
+void «dto.toName»::set«feature.toName.toFirstUpper»FromPickerValue(QString «feature.toName.toFirstLower»Value)
+{
+    QTime «feature.toName.toFirstLower» = QTime::fromString(«feature.toName.toFirstLower»Value.left(8), "HH:mm:ss");
+    if («feature.toName.toFirstLower» != m«feature.toName.toFirstUpper») {
+        m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»;
+        emit «feature.toName.toFirstLower»Changed(«feature.toName.toFirstLower»);
+    }
+}
+«ENDIF»
 	«IF feature.isTypeOfDataObject»
 void «dto.toName»::delete«feature.toName.toFirstUpper»()
 {

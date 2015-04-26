@@ -178,9 +178,14 @@ class HppGenerator {
 		«ELSE»
 		«feature.toTypeOrQObject» «feature.toName»() const;
 		«IF feature.isTypeOfDates»
-		
+
 		Q_INVOKABLE
 		bool has«feature.toName.toFirstUpper»();
+		«IF feature.toTypeName == "QTime"»
+
+		Q_INVOKABLE
+		void set«feature.toName.toFirstUpper»FromPickerValue(QString «feature.toName.toFirstLower»Value);
+		«ENDIF»
 		«ENDIF»
 		«IF feature.isTypeOfDataObject && feature.isContained»
 		// no SETTER «feature.toName»() is only convenience method to get the parent
