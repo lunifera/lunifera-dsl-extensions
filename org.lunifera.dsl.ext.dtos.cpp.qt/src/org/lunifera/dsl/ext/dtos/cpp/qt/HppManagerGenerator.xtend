@@ -53,6 +53,13 @@ class DataManager: public QObject
 {
 Q_OBJECT
 
+// QDeclarativeListProperty to get easy access from QML
+«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+«IF dto.isRootDataObject»
+Q_PROPERTY(QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList READ «dto.toName.toFirstLower»PropertyList CONSTANT)
+«ENDIF»
+«ENDFOR»
+
 public:
     DataManager(QObject *parent = 0);
     virtual ~DataManager();
@@ -97,6 +104,13 @@ public:
 	Q_INVOKABLE
 	void resolveReferencesForAll«dto.toName»();
 	«ENDIF»
+
+	Q_INVOKABLE
+	QVariantList «dto.toName.toFirstLower»AsQVariantList();
+
+	// access from QML to list of all «dto.toName»
+	Q_INVOKABLE
+	QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList();
 
 	Q_INVOKABLE
 	«dto.toName»* create«dto.toName»();
@@ -155,6 +169,17 @@ private:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	QList<QObject*> mAll«dto.toName»;
+    	// implementation for QDeclarativeListProperty to use
+    	// QML functions for List of All «dto.toName»*
+    	static void appendTo«dto.toName»Property(
+    		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List,
+    		«dto.toName»* «dto.toName.toFirstLower»);
+    	static int «dto.toName.toFirstLower»PropertyCount(
+    		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List);
+    	static «dto.toName»* at«dto.toName»Property(
+    		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List, int pos);
+    	static void clear«dto.toName»Property(
+    		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List);
 		«ENDIF»
     	«IF dto.isTree»
     	QList<QObject*> mAll«dto.toName»Flat;

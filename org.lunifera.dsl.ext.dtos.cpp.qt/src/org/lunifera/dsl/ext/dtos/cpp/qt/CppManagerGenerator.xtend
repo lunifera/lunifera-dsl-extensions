@@ -270,6 +270,87 @@ void DataManager::resolveReferencesForAll«dto.toName»()
 }
 «ENDIF»
 
+QVariantList DataManager::«dto.toName.toFirstLower»AsQVariantList()
+{
+    QVariantList «dto.toName.toFirstLower»List;
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName.toFirstLower»List.append(((«dto.toName»*) (mAll«dto.toName».at(i)))->toMap());
+    }
+    return «dto.toName.toFirstLower»List;
+}
+
+QDeclarativeListProperty<«dto.toName»> DataManager::«dto.toName.toFirstLower»PropertyList()
+{
+    return QDeclarativeListProperty<«dto.toName»>(this, 0,
+            &DataManager::appendTo«dto.toName»Property, &DataManager::«dto.toName.toFirstLower»PropertyCount,
+            &DataManager::at«dto.toName»Property, &DataManager::clear«dto.toName»Property);
+}
+
+// implementation for QDeclarativeListProperty to use
+// QML functions for List of «dto.toName»*
+void DataManager::appendTo«dto.toName»Property(
+        QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List,
+        «dto.toName»* «dto.toName.toFirstLower»)
+{
+    DataManager *dataManagerObject = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManagerObject) {
+        «dto.toName.toFirstLower»->setParent(dataManagerObject);
+        dataManagerObject->mAll«dto.toName».append(«dto.toName.toFirstLower»);
+        emit dataManagerObject->addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+    } else {
+        qWarning() << "cannot append «dto.toName»* to mAll«dto.toName» "
+                << "Object is not of type DataManager*";
+    }
+}
+int DataManager::«dto.toName.toFirstLower»PropertyCount(
+        QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        return dataManager->mAll«dto.toName».size();
+    } else {
+        qWarning() << "cannot get size mAll«dto.toName» " << "Object is not of type DataManager*";
+    }
+    return 0;
+}
+«dto.toName»* DataManager::at«dto.toName»Property(
+        QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List, int pos)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        if (dataManager->mAll«dto.toName».size() > pos) {
+            return («dto.toName»*) dataManager->mAll«dto.toName».at(pos);
+        }
+        qWarning() << "cannot get «dto.toName»* at pos " << pos << " size is "
+                << dataManager->mAll«dto.toName».size();
+    } else {
+        qWarning() << "cannot get «dto.toName»* at pos " << pos
+                << "Object is not of type DataManager*";
+    }
+    return 0;
+}
+void DataManager::clear«dto.toName»Property(
+        QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        for (int i = 0; i < dataManager->mAll«dto.toName».size(); ++i) {
+            «dto.toName»* «dto.toName.toFirstLower»;
+            «dto.toName.toFirstLower» = («dto.toName»*) dataManager->mAll«dto.toName».at(i);
+			«IF dto.hasUuid»
+			emit dataManager->deletedFromAll«dto.toName»ByUuid(«dto.toName.toFirstLower»->uuid());
+			«ELSEIF dto.hasDomainKey»
+			emit dataManager->deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
+			«ENDIF»
+            «dto.toName.toFirstLower»->deleteLater();
+            «dto.toName.toFirstLower» = 0;
+        }
+        dataManager->mAll«dto.toName».clear();
+    } else {
+        qWarning() << "cannot clear mAll«dto.toName» " << "Object is not of type DataManager*";
+    }
+}
+
 /**
  * creates a new «dto.toName»
  * parent is DataManager
