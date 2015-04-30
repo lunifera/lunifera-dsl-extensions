@@ -50,6 +50,23 @@ class CppExtensions {
 	@Inject DtoModelExtensions modelExtension
 	@Inject extension AnnotationExtension
 
+	def boolean isRootDataObject(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isContained) {
+				if (feature.toTypeName == dto.name) {
+					// self contained - tree structure - children - parent of same Type
+				} else {
+					return false
+				}
+			}
+		}
+		return true
+	}
+	// TODO
+	def boolean isTypeRootDataObject(LFeature feat) {
+		return false
+	}
+
 	def String toName(LAnnotationTarget target) {
 		modelExtension.toName(target)
 	}

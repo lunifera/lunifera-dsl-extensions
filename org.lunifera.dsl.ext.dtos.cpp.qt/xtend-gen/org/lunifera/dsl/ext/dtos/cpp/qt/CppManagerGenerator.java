@@ -116,7 +116,7 @@ public class CppManagerGenerator {
           }
         }
         {
-          boolean _isRootDataObject = this._managerExtensions.isRootDataObject(dto);
+          boolean _isRootDataObject = this._cppExtensions.isRootDataObject(dto);
           if (_isRootDataObject) {
             _builder.append("static QString cache");
             String _name_2 = this._cppExtensions.toName(dto);
@@ -171,7 +171,7 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
       for(final LDto dto_1 : _map_1) {
         {
-          boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_1);
+          boolean _isRootDataObject_1 = this._cppExtensions.isRootDataObject(dto_1);
           if (_isRootDataObject_1) {
             _builder.append("    ");
             _builder.append("// ");
@@ -325,7 +325,7 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_4 = IterableExtensions.<LType, LDto>map(_filter_4, _function_9);
       for(final LDto dto_3 : _map_4) {
         {
-          boolean _isRootDataObject_2 = this._managerExtensions.isRootDataObject(dto_3);
+          boolean _isRootDataObject_2 = this._cppExtensions.isRootDataObject(dto_3);
           if (_isRootDataObject_2) {
             _builder.append("    ");
             _builder.append("init");
@@ -360,7 +360,7 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_5 = IterableExtensions.<LType, LDto>map(_filter_5, _function_11);
       for(final LDto dto_4 : _map_5) {
         {
-          boolean _isRootDataObject_3 = this._managerExtensions.isRootDataObject(dto_4);
+          boolean _isRootDataObject_3 = this._cppExtensions.isRootDataObject(dto_4);
           if (_isRootDataObject_3) {
             {
               boolean _isReadOnlyCache = this._cppExtensions.isReadOnlyCache(dto_4);
@@ -403,7 +403,7 @@ public class CppManagerGenerator {
       Iterable<LDto> _map_6 = IterableExtensions.<LType, LDto>map(_filter_6, _function_13);
       for(final LDto dto_5 : _map_6) {
         {
-          boolean _isRootDataObject_4 = this._managerExtensions.isRootDataObject(dto_5);
+          boolean _isRootDataObject_4 = this._cppExtensions.isRootDataObject(dto_5);
           if (_isRootDataObject_4) {
             _builder.append("/*");
             _builder.newLine();

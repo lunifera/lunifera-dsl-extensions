@@ -46,18 +46,7 @@ class ManagerExtensions {
 	@Inject extension AnnotationExtension
 	@Inject extension CppExtensions
 
-	def boolean isRootDataObject(LDto dto) {
-		for (feature : dto.allFeatures) {
-			if (feature.isContained) {
-				if (feature.toTypeName == dto.name) {
-					// self contained - tree structure - children - parent of same Type
-				} else {
-					return false
-				}
-			}
-		}
-		return true
-	}
+
 
 	def boolean hasGeoCoordinate(LTypedPackage pkg) {
 		for (lt : pkg.types) {

@@ -122,7 +122,7 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_1 = IterableExtensions.<LType, LDto>map(_filter_1, _function_3);
       for(final LDto dto_1 : _map_1) {
         {
-          boolean _isRootDataObject = this._managerExtensions.isRootDataObject(dto_1);
+          boolean _isRootDataObject = this._cppExtensions.isRootDataObject(dto_1);
           if (_isRootDataObject) {
             _builder.append("Q_PROPERTY(QDeclarativeListProperty<");
             String _name_1 = this._cppExtensions.toName(dto_1);
@@ -173,7 +173,7 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_2 = IterableExtensions.<LType, LDto>map(_filter_2, _function_5);
       for(final LDto dto_2 : _map_2) {
         {
-          boolean _isRootDataObject_1 = this._managerExtensions.isRootDataObject(dto_2);
+          boolean _isRootDataObject_1 = this._cppExtensions.isRootDataObject(dto_2);
           if (_isRootDataObject_1) {
             _builder.append("\t");
             _builder.newLine();
@@ -552,7 +552,7 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_3 = IterableExtensions.<LType, LDto>map(_filter_5, _function_9);
       for(final LDto dto_3 : _map_3) {
         {
-          boolean _isRootDataObject_2 = this._managerExtensions.isRootDataObject(dto_3);
+          boolean _isRootDataObject_2 = this._cppExtensions.isRootDataObject(dto_3);
           if (_isRootDataObject_2) {
             _builder.append("\t");
             _builder.append("void addedToAll");
@@ -640,7 +640,7 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_4 = IterableExtensions.<LType, LDto>map(_filter_6, _function_11);
       for(final LDto dto_4 : _map_4) {
         {
-          boolean _isRootDataObject_3 = this._managerExtensions.isRootDataObject(dto_4);
+          boolean _isRootDataObject_3 = this._cppExtensions.isRootDataObject(dto_4);
           if (_isRootDataObject_3) {
             _builder.append("    ");
             _builder.append("QList<QObject*> mAll");
@@ -771,7 +771,7 @@ public class HppManagerGenerator {
       Iterable<LDto> _map_5 = IterableExtensions.<LType, LDto>map(_filter_7, _function_13);
       for(final LDto dto_5 : _map_5) {
         {
-          boolean _isRootDataObject_4 = this._managerExtensions.isRootDataObject(dto_5);
+          boolean _isRootDataObject_4 = this._cppExtensions.isRootDataObject(dto_5);
           if (_isRootDataObject_4) {
             _builder.append("    ");
             _builder.append("void init");

@@ -20,16 +20,13 @@
  */
 package org.lunifera.dsl.ext.dtos.cpp.qt;
 
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
-import java.util.List;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.xtext.xbase.jvmmodel.JvmTypesBuilder;
 import org.eclipse.xtext.xbase.lib.Extension;
 import org.lunifera.dsl.dto.xtext.extensions.AnnotationExtension;
 import org.lunifera.dsl.dto.xtext.extensions.DtoModelExtensions;
 import org.lunifera.dsl.ext.dtos.cpp.qt.CppExtensions;
-import org.lunifera.dsl.semantic.common.types.LFeature;
 import org.lunifera.dsl.semantic.common.types.LType;
 import org.lunifera.dsl.semantic.common.types.LTypedPackage;
 import org.lunifera.dsl.semantic.dto.LDto;
@@ -50,23 +47,6 @@ public class ManagerExtensions {
   @Inject
   @Extension
   private CppExtensions _cppExtensions;
-  
-  public boolean isRootDataObject(final LDto dto) {
-    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
-    for (final LFeature feature : _allFeatures) {
-      boolean _isContained = this._cppExtensions.isContained(feature);
-      if (_isContained) {
-        String _typeName = this._cppExtensions.toTypeName(feature);
-        String _name = dto.getName();
-        boolean _equals = Objects.equal(_typeName, _name);
-        if (_equals) {
-        } else {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
   
   public boolean hasGeoCoordinate(final LTypedPackage pkg) {
     EList<LType> _types = pkg.getTypes();

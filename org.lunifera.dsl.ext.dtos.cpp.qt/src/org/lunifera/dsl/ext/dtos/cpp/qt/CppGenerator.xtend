@@ -1078,6 +1078,7 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
     }
 	return «feature.toName»List;
 }
+«IF !feature.isTypeRootDataObject»
 /**
  * creates a new «feature.toTypeName»
  * parent is this «dto.toName»
@@ -1107,6 +1108,10 @@ void «dto.toName»::undoCreateElementOf«feature.toName.toFirstUpper»(«featur
         «feature.toTypeName.toFirstLower» = 0;
     }
 }
+«ELSE»
+// no create() or undoCreate() because dto is root object
+// see methods in DataManager
+«ENDIF»
 void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);

@@ -69,6 +69,27 @@ public class CppExtensions {
   @Extension
   private AnnotationExtension _annotationExtension;
   
+  public boolean isRootDataObject(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isContained = this.isContained(feature);
+      if (_isContained) {
+        String _typeName = this.toTypeName(feature);
+        String _name = dto.getName();
+        boolean _equals = Objects.equal(_typeName, _name);
+        if (_equals) {
+        } else {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  
+  public boolean isTypeRootDataObject(final LFeature feat) {
+    return false;
+  }
+  
   public String toName(final LAnnotationTarget target) {
     return this.modelExtension.toName(target);
   }
