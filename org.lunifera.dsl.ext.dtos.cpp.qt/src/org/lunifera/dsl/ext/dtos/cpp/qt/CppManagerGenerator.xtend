@@ -279,6 +279,11 @@ QVariantList DataManager::«dto.toName.toFirstLower»AsQVariantList()
     return «dto.toName.toFirstLower»List;
 }
 
+QList<QObject*> DataManager::all«dto.toName»()
+{
+    return mAll«dto.toName»;
+}
+
 QDeclarativeListProperty<«dto.toName»> DataManager::«dto.toName.toFirstLower»PropertyList()
 {
     return QDeclarativeListProperty<«dto.toName»>(this, 0,
@@ -532,6 +537,7 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
         	}
         	dataModel->clear();
         	dataModel->insertList(theList);
+        	return;
     	}
     }
     qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
