@@ -86,7 +86,17 @@ public class CppExtensions {
     return true;
   }
   
-  public boolean isTypeRootDataObject(final LFeature feat) {
+  protected boolean _isTypeRootDataObject(final LFeature target) {
+    return false;
+  }
+  
+  protected boolean _isTypeRootDataObject(final LAttribute target) {
+    LScalarType _type = target.getType();
+    if ((_type instanceof LDto)) {
+      LScalarType _type_1 = target.getType();
+      final LDto dto = ((LDto) _type_1);
+      return this.isRootDataObject(dto);
+    }
     return false;
   }
   
@@ -1489,6 +1499,17 @@ public class CppExtensions {
       }
     }
     return false;
+  }
+  
+  public boolean isTypeRootDataObject(final LFeature target) {
+    if (target instanceof LAttribute) {
+      return _isTypeRootDataObject((LAttribute)target);
+    } else if (target != null) {
+      return _isTypeRootDataObject(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
   }
   
   public String toForeignPropertyName(final LAnnotationTarget target) {

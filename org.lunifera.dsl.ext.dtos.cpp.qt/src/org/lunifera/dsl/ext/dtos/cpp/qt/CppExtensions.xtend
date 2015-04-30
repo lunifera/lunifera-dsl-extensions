@@ -62,8 +62,16 @@ class CppExtensions {
 		}
 		return true
 	}
-	// TODO
-	def boolean isTypeRootDataObject(LFeature feat) {
+	
+	def dispatch boolean isTypeRootDataObject(LFeature target) {
+		return false
+	}
+	
+	def dispatch boolean isTypeRootDataObject(LAttribute target) {
+		if(target.type instanceof LDto){
+			val LDto dto = target.type as LDto
+			return dto.isRootDataObject
+		}
 		return false
 	}
 

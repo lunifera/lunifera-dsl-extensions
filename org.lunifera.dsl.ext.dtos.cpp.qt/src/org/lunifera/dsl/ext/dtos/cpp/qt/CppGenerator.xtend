@@ -1140,7 +1140,7 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeN
     «ENDIF»
     return true;
 }
-
+«IF !feature.isTypeRootDataObject»
 void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map)
 {
     «feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
@@ -1149,7 +1149,7 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantM
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
     emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
 }
-
+«ENDIF»
 «IF feature.referenceHasUuid»
 bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByUuid(const QString& uuid)
 {
@@ -1235,7 +1235,9 @@ void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(QDeclarativ
 {
     «dto.toName» *«dto.toName.toFirstLower»Object = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
     if («dto.toName.toFirstLower»Object) {
-        «feature.toTypeName.toFirstLower»->setParent(«dto.toName.toFirstLower»Object);
+		«IF !feature.isTypeRootDataObject»
+		«feature.toTypeName.toFirstLower»->setParent(«dto.toName.toFirstLower»Object);
+		«ENDIF»
         «dto.toName.toFirstLower»Object->m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
         emit «dto.toName.toFirstLower»Object->addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
     } else {

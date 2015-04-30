@@ -217,12 +217,13 @@ class HppGenerator {
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
 
+		«IF !feature.isTypeRootDataObject»
 		Q_INVOKABLE
 		«feature.toTypeName»* createElementOf«feature.toName.toFirstUpper»();
 
 		Q_INVOKABLE
 		void undoCreateElementOf«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
-
+		«ENDIF»
 		
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
@@ -230,8 +231,10 @@ class HppGenerator {
 		Q_INVOKABLE
 		bool removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
 		
+		«IF !feature.isTypeRootDataObject»
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
+		«ENDIF»
 		«IF feature.referenceHasUuid»
 		
 		Q_INVOKABLE
