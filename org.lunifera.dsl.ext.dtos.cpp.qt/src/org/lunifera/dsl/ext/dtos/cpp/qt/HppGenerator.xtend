@@ -230,6 +230,9 @@ class HppGenerator {
 		
 		Q_INVOKABLE
 		bool removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+
+		Q_INVOKABLE
+		void clear«feature.toName.toFirstUpper»();
 		
 		«IF !feature.isTypeRootDataObject»
 		Q_INVOKABLE
