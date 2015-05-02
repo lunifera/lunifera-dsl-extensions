@@ -537,7 +537,18 @@ QVariantMap «dto.toName»::toMap()
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[!isLazy]»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+		// lazy array: persist only keys
+		m«feature.toName.toFirstUpper»Keys.clear();
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		}
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isLazy && !isLazyArray]»
 		«IF feature.isTypeOfDataObject»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
@@ -589,7 +600,18 @@ QVariantMap «dto.toName»::toForeignMap()
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[!isLazy]»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+		// lazy array: persist only keys
+		m«feature.toName.toFirstUpper»Keys.clear();
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		}
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isLazy && !isLazyArray]»
 		«IF feature.isTypeOfDataObject»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
@@ -649,7 +671,18 @@ QVariantMap «dto.toName»::toCacheMap()
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
 		}
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy]»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+		// lazy array: persist only keys
+		m«feature.toName.toFirstUpper»Keys.clear();
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		}
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy && !isLazyArray]»
 		«IF feature.isTypeOfDataObject»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*

@@ -43,6 +43,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index
+import org.lunifera.dsl.semantic.dto.LDtoAttribute
 
 class CppExtensions {
 
@@ -652,6 +653,14 @@ class CppExtensions {
 
 	def dispatch boolean referenceHasUuid(LDtoReference reference) {
 		return (reference.type as LDto).hasUuid
+	}
+	
+	def dispatch String attributeDomainKey(LFeature feature) {
+		return ""
+	}
+
+	def dispatch String attributeDomainKey(LDtoAttribute attribute) {
+		return (attribute.type as LDto).domainKey
 	}
 
 	def String domainKey(LDto dto) {

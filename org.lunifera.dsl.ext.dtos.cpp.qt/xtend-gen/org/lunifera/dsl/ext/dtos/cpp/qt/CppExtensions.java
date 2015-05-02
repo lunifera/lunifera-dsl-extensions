@@ -54,6 +54,7 @@ import org.lunifera.dsl.semantic.common.types.LScalarType;
 import org.lunifera.dsl.semantic.dto.LDto;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoAbstractReference;
+import org.lunifera.dsl.semantic.dto.LDtoAttribute;
 import org.lunifera.dsl.semantic.dto.LDtoReference;
 
 @SuppressWarnings("all")
@@ -1157,6 +1158,15 @@ public class CppExtensions {
     return this.hasUuid(((LDto) _type));
   }
   
+  protected String _attributeDomainKey(final LFeature feature) {
+    return "";
+  }
+  
+  protected String _attributeDomainKey(final LDtoAttribute attribute) {
+    LScalarType _type = attribute.getType();
+    return this.domainKey(((LDto) _type));
+  }
+  
   public String domainKey(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
@@ -1746,6 +1756,17 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public String attributeDomainKey(final LFeature attribute) {
+    if (attribute instanceof LDtoAttribute) {
+      return _attributeDomainKey((LDtoAttribute)attribute);
+    } else if (attribute != null) {
+      return _attributeDomainKey(attribute);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(attribute).toString());
     }
   }
   
