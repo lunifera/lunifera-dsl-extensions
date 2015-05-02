@@ -106,6 +106,9 @@ public:
 	«ENDIF»
 
 	Q_INVOKABLE
+	QList<«dto.toName»*> resolveKeysToListOf«dto.toName»(QStringList keyList);
+
+	Q_INVOKABLE
 	QVariantList «dto.toName.toFirstLower»AsQVariantList();
 
 	Q_INVOKABLE

@@ -269,6 +269,45 @@ void DataManager::resolveReferencesForAll«dto.toName»()
     }
 }
 «ENDIF»
+/**
+* converts a list of keys in to a list of DataObjects
+* per ex. used to resolve lazy arrays
+*/
+QList<«dto.toName»*> DataManager::resolveKeysToListOf«dto.toName»(
+        QStringList keyList)
+{
+    QList<«dto.toName»*> listOfData;
+    keyList.removeDuplicates();
+    if (keyList.isEmpty()) {
+        return listOfData;
+    }
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*) mAll«dto.toName».at(i);
+        «IF dto.domainKeyType == "int"»
+        if (keyList.contains(QString::number(«dto.toName.toFirstLower»->«dto.domainKey»()))) {
+            listOfData.append(«dto.toName.toFirstLower»);
+            keyList.removeOne(QString::number(«dto.toName.toFirstLower»->«dto.domainKey»()));
+            if(keyList.isEmpty()){
+                break;
+            }
+        }
+        «ELSE»
+        if (keyList.contains(«dto.toName.toFirstLower»->«dto.domainKey»())) {
+            listOfData.append(«dto.toName.toFirstLower»);
+            keyList.removeOne(«dto.toName.toFirstLower»->«dto.domainKey»());
+            if(keyList.isEmpty()){
+                break;
+            }
+        }
+        «ENDIF»
+    }
+    if (keyList.isEmpty()) {
+        return listOfData;
+    }
+    qWarning() << "not all keys found for «dto.toName»: " << keyList.join(", ");
+    return listOfData;
+}
 
 QVariantList DataManager::«dto.toName.toFirstLower»AsQVariantList()
 {

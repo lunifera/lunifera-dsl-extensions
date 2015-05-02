@@ -129,7 +129,9 @@ bool «dto.toName»::isAllResolved()
 	}
     «ENDFOR»
     «FOR feature : dto.allFeatures.filter[isLazyArray]»
-    // TODO
+    if(!are«feature.toName.toFirstUpper»KeysResolved()) {
+        return false;
+    }
     «ENDFOR»
     return true;
 }
