@@ -112,8 +112,14 @@ class CppGenerator {
 		// «feature.toTypeName» m«feature.toName.toFirstUpper»
 		«ENDFOR»
 	«ENDIF»
+		«IF dto.existsLazyArray»
+		// lazy Arrays where only keys are persisted
+		«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		m«feature.toName.toFirstUpper»KeysResolved = false;
+		«ENDFOR»
+	«ENDIF»
 }
-«IF dto.existsLazy»
+«IF dto.existsLazy || dto.existsLazyArray»
 
 bool «dto.toName»::isAllResolved()
 {
@@ -121,6 +127,9 @@ bool «dto.toName»::isAllResolved()
 	if (has«feature.toName.toFirstUpper»() && !is«feature.toName.toFirstUpper»ResolvedAsDataObject()) {
 		return false;
 	}
+    «ENDFOR»
+    «FOR feature : dto.allFeatures.filter[isLazyArray]»
+    // TODO
     «ENDFOR»
     return true;
 }
@@ -206,7 +215,7 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList) && !(isLazyArray)]»
 		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
 		QVariantList «feature.toName.toFirstLower»List;
 		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toList();
@@ -219,7 +228,14 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
-	«ENDFOR»	
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
+		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
+		m«feature.toName.toFirstUpper»Keys = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		// m«feature.toName.toFirstUpper» must be resolved later if there are keys
+		m«feature.toName.toFirstUpper»KeysResolved = (m«feature.toName.toFirstUpper»Keys.size() == 0);
+		m«feature.toName.toFirstUpper».clear();
+	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
 		«IF feature.toTypeName == "QString"»
 		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
@@ -316,7 +332,7 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList) && !(isLazyArray)]»
 		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
 		QVariantList «feature.toName.toFirstLower»List;
 		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toList();
@@ -329,7 +345,14 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
-	«ENDFOR»	
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
+		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
+		m«feature.toName.toFirstUpper»Keys = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toStringList();
+		// m«feature.toName.toFirstUpper» must be resolved later if there are keys
+		m«feature.toName.toFirstUpper»KeysResolved = (m«feature.toName.toFirstUpper»Keys.size() == 0);
+		m«feature.toName.toFirstUpper».clear();
+	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
 		«IF feature.toTypeName == "QString"»
 		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toStringList();
@@ -426,7 +449,7 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList)]»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList) && !(isLazyArray)]»
 		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
 		QVariantList «feature.toName.toFirstLower»List;
 		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toList();
@@ -439,7 +462,14 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
-	«ENDFOR»	
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
+		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
+		m«feature.toName.toFirstUpper»Keys = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		// m«feature.toName.toFirstUpper» must be resolved later if there are keys
+		m«feature.toName.toFirstUpper»KeysResolved = (m«feature.toName.toFirstUpper»Keys.size() == 0);
+		m«feature.toName.toFirstUpper».clear();
+	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
 		«IF feature.toTypeName == "QString"»
 		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
@@ -1203,7 +1233,39 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»By«feature.refere
     return false;
 }
 «ENDIF»
+«IF feature.isLazyArray»
+/**
+ * lazy Array of independent Data Objects: only keys are persited
+ * so we get a list of keys (uuid or domain keys) from map
+ * and we persist only the keys toMap()
+ * after initializing the keys must be resolved:
+ * - get the list of keys: «feature.toName»Keys()
+ * - resolve them from DataManager
+ * - then resolve«feature.toName.toFirstUpper»Keys()
+ */
+bool «dto.toName»::are«feature.toName.toFirstUpper»KeysResolved()
+{
+    return m«feature.toName.toFirstUpper»KeysResolved;
+}
 
+QStringList «dto.toName»::«feature.toName.toFirstLower»Keys()
+{
+    return m«feature.toName.toFirstUpper»Keys;
+}
+
+void «dto.toName»::resolve«feature.toName.toFirstUpper»Keys(QList<«feature.toTypeName»*> «feature.toName.toFirstLower»)
+{
+    if(m«feature.toName.toFirstUpper»KeysResolved){
+        return;
+    }
+    m«feature.toName.toFirstUpper».clear();
+    for (int i = 0; i < «feature.toName.toFirstLower».size(); ++i) {
+        addTo«feature.toName.toFirstUpper»(«feature.toName.toFirstLower».at(i));
+    }
+    m«feature.toName.toFirstUpper»KeysResolved = true;
+}
+
+«ENDIF»
 int «dto.toName»::«feature.toName.toFirstLower»Count()
 {
     return m«feature.toName.toFirstUpper».size();

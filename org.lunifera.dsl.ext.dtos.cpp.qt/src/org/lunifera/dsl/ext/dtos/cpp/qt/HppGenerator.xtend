@@ -44,7 +44,7 @@ class HppGenerator {
 	«ELSEIF dto.existsHierarchy»
 	#include <QDeclarativeListProperty>
 	«ENDIF»
-	«IF dto.allFeatures.filter[isToMany && toTypeName == "QString"].size > 0»
+	«IF dto.allFeatures.filter[isToMany && (isLazyArray || toTypeName == "QString")].size > 0»
 	#include <QStringList>
 	«ENDIF»
 	«IF dto.allFeatures.filter[toTypeName == "QDate"].size > 0»
@@ -123,7 +123,7 @@ class HppGenerator {
 	public:
 		«dto.toName»(QObject *parent = 0);
 
-		«IF dto.existsLazy»
+		«IF dto.existsLazy || dto.existsLazyArray»
 		Q_INVOKABLE
 		bool isAllResolved();
 		«ENDIF»
@@ -233,7 +233,18 @@ class HppGenerator {
 
 		Q_INVOKABLE
 		void clear«feature.toName.toFirstUpper»();
-		
+
+		«IF feature.isLazyArray»
+		// lazy Array of independent Data Objects: only keys are persisted
+		Q_INVOKABLE
+		bool are«feature.toName.toFirstUpper»KeysResolved();
+
+		Q_INVOKABLE
+		QStringList «feature.toName.toFirstLower»Keys();
+
+		Q_INVOKABLE
+		void resolve«feature.toName.toFirstUpper»Keys(QList<«feature.toTypeName»*> «feature.toName.toFirstLower»);
+		«ENDIF»
 		«IF !feature.isTypeRootDataObject»
 		Q_INVOKABLE
 		void addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map);
@@ -371,6 +382,11 @@ class HppGenerator {
 		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany]»
+		«IF feature.isLazyArray»
+		// lazy Array of independent Data Objects: only keys are persisted
+		QStringList m«feature.toName.toFirstUpper»Keys;
+		bool m«feature.toName.toFirstUpper»KeysResolved;
+		«ENDIF»
 		«IF !(feature.isArrayList)»
 		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
 		// implementation for QDeclarativeListProperty to use

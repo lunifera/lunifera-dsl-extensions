@@ -195,6 +195,21 @@ class CppExtensions {
 	def dispatch boolean isLazy(LReference target) {
 		return target.isLazy
 	}
+	
+	def dispatch boolean isLazyArray(LAttribute target){
+		if(target.toMany) {
+			if(!target.isArrayList){
+				if (target.isTypeOfDataObject){
+					return true
+				}
+			}
+		}
+		return false
+	}
+	def dispatch boolean isLazyArray(LFeature target){
+		return false
+	}
+	
 
 	def dispatch String toTypeName(LAttribute att) {
 		switch (modelExtension.toTypeName(att as LDtoAbstractAttribute)) {
@@ -739,6 +754,15 @@ class CppExtensions {
 	def boolean existsLazy(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isLazy) {
+				return true
+			}
+		}
+		return false
+	}
+	
+	def boolean existsLazyArray(LDto dto) {
+		for (feature : dto.allFeatures) {
+			if (feature.isLazyArray) {
 				return true
 			}
 		}

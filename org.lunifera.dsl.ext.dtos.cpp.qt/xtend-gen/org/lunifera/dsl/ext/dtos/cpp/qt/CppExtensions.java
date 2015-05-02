@@ -237,6 +237,25 @@ public class CppExtensions {
     return target.isLazy();
   }
   
+  protected boolean _isLazyArray(final LAttribute target) {
+    boolean _isToMany = this.isToMany(target);
+    if (_isToMany) {
+      boolean _isArrayList = this.isArrayList(target);
+      boolean _not = (!_isArrayList);
+      if (_not) {
+        boolean _isTypeOfDataObject = this.isTypeOfDataObject(target);
+        if (_isTypeOfDataObject) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  protected boolean _isLazyArray(final LFeature target) {
+    return false;
+  }
+  
   protected String _toTypeName(final LAttribute att) {
     String _typeName = this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
     boolean _matched = false;
@@ -1300,6 +1319,17 @@ public class CppExtensions {
     return false;
   }
   
+  public boolean existsLazyArray(final LDto dto) {
+    List<? extends LFeature> _allFeatures = dto.getAllFeatures();
+    for (final LFeature feature : _allFeatures) {
+      boolean _isLazyArray = this.isLazyArray(feature);
+      if (_isLazyArray) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public boolean isHierarchy(final LDto dto, final LFeature feature) {
     boolean _and = false;
     boolean _isLazy = this.isLazy(feature);
@@ -1612,6 +1642,17 @@ public class CppExtensions {
       return _isLazy((LReference)target);
     } else if (target != null) {
       return _isLazy(target);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public boolean isLazyArray(final LFeature target) {
+    if (target instanceof LAttribute) {
+      return _isLazyArray((LAttribute)target);
+    } else if (target != null) {
+      return _isLazyArray(target);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());

@@ -112,7 +112,6 @@ public:
 	QList<QObject*> all«dto.toName»();
 
 	// access from QML to list of all «dto.toName»
-	Q_INVOKABLE
 	QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList();
 
 	Q_INVOKABLE

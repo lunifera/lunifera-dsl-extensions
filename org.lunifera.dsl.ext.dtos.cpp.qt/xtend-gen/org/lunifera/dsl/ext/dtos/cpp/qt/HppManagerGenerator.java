@@ -367,9 +367,6 @@ public class HppManagerGenerator {
             _builder.append(_name_25, "\t");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
-            _builder.append("Q_INVOKABLE");
-            _builder.newLine();
-            _builder.append("\t");
             _builder.append("QDeclarativeListProperty<");
             String _name_26 = this._cppExtensions.toName(dto_2);
             _builder.append(_name_26, "\t");
