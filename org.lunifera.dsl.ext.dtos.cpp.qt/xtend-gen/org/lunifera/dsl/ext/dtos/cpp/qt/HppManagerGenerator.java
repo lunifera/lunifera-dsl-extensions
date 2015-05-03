@@ -347,10 +347,10 @@ public class HppManagerGenerator {
             _builder.append("QList<");
             String _name_23 = this._cppExtensions.toName(dto_2);
             _builder.append(_name_23, "\t");
-            _builder.append("*> resolveKeysToListOf");
+            _builder.append("*> listOf");
             String _name_24 = this._cppExtensions.toName(dto_2);
             _builder.append(_name_24, "\t");
-            _builder.append("(QStringList keyList);");
+            _builder.append("ForKeys(QStringList keyList);");
             _builder.newLineIfNotEmpty();
             _builder.newLine();
             _builder.append("\t");

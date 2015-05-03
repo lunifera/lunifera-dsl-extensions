@@ -259,6 +259,12 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
     	}
     }
     «ENDFOR»
+    «FOR feature : dto.allFeatures.filter[isLazyArray]»
+    if (!«dto.toName.toFirstLower»->are«feature.toName.toFirstUpper»KeysResolved()) {
+        «dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»Keys(
+                listOf«dto.toName.toFirstUpper»ForKeys(«dto.toName.toFirstLower»->«feature.toName»Keys()));
+    }
+    «ENDFOR»
 }
 void DataManager::resolveReferencesForAll«dto.toName»()
 {
@@ -273,7 +279,7 @@ void DataManager::resolveReferencesForAll«dto.toName»()
 * converts a list of keys in to a list of DataObjects
 * per ex. used to resolve lazy arrays
 */
-QList<«dto.toName»*> DataManager::resolveKeysToListOf«dto.toName»(
+QList<«dto.toName»*> DataManager::listOf«dto.toName»ForKeys(
         QStringList keyList)
 {
     QList<«dto.toName»*> listOfData;
