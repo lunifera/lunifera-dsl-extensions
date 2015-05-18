@@ -177,12 +177,13 @@ public class CppExtensions {
     return false;
   }
   
-  protected boolean _isContained(final LReference target) {
-    return target.isCascading();
-  }
-  
   protected boolean _isContained(final LDtoReference target) {
-    return target.isCascading();
+    boolean _hasOpposite = this.hasOpposite(target);
+    if (_hasOpposite) {
+      LDtoReference _opposite = target.getOpposite();
+      return _opposite.isCascading();
+    }
+    return false;
   }
   
   protected boolean _hasOpposite(final LDtoAbstractAttribute att) {
@@ -1594,8 +1595,6 @@ public class CppExtensions {
       return _isContained((LDtoReference)target);
     } else if (target instanceof LAttribute) {
       return _isContained((LAttribute)target);
-    } else if (target instanceof LReference) {
-      return _isContained((LReference)target);
     } else if (target != null) {
       return _isContained(target);
     } else {

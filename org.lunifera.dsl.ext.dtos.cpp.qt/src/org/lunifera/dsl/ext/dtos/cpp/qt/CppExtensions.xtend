@@ -137,12 +137,11 @@ class CppExtensions {
 		return false
 	}
 
-	def dispatch boolean isContained(LReference target) {
-		return target.isCascading
-	}
-
 	def dispatch boolean isContained(LDtoReference target) {
-		return target.isCascading
+		if(target.hasOpposite) {
+			return target.opposite.isCascading
+		}
+		return false
 	}
 
 	def dispatch boolean hasOpposite(LDtoAbstractAttribute att) {
