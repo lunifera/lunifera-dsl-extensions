@@ -150,6 +150,12 @@ public:
 	«ENDIF»
 	«ENDFOR»
 
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject»
+    	void init«dto.toName»FromCache();
+		«ENDIF»
+	«ENDFOR»
+
 Q_SIGNALS:
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -193,7 +199,6 @@ private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
-    	void init«dto.toName»FromCache();
     	void save«dto.toName»ToCache();
 		«ENDIF»
 	«ENDFOR»
