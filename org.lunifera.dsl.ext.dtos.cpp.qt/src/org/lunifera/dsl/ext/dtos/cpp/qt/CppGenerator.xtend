@@ -44,6 +44,16 @@ class CppGenerator {
 	#include "«reference.toTypeName».hpp"
 	«ENDIF»
 «ENDFOR»
+«FOR reference : dto.allFeatures.filter[isTypeOfDataObject]»
+	«IF !reference.isContained»
+		«IF reference.toTypeName != dto.toName»
+			«IF isReferencing(reference, dto)»
+			// target also references to this
+			#include "«reference.toTypeName».hpp"
+			«ENDIF»
+		«ENDIF»
+	«ENDIF»
+«ENDFOR»
 
 // keys of QVariantMap used in this APP
 «FOR feature : dto.allFeatures»

@@ -70,7 +70,12 @@ class HppGenerator {
 	«FOR reference : dto.allFeatures.filter[isTypeOfDataObject]»
 	«IF !reference.isContained»
 		«IF reference.toTypeName != dto.toName»
-		#include "«reference.toTypeName».hpp"
+			«IF isReferencing(reference, dto)»
+			// forward declaration (target references to this)
+			class «reference.toTypeName.toFirstUpper»;
+			«ELSE»
+			#include "«reference.toTypeName».hpp"
+			«ENDIF»
 		«ENDIF»
 	«ELSE»
 	// forward declaration to avoid circular dependencies

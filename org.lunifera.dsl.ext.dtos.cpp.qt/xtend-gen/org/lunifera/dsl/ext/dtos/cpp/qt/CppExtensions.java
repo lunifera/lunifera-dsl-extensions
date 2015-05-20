@@ -292,6 +292,34 @@ public class CppExtensions {
     return this.modelExtension.toTypeName(((LDtoAbstractReference) ref));
   }
   
+  protected boolean _isReferencing(final LFeature target, final LDto source) {
+    return false;
+  }
+  
+  protected boolean _isReferencing(final LDtoAbstractReference target, final LDto source) {
+    LDto _type = target.getType();
+    if ((_type instanceof LDto)) {
+      LDto _type_1 = target.getType();
+      final LDto targetDto = ((LDto) _type_1);
+      List<? extends LFeature> _allFeatures = targetDto.getAllFeatures();
+      for (final LFeature feature : _allFeatures) {
+        String _typeName = this.toTypeName(feature);
+        String _name = this.toName(source);
+        boolean _equals = Objects.equal(_typeName, _name);
+        if (_equals) {
+          boolean _isContained = this.isContained(feature);
+          boolean _not = (!_isContained);
+          if (_not) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+    }
+    return false;
+  }
+  
   protected boolean _isTypeOfDataObject(final LDtoAbstractAttribute att) {
     LScalarType _type = att.getType();
     if ((_type instanceof LDto)) {
@@ -1676,6 +1704,17 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(att).toString());
+    }
+  }
+  
+  public boolean isReferencing(final LFeature target, final LDto source) {
+    if (target instanceof LDtoAbstractReference) {
+      return _isReferencing((LDtoAbstractReference)target, source);
+    } else if (target != null) {
+      return _isReferencing(target, source);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(target, source).toString());
     }
   }
   

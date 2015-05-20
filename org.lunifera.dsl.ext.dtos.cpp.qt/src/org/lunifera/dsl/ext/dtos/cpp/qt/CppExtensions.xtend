@@ -63,13 +63,13 @@ class CppExtensions {
 		}
 		return true
 	}
-	
+
 	def dispatch boolean isTypeRootDataObject(LFeature target) {
 		return false
 	}
-	
+
 	def dispatch boolean isTypeRootDataObject(LAttribute target) {
-		if(target.type instanceof LDto){
+		if (target.type instanceof LDto) {
 			val LDto dto = target.type as LDto
 			return dto.isRootDataObject
 		}
@@ -138,7 +138,7 @@ class CppExtensions {
 	}
 
 	def dispatch boolean isContained(LDtoReference target) {
-		if(target.hasOpposite) {
+		if (target.hasOpposite) {
 			return target.opposite.isCascading
 		}
 		return false
@@ -195,21 +195,21 @@ class CppExtensions {
 	def dispatch boolean isLazy(LReference target) {
 		return target.isLazy
 	}
-	
-	def dispatch boolean isLazyArray(LAttribute target){
-		if(target.toMany) {
-			if(!target.isArrayList){
-				if (target.isTypeOfDataObject){
+
+	def dispatch boolean isLazyArray(LAttribute target) {
+		if (target.toMany) {
+			if (!target.isArrayList) {
+				if (target.isTypeOfDataObject) {
 					return true
 				}
 			}
 		}
 		return false
 	}
-	def dispatch boolean isLazyArray(LFeature target){
+
+	def dispatch boolean isLazyArray(LFeature target) {
 		return false
 	}
-	
 
 	def dispatch String toTypeName(LAttribute att) {
 		switch (modelExtension.toTypeName(att as LDtoAbstractAttribute)) {
@@ -227,6 +227,26 @@ class CppExtensions {
 
 	def dispatch String toTypeName(LReference ref) {
 		modelExtension.toTypeName(ref as LDtoAbstractReference)
+	}
+
+	def dispatch boolean isReferencing(LFeature target, LDto source) {
+		return false
+	}
+
+	def dispatch boolean isReferencing(LDtoAbstractReference target, LDto source) {
+		if (target.type instanceof LDto) {
+			val LDto targetDto = target.type as LDto
+			for (feature : targetDto.allFeatures) {
+				if (feature.toTypeName == source.toName) {
+					if (!feature.isContained) {
+						return true
+					} else {
+						return false
+					}
+				}
+			}
+		}
+		return false
 	}
 
 	def dispatch boolean isTypeOfDataObject(LDtoAbstractAttribute att) {
@@ -653,7 +673,7 @@ class CppExtensions {
 	def dispatch boolean referenceHasUuid(LDtoReference reference) {
 		return (reference.type as LDto).hasUuid
 	}
-	
+
 	def dispatch String attributeDomainKey(LFeature feature) {
 		return ""
 	}
@@ -767,7 +787,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def boolean existsLazyArray(LDto dto) {
 		for (feature : dto.allFeatures) {
 			if (feature.isLazyArray) {
