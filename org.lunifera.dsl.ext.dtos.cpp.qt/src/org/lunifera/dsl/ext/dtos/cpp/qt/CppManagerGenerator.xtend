@@ -402,6 +402,26 @@ void DataManager::clear«dto.toName»Property(
 }
 
 /**
+ * deletes all «dto.toName»
+ * and clears the list
+ */
+void DataManager::delete«dto.toName»()
+{
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*) mAll«dto.toName».at(i);
+        «IF dto.hasUuid»
+        emit deletedFromAll«dto.toName»ByUuid(«dto.toName.toFirstLower»->uuid());
+		«ELSEIF dto.hasDomainKey»
+        emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
+		«ENDIF»
+        «dto.toName.toFirstLower»->deleteLater();
+        «dto.toName.toFirstLower» = 0;
+     }
+     mAll«dto.toName».clear();
+}
+
+/**
  * creates a new «dto.toName»
  * parent is DataManager
  * if data is successfully entered you must insert«dto.toName»

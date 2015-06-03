@@ -64,7 +64,6 @@ class CppGenerator {
 	«ENDIF»
 «ENDFOR»
 
-«IF dto.existsForeignPropertyName»
 // keys used from Server API etc
 «FOR feature : dto.allFeatures»
 	«IF feature.isTypeOfDataObject && feature.isContained»
@@ -73,7 +72,6 @@ class CppGenerator {
 	static const QString «feature.toName»ForeignKey = "«feature.toForeignPropertyName»";
 	«ENDIF»
 «ENDFOR»
-«ENDIF»
 
 /*
  * Default Constructor if «dto.toName» not initialized from QVariantMap
@@ -271,7 +269,6 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
  */
 void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstLower»Map)
 {
-	«IF dto.existsForeignPropertyName»
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDataObject»
 			«IF feature.isContained»
@@ -297,7 +294,7 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 					m«feature.toName.toFirstUpper» = 0;
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
-					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
+					m«feature.toName.toFirstUpper»->fillFromForeignMap(«feature.toName»Map);
 				}
 			}
 			«ENDIF»
@@ -354,7 +351,7 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
 			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
 			«feature.toTypeName.toFirstLower»->setParent(this);
-			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
+			«feature.toTypeName.toFirstLower»->fillFromForeignMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
 	«ENDFOR»
@@ -378,11 +375,6 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 		}
 		«ENDIF»
 	«ENDFOR»
-	«ELSE»
-	// no Foreign Properties found in data model
-	// use default method
-	fillFromMap(«dto.toName.toFirstLower»Map);
-	«ENDIF»
 }
 /*
  * initialize OrderData from QVariantMap
@@ -393,7 +385,6 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
  */
 void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLower»Map)
 {
-	«IF dto.existsTransient»
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDataObject»
 			«IF feature.isContained»
@@ -418,7 +409,7 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 				if (!«feature.toName»Map.isEmpty()) {
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
-					m«feature.toName.toFirstUpper»->fillFromMap(«feature.toName»Map);
+					m«feature.toName.toFirstUpper»->fillFromCacheMap(«feature.toName»Map);
 				}
 			}
 			«ENDIF»
@@ -471,7 +462,7 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
 			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
 			«feature.toTypeName.toFirstLower»->setParent(this);
-			«feature.toTypeName.toFirstLower»->fillFromMap(«feature.toName.toFirstLower»Map);
+			«feature.toTypeName.toFirstLower»->fillFromCacheMap(«feature.toName.toFirstLower»Map);
 			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
 		}
 	«ENDFOR»
@@ -495,11 +486,6 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 		}
 		«ENDIF»
 	«ENDFOR»
-	«ELSE»
-	// no Transient Properties found in data model
-	// use default method for cache
-	fillFromMap(«dto.toName.toFirstLower»Map);
-	«ENDIF»
 }
 
 void «dto.toName»::prepareNew()
@@ -604,7 +590,6 @@ QVariantMap «dto.toName»::toMap()
  */
 QVariantMap «dto.toName»::toForeignMap()
 {
-	«IF dto.existsForeignPropertyName»
 	QVariantMap «dto.toName.toFirstLower»Map;
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
@@ -659,10 +644,6 @@ QVariantMap «dto.toName»::toForeignMap()
 		«ENDIF»	
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
-	«ELSE»
-	// no Foreign Properties found in data model
-	return toMap();
-	«ENDIF»
 }
 
 

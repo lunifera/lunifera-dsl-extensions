@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ASCII"?>
+<types:LCommonModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:types="http://www.lunifera.org/dsl/common/types/v1" xmlns:types_1="http://www.eclipse.org/xtext/common/JavaVMTypes">
+  <packages name="org.lunifera.dsl.ext.cpp.qt.datatypes">
+    <imports importedNamespace="org.lunifera.dsl.ext.cpp.qt.lib.types.*"/>
+    <types xsi:type="types:LDataType" name="int" asPrimitive="true">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/java.lang.Integer#java.lang.Integer"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="double" asPrimitive="true">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/java.lang.Double#java.lang.Double"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="float" asPrimitive="true">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/java.lang.Float#java.lang.Float"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="QString">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/org.lunifera.dsl.ext.cpp.qt.lib.types.QString#org.lunifera.dsl.ext.cpp.qt.lib.types.QString"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="QByteArray">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/org.lunifera.dsl.ext.cpp.qt.lib.types.QByteArray#org.lunifera.dsl.ext.cpp.qt.lib.types.QByteArray"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="GeoAddress">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/org.lunifera.dsl.ext.cpp.qt.lib.types.GeoAddress#org.lunifera.dsl.ext.cpp.qt.lib.types.GeoAddress"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="GeoCoordinate">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/org.lunifera.dsl.ext.cpp.qt.lib.types.GeoCoordinate#org.lunifera.dsl.ext.cpp.qt.lib.types.GeoCoordinate"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="bool">
+      <jvmTypeReference xsi:type="types_1:JvmParameterizedTypeReference">
+        <type xsi:type="types_1:JvmGenericType" href="java:/Objects/org.lunifera.dsl.ext.cpp.qt.lib.types.bool#org.lunifera.dsl.ext.cpp.qt.lib.types.bool"/>
+      </jvmTypeReference>
+    </types>
+    <types xsi:type="types:LDataType" name="Date" date="true"/>
+    <types xsi:type="types:LDataType" name="Time" date="true" dateType="TIME"/>
+    <types xsi:type="types:LDataType" name="Timestamp" date="true" dateType="TIMESTAMP"/>
+  </packages>
+</types:LCommonModel>
