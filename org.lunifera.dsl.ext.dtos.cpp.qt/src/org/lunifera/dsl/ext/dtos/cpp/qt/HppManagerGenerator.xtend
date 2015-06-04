@@ -79,6 +79,15 @@ public:
 	Q_INVOKABLE
 	void fill«dto.toName»DataModel(QString objectName);
 	«ENDIF»
+
+	Q_INVOKABLE
+	void replaceItemIn«dto.toName»DataModel(QString objectName, «dto.toName»* listItem);
+
+	Q_INVOKABLE
+	void removeItemFrom«dto.toName»DataModel(QString objectName, «dto.toName»* listItem);
+
+	Q_INVOKABLE
+	void insertItemInto«dto.toName»DataModel(QString objectName, «dto.toName»* listItem);
 	«FOR feature : dto.allFeatures.filter[hasIndex]»
 
 	Q_INVOKABLE

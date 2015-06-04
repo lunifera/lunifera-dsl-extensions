@@ -608,6 +608,68 @@ void DataManager::fill«dto.toName»DataModel(QString objectName)
     qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
 }
 «ENDIF»
+/**
+ * removing and re-inserting a single item of a DataModel
+ * this will cause the ListView to redraw or recalculate all values for this ListItem
+ * we do this, because only changing properties won't call List functions
+ */
+void DataManager::replaceItemIn«dto.toName»DataModel(QString objectName,
+        «dto.toName»* listItem)
+{
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+        GroupDataModel* dataModel = dataModelList.last();
+        if (dataModel) {
+            bool exists = dataModel->remove(listItem);
+            if (exists) {
+                dataModel->insert(listItem);
+                return;
+            }
+            qDebug() << "«dto.toName» Object not found and not replaced in " << objectName;
+        }
+        return;
+    }
+    qDebug() << "no DataModel found for " << objectName;
+}
+
+void DataManager::removeItemFrom«dto.toName»DataModel(QString objectName, «dto.toName»* listItem)
+{
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+        GroupDataModel* dataModel = dataModelList.last();
+        if (dataModel) {
+            bool exists = dataModel->remove(listItem);
+            if (exists) {
+                return;
+            }
+            qDebug() << "«dto.toName» Object not found and not removed from " << objectName;
+        }
+        return;
+    }
+    qDebug() << "no DataModel found for " << objectName;
+}
+
+void DataManager::insertItemInto«dto.toName»DataModel(QString objectName, «dto.toName»* listItem)
+{
+    // using dynamic created Pages / Lists it's a good idea to use findChildren ... last()
+    // probably there are GroupDataModels not deleted yet from previous destroyed Pages
+    QList<GroupDataModel*> dataModelList = Application::instance()->scene()->findChildren<
+            GroupDataModel*>(objectName);
+    if (dataModelList.size() > 0) {
+        GroupDataModel* dataModel = dataModelList.last();
+        if (dataModel) {
+            dataModel->insert(listItem);
+        }
+        return;
+    }
+    qDebug() << "no DataModel found for " << objectName;
+}
 «FOR feature : dto.allFeatures.filter[hasIndex]»
 
 «IF feature.isLazy»
