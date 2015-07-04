@@ -392,6 +392,7 @@ void DataManager::clear«dto.toName»Property(
 			«ELSEIF dto.hasDomainKey»
 			emit dataManager->deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
 			«ENDIF»
+			emit dataManager->deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
             «dto.toName.toFirstLower»->deleteLater();
             «dto.toName.toFirstLower» = 0;
         }
@@ -415,6 +416,7 @@ void DataManager::delete«dto.toName»()
 		«ELSEIF dto.hasDomainKey»
         emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
 		«ENDIF»
+		emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
         «dto.toName.toFirstLower»->deleteLater();
         «dto.toName.toFirstLower» = 0;
      }
@@ -494,6 +496,7 @@ bool DataManager::delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower
     «ELSEIF dto.hasDomainKey»
     emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
     «ENDIF»
+    emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
     «dto.toName.toFirstLower»->deleteLater();
     «dto.toName.toFirstLower» = 0;
     return ok;
@@ -515,6 +518,7 @@ bool DataManager::delete«dto.toName»ByUuid(const QString& uuid)
             mAll«dto.toName»Flat.removeOne(«dto.toName.toFirstLower»);
             «ENDIF»
             emit deletedFromAll«dto.toName»ByUuid(uuid);
+            emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
             «dto.toName.toFirstLower»->deleteLater();
             «dto.toName.toFirstLower» = 0;
             return true;
@@ -536,6 +540,7 @@ bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «d
             mAll«dto.toName»Flat.removeOne(«dto.toName.toFirstLower»);
             «ENDIF»
             emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKey»);
+            emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
             «dto.toName.toFirstLower»->deleteLater();
             «dto.toName.toFirstLower» = 0;
             return true;

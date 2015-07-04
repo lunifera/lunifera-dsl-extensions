@@ -172,13 +172,14 @@ Q_SIGNALS:
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
-	void addedToAll«dto.toName»(«dto.toName»* orderData);
+	void addedToAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 	«IF dto.hasUuid»
 	void deletedFromAll«dto.toName»ByUuid(QString uuid);
 	«ENDIF»
 	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
 	void deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKeyType» «dto.domainKey»);
 	«ENDIF»
+	void deletedFromAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 	«ENDIF»
     «ENDFOR»
     
