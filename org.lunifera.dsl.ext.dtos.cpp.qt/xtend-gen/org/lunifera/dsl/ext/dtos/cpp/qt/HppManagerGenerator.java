@@ -59,6 +59,13 @@ public class HppManagerGenerator {
     _builder.newLine();
     _builder.append("#include <qobject.h>");
     _builder.newLine();
+    {
+      boolean _hasSqlCache = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache) {
+        _builder.append("#include <bb/data/SqlDataAccess>");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       EList<LType> _types = pkg.getTypes();
@@ -896,6 +903,23 @@ public class HppManagerGenerator {
             _builder.newLineIfNotEmpty();
           }
         }
+      }
+    }
+    _builder.newLine();
+    {
+      boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_1) {
+        _builder.append("// S Q L");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("bool mDatabaseAvailable;");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("bool initDatabase();");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("bb::data::SqlDataAccess* mSQLda;");
+        _builder.newLine();
       }
     }
     _builder.newLine();

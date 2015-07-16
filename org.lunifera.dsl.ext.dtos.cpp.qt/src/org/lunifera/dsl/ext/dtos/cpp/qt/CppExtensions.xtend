@@ -44,6 +44,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index
 import org.lunifera.dsl.semantic.dto.LDtoAttribute
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SqlCache
 
 class CppExtensions {
 
@@ -627,6 +628,13 @@ class CppExtensions {
 		return true
 	}
 
+	def boolean hasSqlCachePropertyName(LDto dto) {
+		if (dto.sqlCacheValue == null) {
+			return false
+		}
+		return true
+	}
+
 	def boolean hasEnumValues(LEnum en) {
 		if (en.enumValues == null) {
 			return false
@@ -856,6 +864,17 @@ class CppExtensions {
 
 	def String getCachePolicyValue(LDto member) {
 		val annoDef = typeof(CachePolicy).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
+
+	def String getSqlCacheValue(LDto member) {
+		val annoDef = typeof(SqlCache).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

@@ -48,6 +48,19 @@ public class ManagerExtensions {
   @Extension
   private CppExtensions _cppExtensions;
   
+  public boolean hasSqlCache(final LTypedPackage pkg) {
+    EList<LType> _types = pkg.getTypes();
+    for (final LType lt : _types) {
+      if ((lt instanceof LDto)) {
+        boolean _hasSqlCachePropertyName = this._cppExtensions.hasSqlCachePropertyName(((LDto)lt));
+        if (_hasSqlCachePropertyName) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   public boolean hasGeoCoordinate(final LTypedPackage pkg) {
     EList<LType> _types = pkg.getTypes();
     for (final LType lt : _types) {

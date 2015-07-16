@@ -46,7 +46,16 @@ class ManagerExtensions {
 	@Inject extension AnnotationExtension
 	@Inject extension CppExtensions
 
-
+	def boolean hasSqlCache(LTypedPackage pkg) {
+		for (lt : pkg.types) {
+			if (lt instanceof LDto) {
+				if (lt.hasSqlCachePropertyName) {
+					return true
+				}
+			}
+		}
+		return false
+	}
 
 	def boolean hasGeoCoordinate(LTypedPackage pkg) {
 		for (lt : pkg.types) {

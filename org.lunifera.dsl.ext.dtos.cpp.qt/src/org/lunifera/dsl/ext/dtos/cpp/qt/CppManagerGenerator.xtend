@@ -48,6 +48,12 @@ class CppManagerGenerator {
 #include <bb/data/JsonDataAccess>
 #include <bb/cascades/GroupDataModel>
 
+«IF pkg.hasSqlCache»
+#include <QtSql/QtSql>
+
+static QString dbName = "sqlcache.db";
+«ENDIF»
+
 static QString dataAssetsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/app/native/assets/datamodel/" + fileName;
@@ -117,12 +123,58 @@ DataManager::DataManager(QObject *parent) :
  */
 void DataManager::init()
 {
+	«IF pkg.hasSqlCache»
+	// SQL init the sqlite database
+	mDatabaseAvailable = initDatabase();
+	qDebug() << "SQLite created or opened ? " << mDatabaseAvailable;
+	«ENDIF»
+
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	init«dto.toName»FromCache();
 		«ENDIF»
 	«ENDFOR»
 }
+
+«IF pkg.hasSqlCache»
+//  S Q L
+/**
+ * OPENs the DATABASE FILE
+ *
+ * Also initialized the DATABASE CONNECTION (SqlDataAccess),
+ * we're reusing for all SQL commands on this database
+ */
+bool DataManager::initDatabase()
+{
+    QString pathname;
+    pathname = dataPath(dbName);
+    QFile dataFile(pathname);
+    if (!dataFile.exists()) {
+        // of there's a default at assets we copy it - otherwise a new db will be created later
+        QFile assetDataFile(dataAssetsPath(dbName));
+        if (assetDataFile.exists()) {
+            // copy file from assets to data
+            bool copyOk = assetDataFile.copy(pathname);
+            if (!copyOk) {
+                qDebug() << "cannot copy dataAssetsPath(fileName) to dataPath(fileName)";
+            }
+        }
+    }
+    //
+    QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
+    database.setDatabaseName(dataPath(dbName));
+    if (database.open() == false) {
+        const QSqlError error = database.lastError();
+        // you should notify the user !
+        qWarning() << "Cannot open " << dbName << ":" << error.text();
+        return false;
+    }
+    qDebug() << "Database opened: " << dbName;
+    // create the Connection
+    mSQLda = new SqlDataAccess(dataPath(dbName), this);
+    return true;
+}
+«ENDIF»
 
 void DataManager::finish()
 {
@@ -146,6 +198,7 @@ void DataManager::finish()
  */
 void DataManager::init«dto.toName»FromCache()
 {
+	qDebug() << "start init«dto.toName»FromCache";
     mAll«dto.toName».clear();
     «IF dto.isTree»
     mAll«dto.toName»Flat.clear();

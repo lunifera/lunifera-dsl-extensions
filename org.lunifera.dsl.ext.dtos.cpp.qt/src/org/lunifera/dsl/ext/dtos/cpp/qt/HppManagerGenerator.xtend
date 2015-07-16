@@ -38,6 +38,9 @@ class HppManagerGenerator {
 #define DATAMANAGER_HPP_
 
 #include <qobject.h>
+«IF pkg.hasSqlCache»
+#include <bb/data/SqlDataAccess>
+«ENDIF»
 
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 #include "«dto.toName».hpp"
@@ -215,6 +218,13 @@ private:
     	void save«dto.toName»ToCache();
 		«ENDIF»
 	«ENDFOR»
+
+«IF pkg.hasSqlCache»
+// S Q L
+    bool mDatabaseAvailable;
+    bool initDatabase();
+    bb::data::SqlDataAccess* mSQLda;
+«ENDIF»
 
 	QVariantList readFromCache(QString& fileName);
 	void writeToCache(QString& fileName, QVariantList& data);
