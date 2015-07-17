@@ -181,6 +181,8 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
 		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		} else {
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
 		}
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
@@ -203,7 +205,11 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
 					«IF feature.toTypeName == "GeoCoordinate"»
-					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->asOneSqlColumn());
+					if (m«feature.toName.toFirstUpper»->isValid()) {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->asOneSqlColumn());
+					} else {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
+					}
 					«ELSE»
 					// TODO «dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
 					«ENDIF»
