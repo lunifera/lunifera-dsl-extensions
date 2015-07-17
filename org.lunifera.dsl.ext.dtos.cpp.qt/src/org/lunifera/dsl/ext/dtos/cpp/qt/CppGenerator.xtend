@@ -127,6 +127,53 @@ class CppGenerator {
 		«ENDFOR»
 	«ENDIF»
 }
+«IF dto.hasSqlCachePropertyName»
+// S Q L
+const QString «dto.toName»::createTableCommand()
+{
+	QString createSQL = "CREATE TABLE «dto.toName.toFirstLower» (";
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+	// «feature.toName»
+	createSQL.append(«feature.toName»Key).append("«feature.toSqlColumnType»");
+	«IF dto.hasDomainKey && feature.isDomainKey»
+	createSQL.append(" PRIMARY KEY");
+	«ELSEIF feature.toName == "uuid"»
+	createSQL.append(" PRIMARY KEY");
+	«ENDIF»
+	createSQL.append(", ");
+	«ENDFOR»
+	//
+    createSQL = createSQL.left(createSQL.length()-2);
+    «IF (dto.hasDomainKey) || (dto.hasUuid)»
+    createSQL.append(") WITHOUT ROWID;");
+    «ELSE»
+    createSQL.append(");");
+    «ENDIF»
+    return createSQL;
+}
+const QString OrtsteilData::createParameterizedInsertCommand()
+{
+	QString insertSQL;
+    QString valueSQL;
+    insertSQL = "INSERT INTO ortsteilData (";
+    valueSQL = " VALUES (";
+    «FOR feature : dto.allFeatures.filter[!isToMany]»
+// «feature.toName» 
+	insertSQL.append(«feature.toName»Key);
+	insertSQL.append(", ");
+	valueSQL.append(":");
+	valueSQL.append(«feature.toName»Key);
+	valueSQL.append(", ");
+	«ENDFOR»
+//
+    insertSQL = insertSQL.left(insertSQL.length()-2);
+    insertSQL.append(") ");
+    valueSQL = valueSQL.left(valueSQL.length()-2);
+    valueSQL.append(") ");
+    insertSQL.append(valueSQL);
+    return insertSQL;
+}
+«ENDIF»
 «IF dto.existsLazy || dto.existsLazyArray»
 
 bool «dto.toName»::isAllResolved()

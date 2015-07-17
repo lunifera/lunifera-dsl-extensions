@@ -259,6 +259,82 @@ public class CppExtensions {
     return false;
   }
   
+  protected String _toSqlColumnType(final LAttribute att) {
+    String _typeName = this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
+    boolean _matched = false;
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Date")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Time")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "Timestamp")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QString")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "bool")) {
+        _matched=true;
+        return " INTEGER";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "GeoAddress")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "GeoCoordinate")) {
+        _matched=true;
+        return " TEXT";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "QByteArray")) {
+        _matched=true;
+        return " BLOB";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "int")) {
+        _matched=true;
+        return " INTEGER";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "double")) {
+        _matched=true;
+        return " DOUBLE";
+      }
+    }
+    if (!_matched) {
+      if (Objects.equal(_typeName, "float")) {
+        _matched=true;
+        return " FLOAT";
+      }
+    }
+    return " TEXT";
+  }
+  
+  protected String _toSqlColumnType(final LFeature feature) {
+    return " TEXTFEATURE";
+  }
+  
   protected String _toTypeName(final LAttribute att) {
     String _typeName = this.modelExtension.toTypeName(((LDtoAbstractAttribute) att));
     boolean _matched = false;
@@ -1721,6 +1797,17 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(target).toString());
+    }
+  }
+  
+  public String toSqlColumnType(final LFeature att) {
+    if (att instanceof LAttribute) {
+      return _toSqlColumnType((LAttribute)att);
+    } else if (att != null) {
+      return _toSqlColumnType(att);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(att).toString());
     }
   }
   

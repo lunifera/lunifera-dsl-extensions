@@ -132,7 +132,7 @@ class HppGenerator {
 		Q_INVOKABLE
 		bool isAllResolved();
 		«ENDIF»
-		
+	
 		void fillFromMap(const QVariantMap& «dto.toName.toFirstLower»Map);
 		void fillFromForeignMap(const QVariantMap& «dto.toName.toFirstLower»Map);
 		void fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLower»Map);
@@ -409,7 +409,12 @@ class HppGenerator {
 			«ENDIF»
 		«ENDIF»
 		«ENDFOR»
-	
+		«IF dto.hasSqlCachePropertyName»
+		// SQL
+		static const QString createTableCommand();
+		static const QString createParameterizedInsertCommand();
+		«ENDIF»
+
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)
 	};
 	Q_DECLARE_METATYPE(«dto.toName.toFirstUpper»*)

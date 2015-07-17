@@ -212,6 +212,40 @@ class CppExtensions {
 		return false
 	}
 
+	def dispatch String toSqlColumnType(LAttribute att) {
+		switch (modelExtension.toTypeName(att as LDtoAbstractAttribute)) {
+			case "Date":
+				return " TEXT"
+			case "Time":
+				return " TEXT"
+			case "Timestamp":
+				return " TEXT"
+			case "QString":
+				return " TEXT"
+			case "bool":
+				return " INTEGER"
+			case "GeoAddress":
+				return " TEXT"
+			case "GeoCoordinate":
+				return " TEXT"
+			case "QByteArray":
+				return " BLOB"
+			case "int":
+				return " INTEGER"
+			case "double":
+				return " DOUBLE"
+			case "float":
+				return " FLOAT"
+				
+				
+		}
+		return " TEXT"
+	}
+
+	def dispatch String toSqlColumnType(LFeature feature) {
+		return " TEXTFEATURE"
+	}
+
 	def dispatch String toTypeName(LAttribute att) {
 		switch (modelExtension.toTypeName(att as LDtoAbstractAttribute)) {
 			case "Date":
