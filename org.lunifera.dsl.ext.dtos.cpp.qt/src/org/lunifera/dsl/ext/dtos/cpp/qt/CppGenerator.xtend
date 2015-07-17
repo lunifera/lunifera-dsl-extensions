@@ -144,11 +144,7 @@ const QString «dto.toName»::createTableCommand()
 	«ENDFOR»
 	//
     createSQL = createSQL.left(createSQL.length()-2);
-    «IF (dto.hasDomainKey) || (dto.hasUuid)»
-    createSQL.append(") WITHOUT ROWID;");
-    «ELSE»
     createSQL.append(");");
-    «ENDIF»
     return createSQL;
 }
 const QString OrtsteilData::createParameterizedInsertCommand()
@@ -172,6 +168,67 @@ const QString OrtsteilData::createParameterizedInsertCommand()
     valueSQL.append(") ");
     insertSQL.append(valueSQL);
     return insertSQL;
+}
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * transient properties are excluded:
+ * To cache as JSON use toCacheMap()
+ */
+QVariantMap «dto.toName»::toSqlCacheMap()
+{
+	QVariantMap «dto.toName.toFirstLower»Map;
+	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		}
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+		// lazy array: persist only keys
+		m«feature.toName.toFirstUpper»Keys.clear();
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		}
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy && !isLazyArray]»
+		«IF feature.isTypeOfDataObject»
+			«IF !feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			«IF feature.isToMany»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+			«ELSE»
+				if (m«feature.toName.toFirstUpper») {
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				}
+			«ENDIF»
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			«ENDIF»
+		«ELSE» 
+			«IF feature.isArrayList»
+				// Array of «feature.toTypeName»
+				«IF feature.toTypeName == "QString"»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«ELSE»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»List());
+				«ENDIF»
+			«ELSEIF feature.isTypeOfDates»
+				if (has«feature.toName.toFirstUpper»()) {
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+				}
+			«ELSE»
+			«IF feature.isEnum»
+			// ENUM always as  int
+			«ENDIF»
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+	return «dto.toName.toFirstLower»Map;
 }
 «ENDIF»
 «IF dto.existsLazy || dto.existsLazyArray»

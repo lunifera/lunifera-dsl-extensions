@@ -901,6 +901,17 @@ public class HppManagerGenerator {
             _builder.append(_name_83, "    ");
             _builder.append("ToCache();");
             _builder.newLineIfNotEmpty();
+            {
+              boolean _hasSqlCachePropertyName = this._cppExtensions.hasSqlCachePropertyName(dto_6);
+              if (_hasSqlCachePropertyName) {
+                _builder.append("    ");
+                _builder.append("void save");
+                String _name_84 = this._cppExtensions.toName(dto_6);
+                _builder.append(_name_84, "    ");
+                _builder.append("ToSqlCache();");
+                _builder.newLineIfNotEmpty();
+              }
+            }
           }
         }
       }

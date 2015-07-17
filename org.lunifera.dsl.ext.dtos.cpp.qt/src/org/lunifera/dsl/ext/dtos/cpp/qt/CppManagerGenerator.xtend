@@ -248,6 +248,44 @@ void DataManager::save«dto.toName»ToCache()
     writeToCache(cache«dto.toName», cacheList);
 }
 
+«IF dto.hasSqlCachePropertyName»
+/*
+ * save List of «dto.toName»* to SQLite cache
+ * convert list of «dto.toName»* to QVariantList
+ * toCacheMap stores all properties without transient values
+ * «dto.toName» is read-only Cache - so it's not saved automatically at exit
+ */
+void DataManager::save«dto.toName»ToSqlCache()
+{
+    qDebug() << "now caching «dto.toName»* #" << mAll«dto.toName».size();
+    // to be safe we drop an existing table
+    mSQLda->execute("DROP TABLE IF EXISTS «dto.toName.toFirstLower»");
+    // create table
+    mSQLda->execute(«dto.toName»::createTableCommand());
+    if (mSQLda->hasError()) {
+        qWarning() << "Create table «dto.toName.toFirstLower» Error " << mSQLda->error().errorMessage();
+        return;
+    }
+    QString insertSQL = «dto.toName»::createParameterizedInsertCommand();
+    //
+    QVariantList cacheList;
+    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
+        «dto.toName»* «dto.toName.toFirstLower»;
+        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        QVariantMap cacheMap;
+        cacheMap = «dto.toName.toFirstLower»->toSqlCacheMap();
+        cacheList.append(cacheMap);
+    }
+    qDebug() << "«dto.toName»* converted to SQL cache #" << cacheList.size();
+    // HINT: executeBatch command automatically runs in a TRANSACTION to get best results
+    mSQLda->executeBatch(insertSQL, cacheList);
+    if (mSQLda->hasError()) {
+        qWarning() << "Insert into table «dto.toName.toFirstLower» Error " << mSQLda->error().errorMessage();
+    } else {
+        qDebug() << "«dto.toName»* inserted into SQLite";
+    }
+}
+«ENDIF»
 «IF dto.existsLazy»
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 	«IF isHierarchy(dto, feature)»

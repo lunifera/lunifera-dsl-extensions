@@ -1445,6 +1445,23 @@ public class HppGenerator {
         _builder.newLineIfNotEmpty();
       }
     }
+    {
+      boolean _hasSqlCachePropertyName = this._cppExtensions.hasSqlCachePropertyName(dto);
+      if (_hasSqlCachePropertyName) {
+        _builder.append("\t");
+        _builder.append("// SQL");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("static const QString createTableCommand();");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("static const QString createParameterizedInsertCommand();");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("QVariantMap toSqlCacheMap();");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     _builder.append("\t");
     _builder.append("virtual ~");
@@ -2077,20 +2094,6 @@ public class HppGenerator {
             }
           }
         }
-      }
-    }
-    {
-      boolean _hasSqlCachePropertyName = this._cppExtensions.hasSqlCachePropertyName(dto);
-      if (_hasSqlCachePropertyName) {
-        _builder.append("\t");
-        _builder.append("// SQL");
-        _builder.newLine();
-        _builder.append("\t");
-        _builder.append("static const QString createTableCommand();");
-        _builder.newLine();
-        _builder.append("\t");
-        _builder.append("static const QString createParameterizedInsertCommand();");
-        _builder.newLine();
       }
     }
     _builder.newLine();

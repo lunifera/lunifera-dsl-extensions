@@ -309,6 +309,12 @@ class HppGenerator {
 			// tree with children of same type - get all as flat list
 			QList<QObject*> all«dto.toName.toFirstUpper»Children();
 		«ENDIF»
+		«IF dto.hasSqlCachePropertyName»
+		// SQL
+		static const QString createTableCommand();
+		static const QString createParameterizedInsertCommand();
+		QVariantMap toSqlCacheMap();
+		«ENDIF»
 	
 		virtual ~«dto.toName.toFirstUpper»();
 	
@@ -409,11 +415,6 @@ class HppGenerator {
 			«ENDIF»
 		«ENDIF»
 		«ENDFOR»
-		«IF dto.hasSqlCachePropertyName»
-		// SQL
-		static const QString createTableCommand();
-		static const QString createParameterizedInsertCommand();
-		«ENDIF»
 
 		Q_DISABLE_COPY («dto.toName.toFirstUpper»)
 	};

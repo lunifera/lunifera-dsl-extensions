@@ -216,6 +216,9 @@ private:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	void save«dto.toName»ToCache();
+    	«IF dto.hasSqlCachePropertyName»
+    	void save«dto.toName»ToSqlCache();
+		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 
