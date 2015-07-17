@@ -243,6 +243,9 @@ class CppExtensions {
 	}
 
 	def dispatch String toSqlColumnType(LFeature feature) {
+		if(feature.isLazy && !feature.isToMany) {
+			return " TEXT"
+		}
 		return " TEXTFEATURE"
 	}
 

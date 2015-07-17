@@ -332,6 +332,18 @@ public class CppExtensions {
   }
   
   protected String _toSqlColumnType(final LFeature feature) {
+    boolean _and = false;
+    boolean _isLazy = this.isLazy(feature);
+    if (!_isLazy) {
+      _and = false;
+    } else {
+      boolean _isToMany = this.isToMany(feature);
+      boolean _not = (!_isToMany);
+      _and = _not;
+    }
+    if (_and) {
+      return " TEXT";
+    }
     return " TEXTFEATURE";
   }
   

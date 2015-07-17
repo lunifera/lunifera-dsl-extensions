@@ -147,11 +147,11 @@ const QString «dto.toName»::createTableCommand()
     createSQL.append(");");
     return createSQL;
 }
-const QString OrtsteilData::createParameterizedInsertCommand()
+const QString «dto.toName»::createParameterizedInsertCommand()
 {
 	QString insertSQL;
     QString valueSQL;
-    insertSQL = "INSERT INTO ortsteilData (";
+    insertSQL = "INSERT INTO «dto.toName.toFirstLower» (";
     valueSQL = " VALUES (";
     «FOR feature : dto.allFeatures.filter[!isToMany]»
 // «feature.toName» 
@@ -202,7 +202,11 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
-					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					«IF feature.toTypeName == "GeoCoordinate"»
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->asOneSqlColumn());
+					«ELSE»
+					// TODO «dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					«ENDIF»
 				}
 			«ENDIF»
 			«ELSE»
