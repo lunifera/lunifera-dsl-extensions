@@ -194,7 +194,7 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
 			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
 		}
-		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys.join(";"));
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy && !isLazyArray]»
 		«IF feature.isTypeOfDataObject»
@@ -234,7 +234,16 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 			«IF feature.isEnum»
 			// ENUM always as  int
 			«ENDIF»
+			«IF feature.toTypeName == "bool"»
+			// SQLite stores bool as INTEGER 0 or 1
+			if (m«feature.toName.toFirstUpper») {
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 1);
+			} else {
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 0);
+			}
+			«ELSE»
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«ENDIF»
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
