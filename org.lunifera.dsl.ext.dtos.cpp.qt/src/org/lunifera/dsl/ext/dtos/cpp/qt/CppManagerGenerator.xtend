@@ -227,6 +227,45 @@ void DataManager::init«dto.toName»FromCache()
     «ENDIF»
 }
 
+«IF dto.hasSqlCachePropertyName»
+/*
+ * reads Maps of «dto.toName» in from SQL cache
+ * creates List of «dto.toName»*  from QVariantList
+ * List declared as list of QObject* - only way to use in GroupDataModel
+ */
+void DataManager::init«dto.toName»FromSqlCache()
+{
+	qDebug() << "start init«dto.toName»From S Q L Cache";
+    mAll«dto.toName».clear();
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.clear();
+    «ENDIF»
+    QVariantList cacheList;
+    QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
+    cacheList = mSQLda->execute(sqlQuery).toList();
+    qDebug() << "read «dto.toName» from cache #" << cacheList.size();
+    for (int i = 0; i < cacheList.size(); ++i) {
+        QVariantMap cacheMap;
+        cacheMap = cacheList.at(i).toMap();
+        «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+        // Important: DataManager must be parent of all root DTOs
+        «dto.toName.toFirstLower»->setParent(this);
+        «dto.toName.toFirstLower»->fillFromCacheMap(cacheMap);
+        mAll«dto.toName».append(«dto.toName.toFirstLower»);
+        «IF dto.isTree»
+        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+        «ENDIF»
+    }
+    «IF dto.isTree»
+    qDebug() << "created Tree of «dto.toName»* #" << mAll«dto.toName».size();
+    qDebug() << "created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
+    «ELSE»
+    qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+    «ENDIF»
+}
+«ENDIF»
+
 /*
  * save List of «dto.toName»* to JSON cache
  * convert list of «dto.toName»* to QVariantList
