@@ -1672,7 +1672,13 @@ void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»M
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
 		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
-		m«feature.toName.toFirstUpper»Keys = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString().split(";");
+		QString «feature.toName.toFirstLower»String;
+		«feature.toName.toFirstLower»String = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
+		if(!«feature.toName.toFirstLower»String.isEmpty()) {
+			m«feature.toName.toFirstUpper»Keys = «feature.toName.toFirstLower»String.split(";");
+		} else {
+			m«feature.toName.toFirstUpper»Keys.clear();
+		}
 		// m«feature.toName.toFirstUpper» must be resolved later if there are keys
 		m«feature.toName.toFirstUpper»KeysResolved = (m«feature.toName.toFirstUpper»Keys.size() == 0);
 		m«feature.toName.toFirstUpper».clear();
