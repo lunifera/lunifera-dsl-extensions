@@ -246,6 +246,9 @@ class CppExtensions {
 		if(feature.isLazy && !feature.isToMany) {
 			return " TEXT"
 		}
+		if(feature.isLazyArray) {
+			return " TEXT"
+		}
 		return " TEXTFEATURE"
 	}
 

@@ -344,6 +344,10 @@ public class CppExtensions {
     if (_and) {
       return " TEXT";
     }
+    boolean _isLazyArray = this.isLazyArray(feature);
+    if (_isLazyArray) {
+      return " TEXT";
+    }
     return " TEXTFEATURE";
   }
   

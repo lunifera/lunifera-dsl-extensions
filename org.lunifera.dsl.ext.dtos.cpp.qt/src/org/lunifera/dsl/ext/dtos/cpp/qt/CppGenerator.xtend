@@ -128,129 +128,6 @@ class CppGenerator {
 	«ENDIF»
 }
 «IF dto.hasSqlCachePropertyName»
-// S Q L
-const QString «dto.toName»::createTableCommand()
-{
-	QString createSQL = "CREATE TABLE «dto.toName.toFirstLower» (";
-	«FOR feature : dto.allFeatures.filter[!isToMany]»
-	// «feature.toName»
-	createSQL.append(«feature.toName»Key).append("«feature.toSqlColumnType»");
-	«IF dto.hasDomainKey && feature.isDomainKey»
-	createSQL.append(" PRIMARY KEY");
-	«ELSEIF feature.toName == "uuid"»
-	createSQL.append(" PRIMARY KEY");
-	«ENDIF»
-	createSQL.append(", ");
-	«ENDFOR»
-	//
-    createSQL = createSQL.left(createSQL.length()-2);
-    createSQL.append(");");
-    return createSQL;
-}
-const QString «dto.toName»::createParameterizedInsertCommand()
-{
-	QString insertSQL;
-    QString valueSQL;
-    insertSQL = "INSERT INTO «dto.toName.toFirstLower» (";
-    valueSQL = " VALUES (";
-    «FOR feature : dto.allFeatures.filter[!isToMany]»
-// «feature.toName» 
-	insertSQL.append(«feature.toName»Key);
-	insertSQL.append(", ");
-	valueSQL.append(":");
-	valueSQL.append(«feature.toName»Key);
-	valueSQL.append(", ");
-	«ENDFOR»
-//
-    insertSQL = insertSQL.left(insertSQL.length()-2);
-    insertSQL.append(") ");
-    valueSQL = valueSQL.left(valueSQL.length()-2);
-    valueSQL.append(") ");
-    insertSQL.append(valueSQL);
-    return insertSQL;
-}
-/*
- * Exports Properties from «dto.toName» as QVariantMap
- * transient properties are excluded:
- * To cache as JSON use toCacheMap()
- */
-QVariantMap «dto.toName»::toSqlCacheMap()
-{
-	QVariantMap «dto.toName.toFirstLower»Map;
-	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
-		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
-		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
-			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
-		} else {
-			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
-		}
-	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[isLazyArray]»
-		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
-		// lazy array: persist only keys
-		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
-			m«feature.toName.toFirstUpper»Keys.clear();
-			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
-			}
-		}
-		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys.join(";"));
-	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy && !isLazyArray]»
-		«IF feature.isTypeOfDataObject»
-			«IF !feature.isContained»
-			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
-			«IF feature.isToMany»
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
-			«ELSE»
-				if (m«feature.toName.toFirstUpper») {
-					«IF feature.toTypeName == "GeoCoordinate"»
-					if (m«feature.toName.toFirstUpper»->isValid()) {
-						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->asOneSqlColumn());
-					} else {
-						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
-					}
-					«ELSE»
-					// TODO «dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
-					«ENDIF»
-				}
-			«ENDIF»
-			«ELSE»
-			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
-			«ENDIF»
-		«ELSE» 
-			«IF feature.isArrayList»
-				// Array of «feature.toTypeName»
-				«IF feature.toTypeName == "QString"»
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
-				«ELSE»
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»List());
-				«ENDIF»
-			«ELSEIF feature.isTypeOfDates»
-				if (has«feature.toName.toFirstUpper»()) {
-					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
-				}
-			«ELSE»
-			«IF feature.isEnum»
-			// ENUM always as  int
-			«ENDIF»
-			«IF feature.toTypeName == "bool"»
-			// SQLite stores bool as INTEGER 0 or 1
-			if (m«feature.toName.toFirstUpper») {
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 1);
-			} else {
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 0);
-			}
-			«ELSE»
-			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
-			«ENDIF»
-			«ENDIF»
-		«ENDIF»
-	«ENDFOR»
-	return «dto.toName.toFirstLower»Map;
-}
 «dto.sqlMethods»
 «ENDIF»
 «IF dto.existsLazy || dto.existsLazyArray»
@@ -1557,6 +1434,142 @@ QList<QObject*> «dto.toName»::all«dto.toName»Children(){
 
 // some separate content blocks because of Java 64K limit
 def sqlMethods(LDto dto) '''
+// S Q L
+const QString «dto.toName»::createTableCommand()
+{
+	QString createSQL = "CREATE TABLE «dto.toName.toFirstLower» (";
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+	// «feature.toName»
+	createSQL.append(«feature.toName»Key).append("«feature.toSqlColumnType»");
+	«IF dto.hasDomainKey && feature.isDomainKey»
+	createSQL.append(" PRIMARY KEY");
+	«ELSEIF feature.toName == "uuid"»
+	createSQL.append(" PRIMARY KEY");
+	«ENDIF»
+	createSQL.append(", ");
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+	// «feature.toName» (Array)
+	createSQL.append(«feature.toName»Key).append("«feature.toSqlColumnType»");
+	createSQL.append(", ");
+	«ENDFOR»
+	//
+    createSQL = createSQL.left(createSQL.length()-2);
+    createSQL.append(");");
+    return createSQL;
+}
+const QString «dto.toName»::createParameterizedInsertCommand()
+{
+	QString insertSQL;
+    QString valueSQL;
+    insertSQL = "INSERT INTO «dto.toName.toFirstLower» (";
+    valueSQL = " VALUES (";
+    «FOR feature : dto.allFeatures.filter[!isToMany]»
+// «feature.toName» 
+	insertSQL.append(«feature.toName»Key);
+	insertSQL.append(", ");
+	valueSQL.append(":");
+	valueSQL.append(«feature.toName»Key);
+	valueSQL.append(", ");
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+// «feature.toName» (Array)
+	insertSQL.append(«feature.toName»Key);
+	insertSQL.append(", ");
+	valueSQL.append(":");
+	valueSQL.append(«feature.toName»Key);
+	valueSQL.append(", ");
+	«ENDFOR»
+//
+    insertSQL = insertSQL.left(insertSQL.length()-2);
+    insertSQL.append(") ");
+    valueSQL = valueSQL.left(valueSQL.length()-2);
+    valueSQL.append(") ");
+    insertSQL.append(valueSQL);
+    return insertSQL;
+}
+/*
+ * Exports Properties from «dto.toName» as QVariantMap
+ * transient properties are excluded:
+ * To cache as JSON use toCacheMap()
+ */
+QVariantMap «dto.toName»::toSqlCacheMap()
+{
+	QVariantMap «dto.toName.toFirstLower»Map;
+	«FOR feature : dto.allFeatures.filter[!isTransient && isLazy]»
+		// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+		if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+		} else {
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
+		}
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isLazyArray]»
+		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+		// lazy array: persist only keys
+		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+			m«feature.toName.toFirstUpper»Keys.clear();
+			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			}
+		}
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys.join(";"));
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[!isTransient && !isLazy && !isLazyArray]»
+		«IF feature.isTypeOfDataObject»
+			«IF !feature.isContained»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			«IF feature.isToMany»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+			«ELSE»
+				if (m«feature.toName.toFirstUpper») {
+					«IF feature.toTypeName == "GeoCoordinate"»
+					if (m«feature.toName.toFirstUpper»->isValid()) {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->asOneSqlColumn());
+					} else {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, "");
+					}
+					«ELSE»
+					// TODO «dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					«ENDIF»
+				}
+			«ENDIF»
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»* containing «dto.toName»
+			«ENDIF»
+		«ELSE» 
+			«IF feature.isArrayList»
+				// Array of «feature.toTypeName»
+				«IF feature.toTypeName == "QString"»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»StringList);
+				«ELSE»
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»List());
+				«ENDIF»
+			«ELSEIF feature.isTypeOfDates»
+				if (has«feature.toName.toFirstUpper»()) {
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper».toString(«feature.toDateFormatString»));
+				}
+			«ELSE»
+			«IF feature.isEnum»
+			// ENUM always as  int
+			«ENDIF»
+			«IF feature.toTypeName == "bool"»
+			// SQLite stores bool as INTEGER 0 or 1
+			if (m«feature.toName.toFirstUpper») {
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 1);
+			} else {
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, 0);
+			}
+			«ELSE»
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»);
+			«ENDIF»
+			«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+	return «dto.toName.toFirstLower»Map;
+}
 /*
  * initialize «dto.toName» from QVariantMap
  * Map got from SQlite
