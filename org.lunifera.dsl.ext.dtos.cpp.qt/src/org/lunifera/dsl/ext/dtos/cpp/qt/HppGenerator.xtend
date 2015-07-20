@@ -314,6 +314,7 @@ class HppGenerator {
 		static const QString createTableCommand();
 		static const QString createParameterizedInsertCommand();
 		QVariantMap toSqlCacheMap();
+		// void fillFromSql(const QVariantMap& «dto.toName.toFirstLower»Map);
 		«ENDIF»
 	
 		virtual ~«dto.toName.toFirstUpper»();

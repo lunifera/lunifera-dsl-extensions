@@ -1197,6 +1197,7 @@ public class CppGenerator {
         _builder.newLineIfNotEmpty();
         _builder.append("}");
         _builder.newLine();
+        _builder.newLine();
       }
     }
     {

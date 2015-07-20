@@ -251,6 +251,7 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
 }
+
 «ENDIF»
 «IF dto.existsLazy || dto.existsLazyArray»
 
