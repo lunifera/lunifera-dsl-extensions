@@ -188,11 +188,13 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		m«feature.toName.toFirstUpper»Keys.clear();
-		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+			m«feature.toName.toFirstUpper»Keys.clear();
+			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys.join(";"));
 	«ENDFOR»
@@ -661,11 +663,13 @@ QVariantMap «dto.toName»::toMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		m«feature.toName.toFirstUpper»Keys.clear();
-		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+			m«feature.toName.toFirstUpper»Keys.clear();
+			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -677,7 +681,13 @@ QVariantMap «dto.toName»::toMap()
 				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
+				«IF feature.toTypeName == "GeoCoordinate"»
+					if (m«feature.toName.toFirstUpper»->isValid()) {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					}
+				«ELSE»
 					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				«ENDIF»
 				}
 			«ENDIF»
 			«ELSE»
@@ -723,11 +733,13 @@ QVariantMap «dto.toName»::toForeignMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		m«feature.toName.toFirstUpper»Keys.clear();
-		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+			m«feature.toName.toFirstUpper»Keys.clear();
+			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -739,8 +751,13 @@ QVariantMap «dto.toName»::toForeignMap()
 			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
 			«ELSE»
 			if (m«feature.toName.toFirstUpper») {
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.
-		toMapOrList»());
+				«IF feature.toTypeName == "GeoCoordinate"»
+					if (m«feature.toName.toFirstUpper»->isValid()) {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					}
+				«ELSE»
+					«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				«ENDIF»
 			}
 			«ENDIF»
 			«ELSE»
@@ -790,11 +807,13 @@ QVariantMap «dto.toName»::toCacheMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		m«feature.toName.toFirstUpper»Keys.clear();
-		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+			m«feature.toName.toFirstUpper»Keys.clear();
+			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -806,7 +825,13 @@ QVariantMap «dto.toName»::toCacheMap()
 				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
+				«IF feature.toTypeName == "GeoCoordinate"»
+					if (m«feature.toName.toFirstUpper»->isValid()) {
+						«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+					}
+				«ELSE»
 					«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, m«feature.toName.toFirstUpper»->to«feature.toMapOrList»());
+				«ENDIF»
 				}
 			«ENDIF»
 			«ELSE»
