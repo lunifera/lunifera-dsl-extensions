@@ -251,7 +251,7 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
 }
-
+«dto.sqlMethods»
 «ENDIF»
 «IF dto.existsLazy || dto.existsLazyArray»
 
@@ -1554,6 +1554,132 @@ QList<QObject*> «dto.toName»::all«dto.toName»Children(){
 }
 	
 	'''
+
+// some separate content blocks because of Java 64K limit
+def sqlMethods(LDto dto) '''
+/*
+ * initialize «dto.toName» from QVariantMap
+ * Map got from SQlite
+ * excludes transient values
+ * uses own property names
+ * corresponding export method: toSqlMap()
+ */
+void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»Map)
+{
+	«FOR feature : dto.allFeatures.filter[!isToMany]»
+		«IF feature.isTypeOfDataObject»
+			«IF feature.isContained»
+			// m«feature.toName.toFirstUpper» is parent («feature.toTypeName»* containing «dto.toName»)
+			«ELSEIF feature.isLazy»
+			// «feature.toName» lazy pointing to «feature.toTypeOrQObject» (domainKey: «feature.referenceDomainKey»)
+			«IF isHierarchy(dto, feature)»
+			// reset hierarchy of «feature.toName»
+			clear«feature.toName.toFirstUpper»PropertyList();
+        	«ENDIF»
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
+					// resolve the corresponding Data Object on demand from DataManager
+				}
+			}
+			«ELSE»
+			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+				«IF feature.toTypeName == "GeoCoordinate"»
+				QString «feature.toName»String;
+				«feature.toName»String = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toString();
+				if (!«feature.toName»String.isEmpty()) {
+					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					m«feature.toName.toFirstUpper»->setParent(this);
+					m«feature.toName.toFirstUpper»->fillFromSql(«feature.toName»String);
+				}
+				«ELSE»
+				QVariantMap «feature.toName»Map;
+				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toMap();
+				if (!«feature.toName»Map.isEmpty()) {
+					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					m«feature.toName.toFirstUpper»->setParent(this);
+					m«feature.toName.toFirstUpper»->fillFromSql(«feature.toName»Map);
+				}
+				«ENDIF»
+			}
+			«ENDIF»
+		«ELSE» 
+			«IF feature.isTransient»
+			// m«feature.toName.toFirstUpper» is transient - don't forget to initialize
+			«ELSEIF feature.isEnum»
+			// ENUM
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+				bool* ok;
+				ok = false;
+				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
+				if (ok) {
+					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
+				} else {
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
+				}
+			} else {
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
+			}
+			«ELSEIF feature.isTypeOfDates»
+			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+				// always getting the Date as a String (from server or JSON)
+				QString «feature.toName.toFirstLower»AsString = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
+				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, «feature.toDateFormatString»);
+				if (!m«feature.toName.toFirstUpper».isValid()) {
+					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
+					qDebug() << "m«feature.toName.toFirstUpper» is not valid for String: " << «feature.toName.toFirstLower»AsString;
+				}
+			}
+			«ELSE»
+			m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			«ENDIF»
+			«IF feature.toName == "uuid"»
+			if (mUuid.isEmpty()) {
+				mUuid = QUuid::createUuid().toString();
+				mUuid = mUuid.right(mUuid.length() - 1);
+				mUuid = mUuid.left(mUuid.length() - 1);
+			}	
+			«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && !(isArrayList) && !(isLazyArray)]»
+		// m«feature.toName.toFirstUpper» is List of «feature.toTypeName»*
+		QVariantList «feature.toName.toFirstLower»List;
+		«feature.toName.toFirstLower»List = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName.toFirstLower»List.size(); ++i) {
+			QVariantMap «feature.toName.toFirstLower»Map;
+			«feature.toName.toFirstLower»Map = «feature.toName.toFirstLower»List.at(i).toMap();
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower» = new «feature.toTypeName»();
+			«feature.toTypeName.toFirstLower»->setParent(this);
+			«feature.toTypeName.toFirstLower»->fillFromSql(«feature.toName.toFirstLower»Map);
+			m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+		}
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
+		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
+		m«feature.toName.toFirstUpper»Keys = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString().split(";");
+		// m«feature.toName.toFirstUpper» must be resolved later if there are keys
+		m«feature.toName.toFirstUpper»KeysResolved = (m«feature.toName.toFirstUpper»Keys.size() == 0);
+		m«feature.toName.toFirstUpper».clear();
+	«ENDFOR»
+	«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
+		«IF feature.toTypeName == "QString"»
+		m«feature.toName.toFirstUpper»StringList = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toStringList();
+		«ELSE»
+		// m«feature.toName.toFirstUpper» is Array of «feature.toTypeName»
+		QVariantList «feature.toName»List;
+		«feature.toName»List = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toList();
+		m«feature.toName.toFirstUpper».clear();
+		for (int i = 0; i < «feature.toName»List.size(); ++i) {
+			m«feature.toName.toFirstUpper».append(«feature.toName»List.at(i).to«feature.mapToSingleType»());
+		}
+		«ENDIF»
+	«ENDFOR»
+}
+
+'''
 
 	def dispatch foo(LDtoAbstractAttribute att) '''
 		// ATT 

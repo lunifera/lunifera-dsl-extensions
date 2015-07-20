@@ -1461,7 +1461,7 @@ public class HppGenerator {
         _builder.append("QVariantMap toSqlCacheMap();");
         _builder.newLine();
         _builder.append("\t");
-        _builder.append("// void fillFromSql(const QVariantMap& ");
+        _builder.append("void fillFromSql(const QVariantMap& ");
         String _name_111 = this._cppExtensions.toName(dto);
         String _firstLower_15 = StringExtensions.toFirstLower(_name_111);
         _builder.append(_firstLower_15, "\t");

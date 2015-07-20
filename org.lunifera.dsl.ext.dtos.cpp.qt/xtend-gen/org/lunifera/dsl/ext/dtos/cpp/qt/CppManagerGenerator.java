@@ -827,7 +827,7 @@ public class CppManagerGenerator {
                 String _name_50 = this._cppExtensions.toName(dto_5);
                 String _firstLower_9 = StringExtensions.toFirstLower(_name_50);
                 _builder.append(_firstLower_9, "        ");
-                _builder.append("->fillFromCacheMap(cacheMap);");
+                _builder.append("->fillFromSql(cacheMap);");
                 _builder.newLineIfNotEmpty();
                 _builder.append("        ");
                 _builder.append("mAll");

@@ -250,7 +250,7 @@ void DataManager::init«dto.toName»FromSqlCache()
         «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
         // Important: DataManager must be parent of all root DTOs
         «dto.toName.toFirstLower»->setParent(this);
-        «dto.toName.toFirstLower»->fillFromCacheMap(cacheMap);
+        «dto.toName.toFirstLower»->fillFromSql(cacheMap);
         mAll«dto.toName».append(«dto.toName.toFirstLower»);
         «IF dto.isTree»
         mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
