@@ -131,7 +131,11 @@ void DataManager::init()
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
-    	init«dto.toName»FromCache();
+    		«IF dto.hasSqlCachePropertyName»
+    		init«dto.toName»FromSqlCache();
+    		«ELSE»
+    		init«dto.toName»FromCache();
+    		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 }
@@ -299,12 +303,14 @@ void DataManager::save«dto.toName»ToSqlCache()
     qDebug() << "now caching «dto.toName»* #" << mAll«dto.toName».size();
     // to be safe we drop an existing table
     mSQLda->execute("DROP TABLE IF EXISTS «dto.toName.toFirstLower»");
+    qDebug() << "table DROPPED «dto.toName.toFirstLower»";
     // create table
     mSQLda->execute(«dto.toName»::createTableCommand());
     if (mSQLda->hasError()) {
         qWarning() << "Create table «dto.toName.toFirstLower» Error " << mSQLda->error().errorMessage();
         return;
     }
+    qDebug() << "table CREATED «dto.toName.toFirstLower»";
     QString insertSQL = «dto.toName»::createParameterizedInsertCommand();
     //
     QVariantList cacheList;
