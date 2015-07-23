@@ -64,6 +64,8 @@ public class HppManagerGenerator {
       if (_hasSqlCache) {
         _builder.append("#include <bb/data/SqlDataAccess>");
         _builder.newLine();
+        _builder.append("#include <QtSql/QtSql>");
+        _builder.newLine();
       }
     }
     _builder.newLine();
@@ -932,6 +934,9 @@ public class HppManagerGenerator {
       boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
       if (_hasSqlCache_1) {
         _builder.append("// S Q L");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("QSqlDatabase mDatabase;");
         _builder.newLine();
         _builder.append("    ");
         _builder.append("bool mDatabaseAvailable;");

@@ -56,6 +56,10 @@ class HppGenerator {
 	«IF dto.allFeatures.filter[toTypeName == "QDateTime"].size > 0»
 	#include <QDateTime>
 	«ENDIF»
+	«IF dto.hasSqlCachePropertyName»
+	#include <QtSql/QSqlQuery>
+	#include <QtSql/QSqlRecord>
+	«ENDIF»
 	«IF dto.existsGeoCoordinate»
 	// #include <QtLocationSubset/QGeoCoordinate>
 	«ENDIF»
@@ -314,7 +318,8 @@ class HppGenerator {
 		static const QString createTableCommand();
 		static const QString createParameterizedInsertCommand();
 		QVariantMap toSqlCacheMap();
-		void fillFromSql(const QVariantMap& «dto.toName.toFirstLower»Map);
+		void fillFromSqlQuery(const QSqlQuery& sqlQuery);
+		static void fillSqlQueryPos(const QSqlRecord& record);
 		«ENDIF»
 	
 		virtual ~«dto.toName.toFirstUpper»();

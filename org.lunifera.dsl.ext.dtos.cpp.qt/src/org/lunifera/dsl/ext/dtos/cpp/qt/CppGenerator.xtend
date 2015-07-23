@@ -72,6 +72,17 @@ class CppGenerator {
 	static const QString «feature.toName»ForeignKey = "«feature.toForeignPropertyName»";
 	«ENDIF»
 «ENDFOR»
+«IF dto.hasSqlCachePropertyName»
+// SQL
+static bool queryPosInitialized;
+«FOR feature : dto.allFeatures»
+	«IF feature.isTypeOfDataObject && feature.isContained»
+	// no sql yet for «feature.toName»
+	«ELSE»
+	static int «feature.toName»QueryPos;
+	«ENDIF»
+«ENDFOR»
+«ENDIF»
 
 /*
  * Default Constructor if «dto.toName» not initialized from QVariantMap
@@ -1570,14 +1581,24 @@ QVariantMap «dto.toName»::toSqlCacheMap()
 	«ENDFOR»
 	return «dto.toName.toFirstLower»Map;
 }
+void «dto.toName»::fillSqlQueryPos(const QSqlRecord& record)
+{
+    if(queryPosInitialized) {
+        return;
+    }
+    «FOR feature : dto.allFeatures»
+	«IF feature.isTypeOfDataObject && feature.isContained»
+// no sql yet for «feature.toName»
+	«ELSE»
+	«feature.toName»QueryPos = record.indexOf(«feature.toName»Key);
+	«ENDIF»
+	«ENDFOR»
+}
 /*
- * initialize «dto.toName» from QVariantMap
- * Map got from SQlite
- * excludes transient values
- * uses own property names
+ * initialize «dto.toName» from QSqlQuery
  * corresponding export method: toSqlMap()
  */
-void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»Map)
+void «dto.toName»::fillFromSqlQuery(const QSqlQuery& sqlQuery)
 {
 	«FOR feature : dto.allFeatures.filter[!isToMany]»
 		«IF feature.isTypeOfDataObject»
@@ -1589,31 +1610,31 @@ void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»M
 			// reset hierarchy of «feature.toName»
 			clear«feature.toName.toFirstUpper»PropertyList();
         	«ENDIF»
-			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
-				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
+			if (sqlQuery.value(«feature.toName»QueryPos).isValid()) {
+				m«feature.toName.toFirstUpper» = sqlQuery.value(«feature.toName»QueryPos).to«feature.referenceDomainKeyType.mapToLazyTypeName»();
 				if (m«feature.toName.toFirstUpper» != «feature.referenceDomainKeyType.defaultForLazyTypeName») {
 					// resolve the corresponding Data Object on demand from DataManager
 				}
 			}
 			«ELSE»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
-			if («dto.toName.toFirstLower»Map.contains(«feature.toName»Key)) {
+			if (sqlQuery.value(«feature.toName»QueryPos).isValid()) {
 				«IF feature.toTypeName == "GeoCoordinate"»
 				QString «feature.toName»String;
-				«feature.toName»String = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toString();
+				«feature.toName»String = sqlQuery.value(«feature.toName»QueryPos).toString();
 				if (!«feature.toName»String.isEmpty()) {
 					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
 					m«feature.toName.toFirstUpper»->setParent(this);
 					m«feature.toName.toFirstUpper»->fillFromSql(«feature.toName»String);
 				}
 				«ELSE»
-				QVariantMap «feature.toName»Map;
-				«feature.toName»Map = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).toMap();
-				if (!«feature.toName»Map.isEmpty()) {
-					m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
-					m«feature.toName.toFirstUpper»->setParent(this);
-					m«feature.toName.toFirstUpper»->fillFromSql(«feature.toName»Map);
-				}
+				// QVariantMap «feature.toName»Map;
+				«feature.toName»Map = sqlQuery.value(«feature.toName»QueryPos).toMap();
+				// if (!«feature.toName»Map.isEmpty()) {
+					// m«feature.toName.toFirstUpper» = new «feature.toTypeName»();
+					// m«feature.toName.toFirstUpper»->setParent(this);
+					// m«feature.toName.toFirstUpper»->fillFromSql(«feature.toName»Map);
+				//}
 				«ENDIF»
 			}
 			«ENDIF»
@@ -1622,22 +1643,22 @@ void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»M
 			// m«feature.toName.toFirstUpper» is transient - don't forget to initialize
 			«ELSEIF feature.isEnum»
 			// ENUM
-			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+			if (sqlQuery.value(«feature.toName.toFirstLower»QueryPos).isValid()) {
 				bool* ok;
 				ok = false;
-				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
+				sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toInt(ok);
 				if (ok) {
-					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
+					m«feature.toName.toFirstUpper» = sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toInt();
 				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
+					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toString());
 				}
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
 			«ELSEIF feature.isTypeOfDates»
-			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
+			if (sqlQuery.value(«feature.toName.toFirstLower»QueryPos).isValid()) {
 				// always getting the Date as a String (from server or JSON)
-				QString «feature.toName.toFirstLower»AsString = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
+				QString «feature.toName.toFirstLower»AsString = sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toString();
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::fromString(«feature.toName.toFirstLower»AsString, «feature.toDateFormatString»);
 				if (!m«feature.toName.toFirstUpper».isValid()) {
 					m«feature.toName.toFirstUpper» = «feature.toTypeName»();
@@ -1645,7 +1666,7 @@ void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»M
 				}
 			}
 			«ELSE»
-			m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName»Key).to«feature.mapToType»();
+			m«feature.toName.toFirstUpper» = sqlQuery.value(«feature.toName»QueryPos).to«feature.mapToType»();
 			«ENDIF»
 			«IF feature.toName == "uuid"»
 			if (mUuid.isEmpty()) {
@@ -1673,7 +1694,7 @@ void «dto.toName»::fillFromSql(const QVariantMap& «dto.toName.toFirstLower»M
 	«FOR feature : dto.allFeatures.filter[isToMany && isLazyArray]»
 		// m«feature.toName.toFirstUpper» is (lazy loaded) Array of «feature.toTypeName»*
 		QString «feature.toName.toFirstLower»String;
-		«feature.toName.toFirstLower»String = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString();
+		«feature.toName.toFirstLower»String = sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toString();
 		if(!«feature.toName.toFirstLower»String.isEmpty()) {
 			m«feature.toName.toFirstUpper»Keys = «feature.toName.toFirstLower»String.split(";");
 		} else {

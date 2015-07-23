@@ -49,7 +49,8 @@ class CppManagerGenerator {
 #include <bb/cascades/GroupDataModel>
 
 «IF pkg.hasSqlCache»
-#include <QtSql/QtSql>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlRecord>
 
 static QString dbName = "sqlcache.db";
 «ENDIF»
@@ -165,10 +166,10 @@ bool DataManager::initDatabase()
         }
     }
     //
-    QSqlDatabase database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName(dataPath(dbName));
-    if (database.open() == false) {
-        const QSqlError error = database.lastError();
+    mDatabase = QSqlDatabase::addDatabase("QSQLITE");
+    mDatabase.setDatabaseName(dataPath(dbName));
+    if (mDatabase.open() == false) {
+        const QSqlError error = mDatabase.lastError();
         // you should notify the user !
         qWarning() << "Cannot open " << dbName << ":" << error.text();
         return false;
@@ -234,7 +235,7 @@ void DataManager::init«dto.toName»FromCache()
 «IF dto.hasSqlCachePropertyName»
 /*
  * reads Maps of «dto.toName» in from SQL cache
- * creates List of «dto.toName»*  from QVariantList
+ * creates List of «dto.toName»*  from QSqlQuery
  * List declared as list of QObject* - only way to use in GroupDataModel
  */
 void DataManager::init«dto.toName»FromSqlCache()
@@ -244,28 +245,34 @@ void DataManager::init«dto.toName»FromSqlCache()
     «IF dto.isTree»
     mAll«dto.toName»Flat.clear();
     «ENDIF»
-    QVariantList cacheList;
     QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
-    cacheList = mSQLda->execute(sqlQuery).toList();
-    qDebug() << "read «dto.toName» from cache #" << cacheList.size();
-    for (int i = 0; i < cacheList.size(); ++i) {
-        QVariantMap cacheMap;
-        cacheMap = cacheList.at(i).toMap();
-        «dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
-        // Important: DataManager must be parent of all root DTOs
-        «dto.toName.toFirstLower»->setParent(this);
-        «dto.toName.toFirstLower»->fillFromSql(cacheMap);
-        mAll«dto.toName».append(«dto.toName.toFirstLower»);
-        «IF dto.isTree»
-        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
-        mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
-        «ENDIF»
+    QSqlQuery query (mDatabase);
+    query.setForwardOnly(true);
+    query.prepare(sqlQuery);
+    bool success = query.exec();
+    if(!success) {
+    	qDebug() << "NO SUCCESS query «dto.toName.toFirstLower»";
+    	return;
     }
+    QSqlRecord record = query.record();
+    «dto.toName»::fillSqlQueryPos(record);
+    while (query.next())
+    	{
+    		«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+    		// Important: DataManager must be parent of all root DTOs
+    		«dto.toName.toFirstLower»->setParent(this);
+    		«dto.toName.toFirstLower»->fillFromSqlQuery(query);
+    		mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    		«IF dto.isTree»
+    		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+    		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+    		«ENDIF»
+    	}
     «IF dto.isTree»
-    qDebug() << "created Tree of «dto.toName»* #" << mAll«dto.toName».size();
-    qDebug() << "created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
+    qDebug() << "read from SQLite and created Tree of «dto.toName»* #" << mAll«dto.toName».size();
+    qDebug() << "read from SQLite and created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
     «ELSE»
-    qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
+    qDebug() << "read from SQLite and created «dto.toName»* #" << mAll«dto.toName».size();
     «ENDIF»
 }
 «ENDIF»

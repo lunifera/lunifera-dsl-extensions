@@ -40,6 +40,7 @@ class HppManagerGenerator {
 #include <qobject.h>
 «IF pkg.hasSqlCache»
 #include <bb/data/SqlDataAccess>
+#include <QtSql/QtSql>
 «ENDIF»
 
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -227,6 +228,7 @@ private:
 
 «IF pkg.hasSqlCache»
 // S Q L
+	QSqlDatabase mDatabase;
     bool mDatabaseAvailable;
     bool initDatabase();
     bb::data::SqlDataAccess* mSQLda;
