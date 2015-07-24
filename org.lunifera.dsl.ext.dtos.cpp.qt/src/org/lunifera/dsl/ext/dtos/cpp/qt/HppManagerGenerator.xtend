@@ -39,7 +39,6 @@ class HppManagerGenerator {
 
 #include <qobject.h>
 «IF pkg.hasSqlCache»
-#include <bb/data/SqlDataAccess>
 #include <QtSql/QtSql>
 «ENDIF»
 
@@ -231,7 +230,6 @@ private:
 	QSqlDatabase mDatabase;
     bool mDatabaseAvailable;
     bool initDatabase();
-    bb::data::SqlDataAccess* mSQLda;
     void bulkImport(const bool& tuneJournalAndSync);
 «ENDIF»
 

@@ -175,8 +175,6 @@ bool DataManager::initDatabase()
         return false;
     }
     qDebug() << "Database opened: " << dbName;
-    // create the Connection
-    mSQLda = new SqlDataAccess(dataPath(dbName), this);
     return true;
 }
 

@@ -480,12 +480,6 @@ public class CppManagerGenerator {
         _builder.append("qDebug() << \"Database opened: \" << dbName;");
         _builder.newLine();
         _builder.append("    ");
-        _builder.append("// create the Connection");
-        _builder.newLine();
-        _builder.append("    ");
-        _builder.append("mSQLda = new SqlDataAccess(dataPath(dbName), this);");
-        _builder.newLine();
-        _builder.append("    ");
         _builder.append("return true;");
         _builder.newLine();
         _builder.append("}");

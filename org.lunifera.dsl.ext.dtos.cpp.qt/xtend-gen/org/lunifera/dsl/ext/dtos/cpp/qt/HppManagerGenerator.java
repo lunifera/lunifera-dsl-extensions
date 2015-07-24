@@ -62,8 +62,6 @@ public class HppManagerGenerator {
     {
       boolean _hasSqlCache = this._managerExtensions.hasSqlCache(pkg);
       if (_hasSqlCache) {
-        _builder.append("#include <bb/data/SqlDataAccess>");
-        _builder.newLine();
         _builder.append("#include <QtSql/QtSql>");
         _builder.newLine();
       }
@@ -943,9 +941,6 @@ public class HppManagerGenerator {
         _builder.newLine();
         _builder.append("    ");
         _builder.append("bool initDatabase();");
-        _builder.newLine();
-        _builder.append("    ");
-        _builder.append("bb::data::SqlDataAccess* mSQLda;");
         _builder.newLine();
         _builder.append("    ");
         _builder.append("void bulkImport(const bool& tuneJournalAndSync);");
