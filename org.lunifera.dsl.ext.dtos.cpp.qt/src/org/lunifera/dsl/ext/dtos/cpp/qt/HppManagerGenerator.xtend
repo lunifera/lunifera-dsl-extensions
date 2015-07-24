@@ -232,6 +232,7 @@ private:
     bool mDatabaseAvailable;
     bool initDatabase();
     bb::data::SqlDataAccess* mSQLda;
+    void bulkImport(const bool& tuneJournalAndSync);
 «ENDIF»
 
 	QVariantList readFromCache(QString& fileName);

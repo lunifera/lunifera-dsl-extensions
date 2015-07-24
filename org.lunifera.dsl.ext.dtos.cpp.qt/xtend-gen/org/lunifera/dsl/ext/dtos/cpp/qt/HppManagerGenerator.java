@@ -947,6 +947,9 @@ public class HppManagerGenerator {
         _builder.append("    ");
         _builder.append("bb::data::SqlDataAccess* mSQLda;");
         _builder.newLine();
+        _builder.append("    ");
+        _builder.append("void bulkImport(const bool& tuneJournalAndSync);");
+        _builder.newLine();
       }
     }
     _builder.newLine();

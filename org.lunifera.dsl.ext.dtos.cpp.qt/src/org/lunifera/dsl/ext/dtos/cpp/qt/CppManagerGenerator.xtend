@@ -179,6 +179,129 @@ bool DataManager::initDatabase()
     mSQLda = new SqlDataAccess(dataPath(dbName), this);
     return true;
 }
+
+/**
+ * tune PRAGMA synchronous and journal_mode for better speed with bulk import
+ * see https://www.sqlite.org/pragma.html
+ * and http://stackoverflow.com/questions/1711631/improve-insert-per-second-performance-of-sqlite
+ *
+ * PRAGMA database.synchronous = 0 | OFF | 1 | NORMAL | 2 | FULL;
+ * default: FULL
+ *
+ * PRAGMA database.journal_mode = DELETE | TRUNCATE | PERSIST | MEMORY | WAL | OFF
+ * default: DELETE
+ */
+void DataManager::bulkImport(const bool& tuneJournalAndSync)
+{
+    QSqlQuery query (mDatabase);
+    bool success;
+    QString journalMode;
+    QString syncMode;
+    query.prepare("PRAGMA journal_mode");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA journal_mode";
+        return;
+    }
+    success = query.first();
+    if(!success) {
+        qWarning() << "NO RESULT PRAGMA journal_mode";
+        return;
+    }
+    journalMode = query.value(0).toString();
+    //
+    query.clear();
+    query.prepare("PRAGMA synchronous");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA synchronous";
+        return;
+    }
+        success = query.first();
+    if(!success) {
+        qWarning() << "NO RESULT PRAGMA synchronous";
+        return;
+    }
+    switch (query.value(0).toInt()) {
+        case 0:
+            syncMode = "OFF";
+            break;
+        case 1:
+            syncMode = "NORMAL";
+            break;
+        case 2:
+            syncMode = "FULL";
+            break;
+        default:
+            syncMode = query.value(0).toString();
+            break;
+    }
+    qDebug() << "PRAGMA current values - " << "journal: " << journalMode << " synchronous: " << syncMode;
+    //
+    query.clear();
+    if (tuneJournalAndSync) {
+        query.prepare("PRAGMA journal_mode = MEMORY");
+    } else {
+        query.prepare("PRAGMA journal_mode = DELETE");
+    }
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA set journal_mode";
+        return;
+    }
+    //
+    query.prepare("PRAGMA journal_mode");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA journal_mode";
+        return;
+    }
+    success = query.first();
+    if(!success) {
+        qWarning() << "NO RESULT PRAGMA journal_mode";
+        return;
+    }
+    qDebug() << "PRAGMA NEW VALUE journal_mode: " << query.value(0).toString();
+    //
+    query.clear();
+    if (tuneJournalAndSync) {
+        query.prepare("PRAGMA synchronous = OFF");
+    } else {
+        query.prepare("PRAGMA synchronous = FULL");
+    }
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA set synchronous";
+        return;
+    }
+    //
+    query.prepare("PRAGMA synchronous");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS PRAGMA synchronous";
+        return;
+    }
+    success = query.first();
+    if(!success) {
+        qWarning() << "NO RESULT PRAGMA synchronous";
+        return;
+    }
+    switch (query.value(0).toInt()) {
+        case 0:
+            syncMode = "OFF";
+            break;
+        case 1:
+            syncMode = "NORMAL";
+            break;
+        case 2:
+            syncMode = "FULL";
+            break;
+        default:
+            syncMode = query.value(0).toString();
+            break;
+    }
+    qDebug() << "PRAGMA synchronous NEW VALUE: " << syncMode;
+}
 «ENDIF»
 
 void DataManager::finish()
@@ -301,41 +424,79 @@ void DataManager::save«dto.toName»ToCache()
 «IF dto.hasSqlCachePropertyName»
 /*
  * save List of «dto.toName»* to SQLite cache
- * convert list of «dto.toName»* to QVariantList
- * toCacheMap stores all properties without transient values
+ * convert list of «dto.toName»* to QVariantLists
+ * tune PRAGMA journal_mode and synchronous for bulk import into SQLite
+ * 
  * «dto.toName» is read-only Cache - so it's not saved automatically at exit
  */
 void DataManager::save«dto.toName»ToSqlCache()
 {
     qDebug() << "now caching «dto.toName»* #" << mAll«dto.toName».size();
-    // to be safe we drop an existing table
-    mSQLda->execute("DROP TABLE IF EXISTS «dto.toName.toFirstLower»");
+    bulkImport(true);
+    bool success = false;
+    QSqlQuery query (mDatabase);
+    query.prepare("DROP TABLE IF EXISTS «dto.toName.toFirstLower»");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS DROP «dto.toName.toFirstLower»";
+        bulkImport(false);
+        return;
+    }
     qDebug() << "table DROPPED «dto.toName.toFirstLower»";
     // create table
-    mSQLda->execute(«dto.toName»::createTableCommand());
-    if (mSQLda->hasError()) {
-        qWarning() << "Create table «dto.toName.toFirstLower» Error " << mSQLda->error().errorMessage();
+    query.clear();
+    query.prepare(«dto.toName»::createTableCommand());
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS CREATE «dto.toName.toFirstLower»";
+        bulkImport(false);
         return;
     }
     qDebug() << "table CREATED «dto.toName.toFirstLower»";
-    QString insertSQL = «dto.toName»::createParameterizedInsertCommand();
     //
-    QVariantList cacheList;
+    QVariantList «FOR feature : dto.features SEPARATOR", "»«feature.toName»List«ENDFOR»;
     for (int i = 0; i < mAll«dto.toName».size(); ++i) {
         «dto.toName»* «dto.toName.toFirstLower»;
         «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
-        QVariantMap cacheMap;
-        cacheMap = «dto.toName.toFirstLower»->toSqlCacheMap();
-        cacheList.append(cacheMap);
+        «dto.toName.toFirstLower»->toSqlCache(«FOR feature : dto.features SEPARATOR", "»«feature.toName»List«ENDFOR»);
     }
-    qDebug() << "«dto.toName»* converted to SQL cache #" << cacheList.size();
-    // HINT: executeBatch command automatically runs in a TRANSACTION to get best results
-    mSQLda->executeBatch(insertSQL, cacheList);
-    if (mSQLda->hasError()) {
-        qWarning() << "Insert into table «dto.toName.toFirstLower» Error " << mSQLda->error().errorMessage();
-    } else {
-        qDebug() << "«dto.toName»* inserted into SQLite";
+    qDebug() << "«dto.toName»* converted to SQL cache #" << mAll«dto.toName».size();
+    //
+    query.clear();
+    query.prepare("BEGIN TRANSACTION");
+    success = query.exec();
+        if(!success) {
+            qWarning() << "NO SUCCESS BEGIN TRANSACTION";
+            bulkImport(false);
+            return;
+        }
+    //
+    QString insertSQL = «dto.toName»::createParameterizedInsertPosBinding();
+    qDebug() << "BEGIN TRANSACTION «dto.toName.toFirstLower»";
+    //
+    query.clear();
+    query.prepare(insertSQL);
+    «FOR feature : dto.features»
+    query.addBindValue(«feature.toName»List);
+    «ENDFOR»
+    success = query.execBatch();
+    if(!success) {
+        qWarning() << "NO SUCCESS INSERT batch «dto.toName.toFirstLower»";
+        bulkImport(false);
+        return;
     }
+    qDebug() << "«dto.toName»* BATCH inserted into SQLite";
+
+    query.clear();
+    query.prepare("END TRANSACTION");
+    success = query.exec();
+    if(!success) {
+        qWarning() << "NO SUCCESS END TRANSACTION";
+        bulkImport(false);
+        return;
+    }
+    qDebug() << "END TRANSACTION «dto.toName.toFirstLower»";
+    bulkImport(false);
 }
 «ENDIF»
 «IF dto.existsLazy»
