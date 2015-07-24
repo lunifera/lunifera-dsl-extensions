@@ -316,8 +316,9 @@ class HppGenerator {
 		«IF dto.hasSqlCachePropertyName»
 		// SQL
 		static const QString createTableCommand();
-		static const QString createParameterizedInsertCommand();
-		QVariantMap toSqlCacheMap();
+		static const QString createParameterizedInsertNameBinding();
+		static const QString createParameterizedInsertPosBinding();
+		void toSqlCache(«FOR feature : dto.features SEPARATOR", "»QVariantList& «feature.toName»List«ENDFOR»);
 		void fillFromSqlQuery(const QSqlQuery& sqlQuery);
 		static void fillSqlQueryPos(const QSqlRecord& record);
 		«ENDIF»
