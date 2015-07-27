@@ -756,10 +756,20 @@ class CppExtensions {
 		return "QString"
 	}
 
-	// can be 'R' or 'RW'
+	// can be '-R-' 
 	def boolean isReadOnlyCache(LDto dto) {
 		if (dto.cachePolicyValue != null) {
-			if (dto.cachePolicyValue == "R") {
+			if (dto.cachePolicyValue.contains("-R-")) {
+				return true
+			}
+		}
+		return false;
+	}
+	
+	// can be '-2PI-' 
+	def boolean is2PhaseInit(LDto dto) {
+		if (dto.cachePolicyValue != null) {
+			if (dto.cachePolicyValue.contains("-2PI-")) {
 				return true
 			}
 		}

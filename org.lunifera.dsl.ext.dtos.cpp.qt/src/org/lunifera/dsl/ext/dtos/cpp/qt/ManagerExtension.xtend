@@ -56,6 +56,17 @@ class ManagerExtensions {
 		}
 		return false
 	}
+	
+	def boolean has2PhaseInit(LTypedPackage pkg) {
+		for (lt : pkg.types) {
+			if (lt instanceof LDto) {
+				if (lt.is2PhaseInit) {
+					return true
+				}
+			}
+		}
+		return false
+	}
 
 	def boolean hasGeoCoordinate(LTypedPackage pkg) {
 		for (lt : pkg.types) {

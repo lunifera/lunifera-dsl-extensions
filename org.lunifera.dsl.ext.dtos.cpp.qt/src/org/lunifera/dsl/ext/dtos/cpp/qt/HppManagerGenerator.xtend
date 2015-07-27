@@ -204,6 +204,10 @@ private:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	QList<QObject*> mAll«dto.toName»;
+    	«IF dto.is2PhaseInit»
+    	// collects data for priority loading
+    	QVariantMap m«dto.toName»2PhaseInit;
+    	«ENDIF»
     	// implementation for QDeclarativeListProperty to use
     	// QML functions for List of All «dto.toName»*
     	static void appendTo«dto.toName»Property(
@@ -220,6 +224,9 @@ private:
     	QList<QObject*> mAll«dto.toName»Flat;
 		«ENDIF»
 	«ENDFOR»
+	«IF pkg.has2PhaseInit»
+	bool m2PhaseInitDone();
+	«ENDIF»
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»

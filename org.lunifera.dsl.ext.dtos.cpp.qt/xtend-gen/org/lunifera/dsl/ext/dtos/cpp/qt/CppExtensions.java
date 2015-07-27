@@ -1334,8 +1334,21 @@ public class CppExtensions {
     boolean _notEquals = (!Objects.equal(_cachePolicyValue, null));
     if (_notEquals) {
       String _cachePolicyValue_1 = this.getCachePolicyValue(dto);
-      boolean _equals = Objects.equal(_cachePolicyValue_1, "R");
-      if (_equals) {
+      boolean _contains = _cachePolicyValue_1.contains("-R-");
+      if (_contains) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public boolean is2PhaseInit(final LDto dto) {
+    String _cachePolicyValue = this.getCachePolicyValue(dto);
+    boolean _notEquals = (!Objects.equal(_cachePolicyValue, null));
+    if (_notEquals) {
+      String _cachePolicyValue_1 = this.getCachePolicyValue(dto);
+      boolean _contains = _cachePolicyValue_1.contains("-2PI-");
+      if (_contains) {
         return true;
       }
     }

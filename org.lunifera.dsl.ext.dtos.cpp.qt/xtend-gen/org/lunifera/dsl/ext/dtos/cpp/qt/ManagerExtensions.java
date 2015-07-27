@@ -61,6 +61,19 @@ public class ManagerExtensions {
     return false;
   }
   
+  public boolean has2PhaseInit(final LTypedPackage pkg) {
+    EList<LType> _types = pkg.getTypes();
+    for (final LType lt : _types) {
+      if ((lt instanceof LDto)) {
+        boolean _is2PhaseInit = this._cppExtensions.is2PhaseInit(((LDto)lt));
+        if (_is2PhaseInit) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   public boolean hasGeoCoordinate(final LTypedPackage pkg) {
     EList<LType> _types = pkg.getTypes();
     for (final LType lt : _types) {
