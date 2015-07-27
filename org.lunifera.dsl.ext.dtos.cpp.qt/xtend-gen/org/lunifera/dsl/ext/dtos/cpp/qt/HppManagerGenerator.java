@@ -649,6 +649,18 @@ public class HppManagerGenerator {
       }
     }
     _builder.newLine();
+    {
+      boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_1) {
+        _builder.append("\t");
+        _builder.append("Q_INVOKABLE");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("void setChunkSize(const int& newChunkSize);");
+        _builder.newLine();
+      }
+    }
+    _builder.newLine();
     _builder.append("Q_SIGNALS:");
     _builder.newLine();
     _builder.newLine();
@@ -929,8 +941,8 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
-      if (_hasSqlCache_1) {
+      boolean _hasSqlCache_2 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_2) {
         _builder.append("// S Q L");
         _builder.newLine();
         _builder.append("\t");
@@ -944,6 +956,9 @@ public class HppManagerGenerator {
         _builder.newLine();
         _builder.append("    ");
         _builder.append("void bulkImport(const bool& tuneJournalAndSync);");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("int mChunkSize;");
         _builder.newLine();
       }
     }

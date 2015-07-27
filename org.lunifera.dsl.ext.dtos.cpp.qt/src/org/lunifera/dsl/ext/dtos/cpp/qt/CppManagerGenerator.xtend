@@ -151,6 +151,7 @@ void DataManager::init()
  */
 bool DataManager::initDatabase()
 {
+    mChunkSize = 10000;
     QString pathname;
     pathname = dataPath(dbName);
     QFile dataFile(pathname);
@@ -176,6 +177,11 @@ bool DataManager::initDatabase()
     }
     qDebug() << "Database opened: " << dbName;
     return true;
+}
+
+void DataManager::setChunkSize(const int& newChunkSize)
+{
+    mChunkSize = newChunkSize;
 }
 
 /**
@@ -422,8 +428,9 @@ void DataManager::save«dto.toName»ToCache()
 «IF dto.hasSqlCachePropertyName»
 /*
  * save List of «dto.toName»* to SQLite cache
- * convert list of «dto.toName»* to QVariantLists
+ * convert list of «dto.toName»* to QVariantLists for each COLUMN
  * tune PRAGMA journal_mode and synchronous for bulk import into SQLite
+ * INSERT chunks of data into SQLite (default: 10k rows at once)
  * 
  * «dto.toName» is read-only Cache - so it's not saved automatically at exit
  */
@@ -451,49 +458,70 @@ void DataManager::save«dto.toName»ToSqlCache()
         return;
     }
     qDebug() << "table CREATED «dto.toName.toFirstLower»";
+
+	qDebug() << "BEGIN INSERT chunks of «dto.toName.toFirstLower»";
     //
     QVariantList «FOR feature : dto.features SEPARATOR", "»«feature.toName»List«ENDFOR»;
-    for (int i = 0; i < mAll«dto.toName».size(); ++i) {
-        «dto.toName»* «dto.toName.toFirstLower»;
-        «dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
-        «dto.toName.toFirstLower»->toSqlCache(«FOR feature : dto.features SEPARATOR", "»«feature.toName»List«ENDFOR»);
-    }
-    qDebug() << "«dto.toName»* converted to SQL cache #" << mAll«dto.toName».size();
-    //
-    query.clear();
-    query.prepare("BEGIN TRANSACTION");
-    success = query.exec();
-        if(!success) {
-            qWarning() << "NO SUCCESS BEGIN TRANSACTION";
-            bulkImport(false);
-            return;
-        }
-    //
     QString insertSQL = «dto.toName»::createParameterizedInsertPosBinding();
-    qDebug() << "BEGIN TRANSACTION «dto.toName.toFirstLower»";
-    //
-    query.clear();
-    query.prepare(insertSQL);
-    «FOR feature : dto.features»
-    query.addBindValue(«feature.toName»List);
-    «ENDFOR»
-    success = query.execBatch();
-    if(!success) {
-        qWarning() << "NO SUCCESS INSERT batch «dto.toName.toFirstLower»";
-        bulkImport(false);
-        return;
+    int laps = mAll«dto.toName».size()/mChunkSize;
+    if(mAll«dto.toName».size()%mChunkSize) {
+        laps ++;
     }
-    qDebug() << "«dto.toName»* BATCH inserted into SQLite";
-
-    query.clear();
-    query.prepare("END TRANSACTION");
-    success = query.exec();
-    if(!success) {
-        qWarning() << "NO SUCCESS END TRANSACTION";
-        bulkImport(false);
-        return;
+    int count = 0;
+    qDebug() << "chunks of " << mChunkSize << " laps: " << laps;
+    int fromPos = 0;
+    int toPos = mChunkSize;
+    if(toPos > mAll«dto.toName».size()) {
+        toPos = mAll«dto.toName».size();
     }
-    qDebug() << "END TRANSACTION «dto.toName.toFirstLower»";
+    while (count < laps) {
+    	//
+    	query.clear();
+    	query.prepare("BEGIN TRANSACTION");
+    	success = query.exec();
+    	if(!success) {
+        	qWarning() << "NO SUCCESS BEGIN TRANSACTION";
+        	bulkImport(false);
+        	return;
+    	}
+    	// do it
+		«FOR feature : dto.features»
+		«feature.toName»List.clear();
+		«ENDFOR»
+    	for (int i = fromPos; i < toPos; ++i) {
+        	«dto.toName»* «dto.toName.toFirstLower»;
+        	«dto.toName.toFirstLower» = («dto.toName»*)mAll«dto.toName».at(i);
+        	«dto.toName.toFirstLower»->toSqlCache(«FOR feature : dto.features SEPARATOR", "»«feature.toName»List«ENDFOR»);
+    	}
+        //
+    	query.clear();
+    	query.prepare(insertSQL);
+    	«FOR feature : dto.features»
+    	query.addBindValue(«feature.toName»List);
+    	«ENDFOR»
+    	success = query.execBatch();
+    	if(!success) {
+        	qWarning() << "NO SUCCESS INSERT batch «dto.toName.toFirstLower»";
+        	bulkImport(false);
+        	return;
+    	}
+    	query.clear();
+    	query.prepare("END TRANSACTION");
+    	success = query.exec();
+    	if(!success) {
+        	qWarning() << "NO SUCCESS END TRANSACTION";
+        	bulkImport(false);
+        	return;
+    	}
+        //
+        count ++;
+        fromPos += mChunkSize;
+        toPos += mChunkSize;
+        if(toPos > mAll«dto.toName».size()) {
+            toPos = mAll«dto.toName».size();
+        }
+    }
+    qDebug() << "END INSERT chunks of «dto.toName.toFirstLower»";
     bulkImport(false);
 }
 «ENDIF»

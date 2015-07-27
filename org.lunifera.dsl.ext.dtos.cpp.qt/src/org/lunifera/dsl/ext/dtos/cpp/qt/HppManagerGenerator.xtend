@@ -174,6 +174,11 @@ public:
 		«ENDIF»
 	«ENDFOR»
 
+	«IF pkg.hasSqlCache»
+	Q_INVOKABLE
+	void setChunkSize(const int& newChunkSize);
+    «ENDIF»
+
 Q_SIGNALS:
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -231,6 +236,7 @@ private:
     bool mDatabaseAvailable;
     bool initDatabase();
     void bulkImport(const bool& tuneJournalAndSync);
+    int mChunkSize;
 «ENDIF»
 
 	QVariantList readFromCache(QString& fileName);
