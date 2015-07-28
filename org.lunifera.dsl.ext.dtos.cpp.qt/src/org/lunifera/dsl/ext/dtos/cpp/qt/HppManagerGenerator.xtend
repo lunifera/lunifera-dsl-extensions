@@ -173,7 +173,12 @@ public:
     	«IF dto.isRootDataObject»
     	void init«dto.toName»FromCache();
     	«IF dto.hasSqlCachePropertyName»
-    	void init«dto.toName»FromSqlCache();
+    		«IF dto.is2PhaseInit»
+    		void init«dto.toName»FromSqlCache1();
+    		void init«dto.toName»FromSqlCache2();
+    		«ELSE»
+    		void init«dto.toName»FromSqlCache();
+    		«ENDIF»
     	«ENDIF»
 		«ENDIF»
 	«ENDFOR»

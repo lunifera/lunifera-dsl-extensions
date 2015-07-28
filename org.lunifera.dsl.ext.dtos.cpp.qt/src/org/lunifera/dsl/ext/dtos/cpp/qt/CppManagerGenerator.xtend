@@ -143,6 +143,14 @@ void DataManager::init()
     		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
+	«IF pkg.has2PhaseInit && pkg.hasSqlCache»
+	// first step: load priority rows from SQLite
+    	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    		«IF dto.isRootDataObject && dto.is2PhaseInit»
+    		init«dto.toName»FromSqlCache1();
+			«ENDIF»
+		«ENDFOR»
+	«ENDIF»
 }
 
 «IF pkg.has2PhaseInit && pkg.hasSqlCache»
@@ -157,7 +165,7 @@ void DataManager::init2()
 {
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject && dto.is2PhaseInit»
-    		init«dto.toName»FromSqlCache();
+    		init«dto.toName»FromSqlCache2();
 		«ENDIF»
 	«ENDFOR»
 	m2PhaseInitDone = true;
@@ -392,12 +400,59 @@ void DataManager::init«dto.toName»FromCache()
 }
 
 «IF dto.hasSqlCachePropertyName»
+	«IF dto.is2PhaseInit»
 /*
- * reads Maps of «dto.toName» in from SQL cache
+ * queries SELECT * FROM «dto.toName» (SQLite cache)
+ * for all keys collected in Map while init()
  * creates List of «dto.toName»*  from QSqlQuery
- * List declared as list of QObject* - only way to use in GroupDataModel
  */
-void DataManager::init«dto.toName»FromSqlCache()
+void DataManager::init«dto.toName»FromSqlCache1()
+{
+	qDebug() << "start init«dto.toName» STEP ONE From S Q L Cache";
+	mAll«dto.toName».clear();
+    «IF dto.isTree»
+    mAll«dto.toName»Flat.clear();
+    «ENDIF»
+    QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
+    QSqlQuery query (mDatabase);
+    query.setForwardOnly(true);
+    query.prepare(sqlQuery);
+    bool success = query.exec();
+    if(!success) {
+    	qDebug() << "NO SUCCESS query «dto.toName.toFirstLower»";
+    	return;
+    }
+    QSqlRecord record = query.record();
+    «dto.toName»::fillSqlQueryPos(record);
+    while (query.next())
+    	{
+    		«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+    		// Important: DataManager must be parent of all root DTOs
+    		«dto.toName.toFirstLower»->setParent(this);
+    		«dto.toName.toFirstLower»->fillFromSqlQuery(query);
+    		mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    		«IF dto.isTree»
+    		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+    		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+    		«ENDIF»
+    	}
+    «IF dto.isTree»
+    qDebug() << "read priority rows from SQLite and created Tree of «dto.toName»* #" << mAll«dto.toName».size();
+    qDebug() << "read priority rows from SQLite and created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
+    «ELSE»
+    qDebug() << "read priority rows from SQLite and created «dto.toName»* #" << mAll«dto.toName».size();
+    «ENDIF»
+}
+	«ENDIF»
+/*
+ * queries SELECT * FROM «dto.toName» (SQLite cache)
+«IF dto.is2PhaseInit»
+ * appends to List of «dto.toName»*  from QSqlQuery
+«ELSE»
+ * creates List of «dto.toName»*  from QSqlQuery
+«ENDIF»
+ */
+void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF»()
 {
 	qDebug() << "start init«dto.toName»From S Q L Cache";
 	«IF !dto.is2PhaseInit»
