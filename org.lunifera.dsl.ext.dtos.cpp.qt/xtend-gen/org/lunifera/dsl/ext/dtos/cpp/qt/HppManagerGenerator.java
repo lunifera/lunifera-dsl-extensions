@@ -814,6 +814,24 @@ public class HppManagerGenerator {
     _builder.append("void onManualExit();");
     _builder.newLine();
     _builder.newLine();
+    {
+      boolean _and_4 = false;
+      boolean _hasSqlCache_4 = this._managerExtensions.hasSqlCache(pkg);
+      if (!_hasSqlCache_4) {
+        _and_4 = false;
+      } else {
+        boolean _has2PhaseInit_3 = this._managerExtensions.has2PhaseInit(pkg);
+        _and_4 = _has2PhaseInit_3;
+      }
+      if (_and_4) {
+        _builder.append("private Q_SLOTS:");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("void onPhase2TimerTimeout();");
+        _builder.newLine();
+        _builder.newLine();
+      }
+    }
     _builder.append("private:");
     _builder.newLine();
     _builder.newLine();
@@ -1037,8 +1055,8 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasSqlCache_4 = this._managerExtensions.hasSqlCache(pkg);
-      if (_hasSqlCache_4) {
+      boolean _hasSqlCache_5 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_5) {
         _builder.append("// S Q L");
         _builder.newLine();
         _builder.append("\t");
@@ -1057,8 +1075,8 @@ public class HppManagerGenerator {
         _builder.append("int mChunkSize;");
         _builder.newLine();
         {
-          boolean _has2PhaseInit_3 = this._managerExtensions.has2PhaseInit(pkg);
-          if (_has2PhaseInit_3) {
+          boolean _has2PhaseInit_4 = this._managerExtensions.has2PhaseInit(pkg);
+          if (_has2PhaseInit_4) {
             _builder.append("    ");
             _builder.append("bool m2PhaseInitDone;");
             _builder.newLine();

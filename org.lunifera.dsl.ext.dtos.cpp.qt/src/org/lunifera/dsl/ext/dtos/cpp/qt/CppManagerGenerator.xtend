@@ -111,19 +111,21 @@ DataManager::DataManager(QObject *parent) :
 	// useful Types for all APPs dealing with data
 	// QTimer
 	qmlRegisterType<QTimer>("org.ekkescorner.common", 1, 0, "QTimer");
-	
+
+	// no auto exit: we must persist the cache before
+    bb::Application::instance()->setAutoExit(false);
+    bool res = QObject::connect(bb::Application::instance(), SIGNAL(manualExit()), this, SLOT(onManualExit()));
+    Q_ASSERT(res);
+
 	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
 	// we cannot deal with QThread or QtConcurrent because we create QObject*
 	// and must set DataManager as parent what's not possible from another Thread
 	mPhase2Timer = new QTimer(this);
 	// setting interval to zero: QTimer gets timeout if nothing in event queue
 	mPhase2Timer->setInterval(0);
+	res = QObject::connect(mPhase2Timer, SIGNAL(timeout()), this, SLOT(onPhase2TimerTimeout()));
+	Q_ASSERT(res);
 	«ENDIF»
-
-	// no auto exit: we must persist the cache before
-    bb::Application::instance()->setAutoExit(false);
-    bool res = QObject::connect(bb::Application::instance(), SIGNAL(manualExit()), this, SLOT(onManualExit()));
-    Q_ASSERT(res);
 
     Q_UNUSED(res);
 }
@@ -183,6 +185,19 @@ void DataManager::init2()
 	«ENDFOR»
 	m2PhaseInitDone = true;
 	emit finished2PhaseInit();
+}
+// SLOT
+void DataManager::onPhase2TimerTimeout()
+{
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject && dto.is2PhaseInit»
+    		if (!m«dto.toName»Init2Done) {
+    			process«dto.toName»Query2();
+    			return;
+    		}
+		«ENDIF»
+	«ENDFOR»
+    qWarning() << "nothing more to process from onPhase2TimerTimeout";
 }
 «ENDIF»
 

@@ -212,6 +212,11 @@ Q_SIGNALS:
 public slots:
     void onManualExit();
 
+«IF pkg.hasSqlCache && pkg.has2PhaseInit»
+private Q_SLOTS:
+	void onPhase2TimerTimeout();
+
+«ENDIF»
 private:
 
 	// DataObject stored in List of QObject*
