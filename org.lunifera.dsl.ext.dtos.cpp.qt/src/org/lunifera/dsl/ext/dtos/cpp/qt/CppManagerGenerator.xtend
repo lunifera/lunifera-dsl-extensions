@@ -541,6 +541,12 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     init2();
     «ENDIF»
 }
+	«IF dto.is2PhaseInit»
+void DataManager::process«dto.toName»Query2()
+{
+	//
+}
+	«ENDIF»
 «ENDIF»
 
 /*

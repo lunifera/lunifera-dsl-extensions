@@ -178,6 +178,19 @@ public:
 	void setChunkSize(const int& newChunkSize);
     «ENDIF»
 
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject»
+    	void init«dto.toName»FromCache();
+    	«IF dto.hasSqlCachePropertyName»
+    		«IF dto.is2PhaseInit»
+    		void init«dto.toName»FromSqlCache1();
+    		«ELSE»
+    		void init«dto.toName»FromSqlCache();
+    		«ENDIF»
+    	«ENDIF»
+		«ENDIF»
+	«ENDFOR»
+
 Q_SIGNALS:
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -200,20 +213,6 @@ public slots:
     void onManualExit();
 
 private:
-
-    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
-    	«IF dto.isRootDataObject»
-    	void init«dto.toName»FromCache();
-    	«IF dto.hasSqlCachePropertyName»
-    		«IF dto.is2PhaseInit»
-    		void init«dto.toName»FromSqlCache1();
-    		void init«dto.toName»FromSqlCache2();
-    		«ELSE»
-    		void init«dto.toName»FromSqlCache();
-    		«ENDIF»
-    	«ENDIF»
-		«ENDIF»
-	«ENDFOR»
 
 	// DataObject stored in List of QObject*
 	// GroupDataModel only supports QObject*
@@ -245,9 +244,13 @@ private:
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     	void save«dto.toName»ToCache();
-    	«IF dto.hasSqlCachePropertyName»
-    	void save«dto.toName»ToSqlCache();
-		«ENDIF»
+    		«IF dto.hasSqlCachePropertyName»
+    		void save«dto.toName»ToSqlCache();
+    			«IF dto.is2PhaseInit»
+    			void init«dto.toName»FromSqlCache2();
+    			void process«dto.toName»Query2();
+    			«ENDIF»
+			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 
