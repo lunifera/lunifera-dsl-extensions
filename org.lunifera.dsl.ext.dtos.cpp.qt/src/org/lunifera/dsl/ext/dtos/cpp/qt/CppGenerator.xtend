@@ -1619,6 +1619,12 @@ void «dto.toName»::fillSqlQueryPos(const QSqlRecord& record)
 	«ENDIF»
 	«ENDFOR»
 }
+«IF dto.is2PhaseInit»
+bool «dto.toName»::isPreloaded(const QSqlQuery& sqlQuery, const QVariantMap& preloadMap)
+{
+    return preloadMap.contains(sqlQuery.value(«dto.domainKey»QueryPos).toString());
+}
+«ENDIF»
 /*
  * initialize «dto.toName» from QSqlQuery
  * corresponding export method: toSqlMap()

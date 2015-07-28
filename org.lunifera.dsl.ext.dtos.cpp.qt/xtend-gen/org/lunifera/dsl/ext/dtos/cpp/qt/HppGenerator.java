@@ -1496,6 +1496,14 @@ public class HppGenerator {
         _builder.append("\t");
         _builder.append("static void fillSqlQueryPos(const QSqlRecord& record);");
         _builder.newLine();
+        {
+          boolean _is2PhaseInit = this._cppExtensions.is2PhaseInit(dto);
+          if (_is2PhaseInit) {
+            _builder.append("\t");
+            _builder.append("static bool isPreloaded(const QSqlQuery& sqlQuery, const QVariantMap& preloadMap);");
+            _builder.newLine();
+          }
+        }
       }
     }
     _builder.newLine();

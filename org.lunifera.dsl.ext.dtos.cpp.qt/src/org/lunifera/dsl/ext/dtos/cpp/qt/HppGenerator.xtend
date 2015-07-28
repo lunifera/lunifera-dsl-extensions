@@ -321,6 +321,9 @@ class HppGenerator {
 		void toSqlCache(«FOR feature : dto.features SEPARATOR", "»QVariantList& «feature.toName»List«ENDFOR»);
 		void fillFromSqlQuery(const QSqlQuery& sqlQuery);
 		static void fillSqlQueryPos(const QSqlRecord& record);
+		«IF dto.is2PhaseInit»
+		static bool isPreloaded(const QSqlQuery& sqlQuery, const QVariantMap& preloadMap);
+		«ENDIF»
 		«ENDIF»
 	
 		virtual ~«dto.toName.toFirstUpper»();

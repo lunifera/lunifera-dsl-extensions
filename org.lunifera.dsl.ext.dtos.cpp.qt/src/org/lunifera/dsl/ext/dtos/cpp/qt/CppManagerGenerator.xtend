@@ -160,6 +160,7 @@ void DataManager::init2()
     		init«dto.toName»FromSqlCache();
 		«ENDIF»
 	«ENDFOR»
+	m2PhaseInitDone = true;
 }
 «ENDIF»
 
@@ -390,9 +391,14 @@ void DataManager::init«dto.toName»FromCache()
 void DataManager::init«dto.toName»FromSqlCache()
 {
 	qDebug() << "start init«dto.toName»From S Q L Cache";
-    mAll«dto.toName».clear();
-    «IF dto.isTree»
-    mAll«dto.toName»Flat.clear();
+	«IF !dto.is2PhaseInit»
+		mAll«dto.toName».clear();
+    	«IF dto.isTree»
+    	mAll«dto.toName»Flat.clear();
+    	«ENDIF»
+    «ELSE»
+	// 2 Phase INIT: don't clear mAll«dto.toName» - we must append
+	qDebug() << "already read from SQLite «dto.toName»* priority rows #" << mAll«dto.toName».size();
     «ENDIF»
     QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
     QSqlQuery query (mDatabase);
@@ -407,6 +413,11 @@ void DataManager::init«dto.toName»FromSqlCache()
     «dto.toName»::fillSqlQueryPos(record);
     while (query.next())
     	{
+    		«IF dto.is2PhaseInit»
+    		if («dto.toName»::isPreloaded(query, m«dto.toName»2PhaseInit)) {
+    			continue;
+    		}
+    		«ENDIF»
     		«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
     		// Important: DataManager must be parent of all root DTOs
     		«dto.toName.toFirstLower»->setParent(this);

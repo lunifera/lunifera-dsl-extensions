@@ -246,7 +246,7 @@ private:
     void bulkImport(const bool& tuneJournalAndSync);
     int mChunkSize;
     «IF pkg.has2PhaseInit»
-    bool m2PhaseInitDone();
+    bool m2PhaseInitDone;
 	«ENDIF»
 «ENDIF»
 

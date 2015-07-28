@@ -996,7 +996,7 @@ public class HppManagerGenerator {
           boolean _has2PhaseInit_1 = this._managerExtensions.has2PhaseInit(pkg);
           if (_has2PhaseInit_1) {
             _builder.append("    ");
-            _builder.append("bool m2PhaseInitDone();");
+            _builder.append("bool m2PhaseInitDone;");
             _builder.newLine();
           }
         }
