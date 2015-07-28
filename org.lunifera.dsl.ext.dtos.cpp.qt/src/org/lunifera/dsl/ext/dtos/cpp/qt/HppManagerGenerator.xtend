@@ -176,6 +176,10 @@ public:
 	«IF pkg.hasSqlCache»
 	Q_INVOKABLE
 	void setChunkSize(const int& newChunkSize);
+		«IF pkg.has2PhaseInit»
+		Q_INVOKABLE
+		bool is2PhaseInitDone();
+		«ENDIF»
     «ENDIF»
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»

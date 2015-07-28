@@ -645,6 +645,19 @@ public class HppManagerGenerator {
         _builder.append("\t");
         _builder.append("void setChunkSize(const int& newChunkSize);");
         _builder.newLine();
+        {
+          boolean _has2PhaseInit_2 = this._managerExtensions.has2PhaseInit(pkg);
+          if (_has2PhaseInit_2) {
+            _builder.append("\t");
+            _builder.append("\t");
+            _builder.append("Q_INVOKABLE");
+            _builder.newLine();
+            _builder.append("\t");
+            _builder.append("\t");
+            _builder.append("bool is2PhaseInitDone();");
+            _builder.newLine();
+          }
+        }
       }
     }
     _builder.newLine();
@@ -797,8 +810,8 @@ public class HppManagerGenerator {
       if (!_hasSqlCache_3) {
         _and_3 = false;
       } else {
-        boolean _has2PhaseInit_2 = this._managerExtensions.has2PhaseInit(pkg);
-        _and_3 = _has2PhaseInit_2;
+        boolean _has2PhaseInit_3 = this._managerExtensions.has2PhaseInit(pkg);
+        _and_3 = _has2PhaseInit_3;
       }
       if (_and_3) {
         _builder.append("    ");
@@ -820,8 +833,8 @@ public class HppManagerGenerator {
       if (!_hasSqlCache_4) {
         _and_4 = false;
       } else {
-        boolean _has2PhaseInit_3 = this._managerExtensions.has2PhaseInit(pkg);
-        _and_4 = _has2PhaseInit_3;
+        boolean _has2PhaseInit_4 = this._managerExtensions.has2PhaseInit(pkg);
+        _and_4 = _has2PhaseInit_4;
       }
       if (_and_4) {
         _builder.append("private Q_SLOTS:");
@@ -1075,8 +1088,8 @@ public class HppManagerGenerator {
         _builder.append("int mChunkSize;");
         _builder.newLine();
         {
-          boolean _has2PhaseInit_4 = this._managerExtensions.has2PhaseInit(pkg);
-          if (_has2PhaseInit_4) {
+          boolean _has2PhaseInit_5 = this._managerExtensions.has2PhaseInit(pkg);
+          if (_has2PhaseInit_5) {
             _builder.append("    ");
             _builder.append("bool m2PhaseInitDone;");
             _builder.newLine();

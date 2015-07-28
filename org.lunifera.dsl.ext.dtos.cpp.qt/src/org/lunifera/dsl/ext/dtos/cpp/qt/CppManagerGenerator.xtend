@@ -118,6 +118,12 @@ DataManager::DataManager(QObject *parent) :
     Q_ASSERT(res);
 
 	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
+	m2PhaseInitDone = false;
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject && dto.is2PhaseInit»
+	m«dto.toName»Init2Done = false;
+		«ENDIF»
+	«ENDFOR»
 	// we cannot deal with QThread or QtConcurrent because we create QObject*
 	// and must set DataManager as parent what's not possible from another Thread
 	mPhase2Timer = new QTimer(this);
@@ -186,6 +192,10 @@ void DataManager::init2()
 	m2PhaseInitDone = true;
 	emit finished2PhaseInit();
 }
+bool DataManager::is2PhaseInitDone()
+{
+    return m2PhaseInitDone;
+}
 // SLOT
 void DataManager::onPhase2TimerTimeout()
 {
@@ -237,6 +247,9 @@ bool DataManager::initDatabase()
         return false;
     }
     qDebug() << "Database opened: " << dbName;
+	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
+	mPhase2Query = QSqlQuery (mDatabase);
+	«ENDIF»
     return true;
 }
 
