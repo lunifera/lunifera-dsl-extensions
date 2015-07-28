@@ -202,6 +202,9 @@ Q_SIGNALS:
 	void deletedFromAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 	«ENDIF»
     «ENDFOR»
+    «IF pkg.hasSqlCache && pkg.has2PhaseInit»
+    void finished2PhaseInit();
+    «ENDIF»
     
 public slots:
     void onManualExit();

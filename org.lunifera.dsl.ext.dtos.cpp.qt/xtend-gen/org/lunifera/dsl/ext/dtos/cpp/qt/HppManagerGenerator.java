@@ -788,6 +788,21 @@ public class HppManagerGenerator {
         }
       }
     }
+    {
+      boolean _and_3 = false;
+      boolean _hasSqlCache_3 = this._managerExtensions.hasSqlCache(pkg);
+      if (!_hasSqlCache_3) {
+        _and_3 = false;
+      } else {
+        boolean _has2PhaseInit_1 = this._managerExtensions.has2PhaseInit(pkg);
+        _and_3 = _has2PhaseInit_1;
+      }
+      if (_and_3) {
+        _builder.append("    ");
+        _builder.append("void finished2PhaseInit();");
+        _builder.newLine();
+      }
+    }
     _builder.append("    ");
     _builder.newLine();
     _builder.append("public slots:");
@@ -991,8 +1006,8 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasSqlCache_3 = this._managerExtensions.hasSqlCache(pkg);
-      if (_hasSqlCache_3) {
+      boolean _hasSqlCache_4 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_4) {
         _builder.append("// S Q L");
         _builder.newLine();
         _builder.append("\t");
@@ -1011,8 +1026,8 @@ public class HppManagerGenerator {
         _builder.append("int mChunkSize;");
         _builder.newLine();
         {
-          boolean _has2PhaseInit_1 = this._managerExtensions.has2PhaseInit(pkg);
-          if (_has2PhaseInit_1) {
+          boolean _has2PhaseInit_2 = this._managerExtensions.has2PhaseInit(pkg);
+          if (_has2PhaseInit_2) {
             _builder.append("    ");
             _builder.append("bool m2PhaseInitDone;");
             _builder.newLine();

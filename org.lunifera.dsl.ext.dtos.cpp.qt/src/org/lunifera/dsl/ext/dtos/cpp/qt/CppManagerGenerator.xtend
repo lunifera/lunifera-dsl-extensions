@@ -169,6 +169,7 @@ void DataManager::init2()
 		«ENDIF»
 	«ENDFOR»
 	m2PhaseInitDone = true;
+	emit finished2PhaseInit();
 }
 «ENDIF»
 
@@ -427,6 +428,7 @@ void DataManager::init«dto.toName»FromSqlCache1()
 	sqlQuery = sqlQuery.left(sqlQuery.length() - 2);
 	sqlQuery += ")";
 	qDebug() << sqlQuery;
+	m«dto.toName»2PhaseInit.clear();
     QSqlQuery query (mDatabase);
     query.setForwardOnly(true);
     query.prepare(sqlQuery);
