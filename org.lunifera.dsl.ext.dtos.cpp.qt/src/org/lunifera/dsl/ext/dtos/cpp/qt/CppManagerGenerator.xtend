@@ -428,7 +428,6 @@ void DataManager::init«dto.toName»FromSqlCache1()
 	sqlQuery = sqlQuery.left(sqlQuery.length() - 2);
 	sqlQuery += ")";
 	qDebug() << sqlQuery;
-	m«dto.toName»2PhaseInit.clear();
     QSqlQuery query (mDatabase);
     query.setForwardOnly(true);
     query.prepare(sqlQuery);
@@ -486,6 +485,9 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     bool success = query.exec();
     if(!success) {
     	qDebug() << "NO SUCCESS query «IF dto.is2PhaseInit»step TWO «ENDIF»«dto.toName.toFirstLower»";
+    	«IF dto.is2PhaseInit»
+    	m«dto.toName»2PhaseInit.clear();
+    	«ENDIF»
     	return;
     }
     QSqlRecord record = query.record();
@@ -512,6 +514,9 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     qDebug() << "read from SQLite and created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
     «ELSE»
     qDebug() << "read from SQLite and created «dto.toName»* #" << mAll«dto.toName».size();
+    «ENDIF»
+    «IF dto.is2PhaseInit»
+    m«dto.toName»2PhaseInit.clear();
     «ENDIF»
 }
 «ENDIF»
