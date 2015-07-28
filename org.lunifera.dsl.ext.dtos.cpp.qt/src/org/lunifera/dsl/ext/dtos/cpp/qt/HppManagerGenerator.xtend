@@ -68,6 +68,10 @@ public:
     virtual ~DataManager();
     Q_INVOKABLE
     void init();
+	«IF pkg.has2PhaseInit && pkg.hasSqlCache»
+	Q_INVOKABLE
+	void init2();
+	«ENDIF»
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
@@ -224,9 +228,6 @@ private:
     	QList<QObject*> mAll«dto.toName»Flat;
 		«ENDIF»
 	«ENDFOR»
-	«IF pkg.has2PhaseInit»
-	bool m2PhaseInitDone();
-	«ENDIF»
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
@@ -244,6 +245,9 @@ private:
     bool initDatabase();
     void bulkImport(const bool& tuneJournalAndSync);
     int mChunkSize;
+    «IF pkg.has2PhaseInit»
+    bool m2PhaseInitDone();
+	«ENDIF»
 «ENDIF»
 
 	QVariantList readFromCache(QString& fileName);

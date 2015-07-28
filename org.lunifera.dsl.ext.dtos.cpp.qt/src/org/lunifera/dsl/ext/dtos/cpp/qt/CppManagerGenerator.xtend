@@ -121,6 +121,8 @@ DataManager::DataManager(QObject *parent) :
 /*
  * loads all data from cache.
  * called from main.qml with delay using QTimer
+ * Data with 2PhaseInit Caching Policy will only
+ * load priority records needed to resolve from others
  */
 void DataManager::init()
 {
@@ -133,13 +135,33 @@ void DataManager::init()
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
     		«IF dto.hasSqlCachePropertyName»
+    		«IF !dto.is2PhaseInit»
     		init«dto.toName»FromSqlCache();
+    		«ENDIF»
     		«ELSE»
     		init«dto.toName»FromCache();
     		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 }
+
+«IF pkg.has2PhaseInit && pkg.hasSqlCache»
+/*
+ * STEP 2 of 2PaseInit Caching Policy
+ * some priority records already loaded from SQLite
+ * 
+ * now loads all remaining data from cache.
+ * called from main.qml with delay using QTimer
+ */
+void DataManager::init2()
+{
+    «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
+    	«IF dto.isRootDataObject && dto.is2PhaseInit»
+    		init«dto.toName»FromSqlCache();
+		«ENDIF»
+	«ENDFOR»
+}
+«ENDIF»
 
 «IF pkg.hasSqlCache»
 //  S Q L

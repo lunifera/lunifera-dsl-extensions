@@ -163,6 +163,24 @@ public class HppManagerGenerator {
     _builder.append("    ");
     _builder.append("void init();");
     _builder.newLine();
+    {
+      boolean _and = false;
+      boolean _has2PhaseInit = this._managerExtensions.has2PhaseInit(pkg);
+      if (!_has2PhaseInit) {
+        _and = false;
+      } else {
+        boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
+        _and = _hasSqlCache_1;
+      }
+      if (_and) {
+        _builder.append("\t");
+        _builder.append("Q_INVOKABLE");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("void init2();");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       EList<LType> _types_2 = pkg.getTypes();
@@ -550,16 +568,16 @@ public class HppManagerGenerator {
               }
             }
             {
-              boolean _and = false;
+              boolean _and_1 = false;
               boolean _hasDomainKey = this._cppExtensions.hasDomainKey(dto_2);
               if (!_hasDomainKey) {
-                _and = false;
+                _and_1 = false;
               } else {
                 String _domainKey = this._cppExtensions.domainKey(dto_2);
                 boolean _notEquals = (!Objects.equal(_domainKey, "uuid"));
-                _and = _notEquals;
+                _and_1 = _notEquals;
               }
-              if (_and) {
+              if (_and_1) {
                 _builder.newLine();
                 _builder.append("\t");
                 _builder.append("Q_INVOKABLE");
@@ -650,8 +668,8 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasSqlCache_1 = this._managerExtensions.hasSqlCache(pkg);
-      if (_hasSqlCache_1) {
+      boolean _hasSqlCache_2 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_2) {
         _builder.append("\t");
         _builder.append("Q_INVOKABLE");
         _builder.newLine();
@@ -707,16 +725,16 @@ public class HppManagerGenerator {
               }
             }
             {
-              boolean _and_1 = false;
+              boolean _and_2 = false;
               boolean _hasDomainKey_1 = this._cppExtensions.hasDomainKey(dto_4);
               if (!_hasDomainKey_1) {
-                _and_1 = false;
+                _and_2 = false;
               } else {
                 String _domainKey_5 = this._cppExtensions.domainKey(dto_4);
                 boolean _notEquals_1 = (!Objects.equal(_domainKey_5, "uuid"));
-                _and_1 = _notEquals_1;
+                _and_2 = _notEquals_1;
               }
-              if (_and_1) {
+              if (_and_2) {
                 _builder.append("\t");
                 _builder.append("void deletedFromAll");
                 String _name_62 = this._cppExtensions.toName(dto_4);
@@ -913,14 +931,6 @@ public class HppManagerGenerator {
         }
       }
     }
-    {
-      boolean _has2PhaseInit = this._managerExtensions.has2PhaseInit(pkg);
-      if (_has2PhaseInit) {
-        _builder.append("\t");
-        _builder.append("bool m2PhaseInitDone();");
-        _builder.newLine();
-      }
-    }
     _builder.newLine();
     {
       EList<LType> _types_6 = pkg.getTypes();
@@ -963,8 +973,8 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasSqlCache_2 = this._managerExtensions.hasSqlCache(pkg);
-      if (_hasSqlCache_2) {
+      boolean _hasSqlCache_3 = this._managerExtensions.hasSqlCache(pkg);
+      if (_hasSqlCache_3) {
         _builder.append("// S Q L");
         _builder.newLine();
         _builder.append("\t");
@@ -982,6 +992,14 @@ public class HppManagerGenerator {
         _builder.append("    ");
         _builder.append("int mChunkSize;");
         _builder.newLine();
+        {
+          boolean _has2PhaseInit_1 = this._managerExtensions.has2PhaseInit(pkg);
+          if (_has2PhaseInit_1) {
+            _builder.append("    ");
+            _builder.append("bool m2PhaseInitDone();");
+            _builder.newLine();
+          }
+        }
       }
     }
     _builder.newLine();
