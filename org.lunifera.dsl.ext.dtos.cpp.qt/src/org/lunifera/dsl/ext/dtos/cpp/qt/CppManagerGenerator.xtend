@@ -373,6 +373,15 @@ void DataManager::init«dto.toName»FromCache()
         mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
         mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
         «ENDIF»
+        «IF pkg.has2PhaseInit»
+        	«FOR feature : dto.allFeatures»
+        		«IF feature.referenceIs2PhaseInit»
+        		if(«dto.toName.toFirstLower»->has«feature.toName.toFirstUpper»()) {
+        			m«feature.toTypeOrQObjectName»2PhaseInit.insert(«dto.toName.toFirstLower»->«feature.toName.toFirstLower»(), "");
+        		}
+        		«ENDIF»
+        	«ENDFOR»
+        «ENDIF»
     }
     «IF dto.isTree»
     qDebug() << "created Tree of «dto.toName»* #" << mAll«dto.toName».size();

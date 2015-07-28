@@ -236,17 +236,15 @@ class CppExtensions {
 				return " DOUBLE"
 			case "float":
 				return " FLOAT"
-				
-				
 		}
 		return " TEXT"
 	}
 
 	def dispatch String toSqlColumnType(LFeature feature) {
-		if(feature.isLazy && !feature.isToMany) {
+		if (feature.isLazy && !feature.isToMany) {
 			return " TEXT"
 		}
-		if(feature.isLazyArray) {
+		if (feature.isLazyArray) {
 			return " TEXT"
 		}
 		return " TEXTFEATURE"
@@ -765,7 +763,7 @@ class CppExtensions {
 		}
 		return false;
 	}
-	
+
 	// can be '-2PI-' 
 	def boolean is2PhaseInit(LDto dto) {
 		if (dto.cachePolicyValue != null) {
@@ -774,6 +772,14 @@ class CppExtensions {
 			}
 		}
 		return false;
+	}
+
+	def dispatch boolean referenceIs2PhaseInit(LFeature feature) {
+		return false
+	}
+
+	def dispatch boolean referenceIs2PhaseInit(LDtoReference reference) {
+		return (reference.type as LDto).is2PhaseInit
 	}
 
 	def boolean existsForeignPropertyName(LDto dto) {
@@ -901,6 +907,13 @@ class CppExtensions {
 	def toTypeOrQObject(LFeature feature) {
 		if (feature.isTypeOfDataObject) {
 			return '''«feature.toTypeName»*'''.toString
+		}
+		return feature.toTypeName
+	}
+	
+	def toTypeOrQObjectName(LFeature feature) {
+		if (feature.isTypeOfDataObject) {
+			return '''«feature.toTypeName»'''.toString
 		}
 		return feature.toTypeName
 	}

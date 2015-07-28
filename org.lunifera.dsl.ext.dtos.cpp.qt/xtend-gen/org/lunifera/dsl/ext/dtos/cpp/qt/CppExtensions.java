@@ -1355,6 +1355,15 @@ public class CppExtensions {
     return false;
   }
   
+  protected boolean _referenceIs2PhaseInit(final LFeature feature) {
+    return false;
+  }
+  
+  protected boolean _referenceIs2PhaseInit(final LDtoReference reference) {
+    LDto _type = reference.getType();
+    return this.is2PhaseInit(((LDto) _type));
+  }
+  
   public boolean existsForeignPropertyName(final LDto dto) {
     List<? extends LFeature> _allFeatures = dto.getAllFeatures();
     for (final LFeature feature : _allFeatures) {
@@ -1562,6 +1571,17 @@ public class CppExtensions {
       String _typeName = this.toTypeName(feature);
       _builder.append(_typeName, "");
       _builder.append("*");
+      return _builder.toString();
+    }
+    return this.toTypeName(feature);
+  }
+  
+  public String toTypeOrQObjectName(final LFeature feature) {
+    boolean _isTypeOfDataObject = this.isTypeOfDataObject(feature);
+    if (_isTypeOfDataObject) {
+      StringConcatenation _builder = new StringConcatenation();
+      String _typeName = this.toTypeName(feature);
+      _builder.append(_typeName, "");
       return _builder.toString();
     }
     return this.toTypeName(feature);
@@ -1957,6 +1977,17 @@ public class CppExtensions {
       return _referenceDomainKeyType((LDtoReference)reference);
     } else if (reference != null) {
       return _referenceDomainKeyType(reference);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public boolean referenceIs2PhaseInit(final LFeature reference) {
+    if (reference instanceof LDtoReference) {
+      return _referenceIs2PhaseInit((LDtoReference)reference);
+    } else if (reference != null) {
+      return _referenceIs2PhaseInit(reference);
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(reference).toString());
