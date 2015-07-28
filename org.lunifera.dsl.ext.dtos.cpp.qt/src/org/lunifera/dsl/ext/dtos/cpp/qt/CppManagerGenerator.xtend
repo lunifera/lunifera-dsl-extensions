@@ -403,7 +403,7 @@ void DataManager::init«dto.toName»FromCache()
 	«IF dto.is2PhaseInit»
 /*
  * queries SELECT * FROM «dto.toName» (SQLite cache)
- * for all keys collected in Map while init()
+ * for all keys collected in Map m«dto.toName»2PhaseInit while doing the init()
  * creates List of «dto.toName»*  from QSqlQuery
  */
 void DataManager::init«dto.toName»FromSqlCache1()
@@ -413,13 +413,26 @@ void DataManager::init«dto.toName»FromSqlCache1()
     «IF dto.isTree»
     mAll«dto.toName»Flat.clear();
     «ENDIF»
-    QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
+	QStringList keys = m«dto.toName»2PhaseInit.keys();
+	if (keys.size() == 0) {
+		qDebug() << "no priority rows collected from init()";
+		return;
+	}
+	QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower» WHERE «dto.domainKey» IN (";
+    for (int i = 0; i < keys.size(); ++i) {
+    	sqlQuery += "'";
+    	sqlQuery += keys.at(i);
+    	sqlQuery += "', ";
+	}
+	sqlQuery = sqlQuery.left(sqlQuery.length() - 2);
+	sqlQuery += ")";
+	qDebug() << sqlQuery;
     QSqlQuery query (mDatabase);
     query.setForwardOnly(true);
     query.prepare(sqlQuery);
     bool success = query.exec();
     if(!success) {
-    	qDebug() << "NO SUCCESS query «dto.toName.toFirstLower»";
+    	qDebug() << "NO SUCCESS query step ONE «dto.toName.toFirstLower»";
     	return;
     }
     QSqlRecord record = query.record();
@@ -454,7 +467,7 @@ void DataManager::init«dto.toName»FromSqlCache1()
  */
 void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF»()
 {
-	qDebug() << "start init«dto.toName»From S Q L Cache";
+	qDebug() << "start init«dto.toName» «IF dto.is2PhaseInit»step TWO «ENDIF»From S Q L Cache";
 	«IF !dto.is2PhaseInit»
 		mAll«dto.toName».clear();
     	«IF dto.isTree»
@@ -470,7 +483,7 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     query.prepare(sqlQuery);
     bool success = query.exec();
     if(!success) {
-    	qDebug() << "NO SUCCESS query «dto.toName.toFirstLower»";
+    	qDebug() << "NO SUCCESS query «IF dto.is2PhaseInit»step TWO «ENDIF»«dto.toName.toFirstLower»";
     	return;
     }
     QSqlRecord record = query.record();
