@@ -49,7 +49,9 @@ class CppManagerGenerator {
 #include <bb/cascades/GroupDataModel>
 
 «IF pkg.hasSqlCache»
+	«IF !pkg.has2PhaseInit»
 #include <QtSql/QSqlQuery>
+	«ENDIF»
 #include <QtSql/QSqlRecord>
 
 static QString dbName = "sqlcache.db";
@@ -109,6 +111,10 @@ DataManager::DataManager(QObject *parent) :
 	// useful Types for all APPs dealing with data
 	// QTimer
 	qmlRegisterType<QTimer>("org.ekkescorner.common", 1, 0, "QTimer");
+	
+	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
+	mPhase2Timer = new QTimer(this);
+	«ENDIF»
 
 	// no auto exit: we must persist the cache before
     bb::Application::instance()->setAutoExit(false);
@@ -165,7 +171,10 @@ void DataManager::init2()
 {
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject && dto.is2PhaseInit»
-    		init«dto.toName»FromSqlCache2();
+    		if (!m«dto.toName»Init2Done) {
+    			init«dto.toName»FromSqlCache2();
+    			return;
+    		}
 		«ENDIF»
 	«ENDFOR»
 	m2PhaseInitDone = true;
@@ -479,30 +488,36 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
 	qDebug() << "already read from SQLite «dto.toName»* priority rows #" << mAll«dto.toName».size();
     «ENDIF»
     QString sqlQuery = "SELECT * FROM «dto.toName.toFirstLower»";
+    «IF !dto.is2PhaseInit»
     QSqlQuery query (mDatabase);
-    query.setForwardOnly(true);
-    query.prepare(sqlQuery);
-    bool success = query.exec();
+    «ELSE»
+    mPhase2Query.clear();
+    «ENDIF»
+    «IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».setForwardOnly(true);
+    «IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».prepare(sqlQuery);
+    bool success = «IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».exec();
     if(!success) {
     	qDebug() << "NO SUCCESS query «IF dto.is2PhaseInit»step TWO «ENDIF»«dto.toName.toFirstLower»";
     	«IF dto.is2PhaseInit»
     	m«dto.toName»2PhaseInit.clear();
+    	m«dto.toName»Init2Done = true;
+    	init2();
     	«ENDIF»
     	return;
     }
-    QSqlRecord record = query.record();
+    QSqlRecord record = «IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».record();
     «dto.toName»::fillSqlQueryPos(record);
-    while (query.next())
+    while («IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».next())
     	{
     		«IF dto.is2PhaseInit»
-    		if («dto.toName»::isPreloaded(query, m«dto.toName»2PhaseInit)) {
+    		if («dto.toName»::isPreloaded(mPhase2Query, m«dto.toName»2PhaseInit)) {
     			continue;
     		}
     		«ENDIF»
     		«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
     		// Important: DataManager must be parent of all root DTOs
     		«dto.toName.toFirstLower»->setParent(this);
-    		«dto.toName.toFirstLower»->fillFromSqlQuery(query);
+    		«dto.toName.toFirstLower»->fillFromSqlQuery(«IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF»);
     		mAll«dto.toName».append(«dto.toName.toFirstLower»);
     		«IF dto.isTree»
     		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
@@ -517,6 +532,9 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     «ENDIF»
     «IF dto.is2PhaseInit»
     m«dto.toName»2PhaseInit.clear();
+    m«dto.toName»Init2Done = true;
+    mPhase2Query.clear();
+    init2();
     «ENDIF»
 }
 «ENDIF»

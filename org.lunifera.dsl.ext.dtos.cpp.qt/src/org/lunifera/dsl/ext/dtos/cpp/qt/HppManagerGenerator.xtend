@@ -40,6 +40,10 @@ class HppManagerGenerator {
 #include <qobject.h>
 «IF pkg.hasSqlCache»
 #include <QtSql/QtSql>
+	«IF pkg.has2PhaseInit»
+#include <QtSql/QSqlQuery>
+#include <QTimer>
+	«ENDIF»
 «ENDIF»
 
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -219,6 +223,7 @@ private:
     	«IF dto.is2PhaseInit»
     	// collects data for priority loading
     	QVariantMap m«dto.toName»2PhaseInit;
+    	bool m«dto.toName»Init2Done;
     	«ENDIF»
     	// implementation for QDeclarativeListProperty to use
     	// QML functions for List of All «dto.toName»*
@@ -255,6 +260,8 @@ private:
     int mChunkSize;
     «IF pkg.has2PhaseInit»
     bool m2PhaseInitDone;
+    QSqlQuery mPhase2Query;
+    QTimer *mPhase2Timer;
 	«ENDIF»
 «ENDIF»
 
