@@ -114,6 +114,7 @@ DataManager::DataManager(QObject *parent) :
 	
 	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
 	mPhase2Timer = new QTimer(this);
+	mPhase2Timer->setInterval(0);
 	«ENDIF»
 
 	// no auto exit: we must persist the cache before

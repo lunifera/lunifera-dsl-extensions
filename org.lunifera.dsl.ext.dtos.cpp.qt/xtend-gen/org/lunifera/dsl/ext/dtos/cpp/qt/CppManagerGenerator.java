@@ -309,6 +309,9 @@ public class CppManagerGenerator {
         _builder.append("\t");
         _builder.append("mPhase2Timer = new QTimer(this);");
         _builder.newLine();
+        _builder.append("\t");
+        _builder.append("mPhase2Timer->setInterval(0);");
+        _builder.newLine();
       }
     }
     _builder.newLine();
