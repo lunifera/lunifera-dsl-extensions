@@ -113,7 +113,10 @@ DataManager::DataManager(QObject *parent) :
 	qmlRegisterType<QTimer>("org.ekkescorner.common", 1, 0, "QTimer");
 	
 	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
+	// we cannot deal with QThread or QtConcurrent because we create QObject*
+	// and must set DataManager as parent what's not possible from another Thread
 	mPhase2Timer = new QTimer(this);
+	// setting interval to zero: QTimer gets timeout if nothing in event queue
 	mPhase2Timer->setInterval(0);
 	«ENDIF»
 

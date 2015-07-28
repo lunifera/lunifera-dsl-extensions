@@ -307,7 +307,16 @@ public class CppManagerGenerator {
       }
       if (_and) {
         _builder.append("\t");
+        _builder.append("// we cannot deal with QThread or QtConcurrent because we create QObject*");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("// and must set DataManager as parent what\'s not possible from another Thread");
+        _builder.newLine();
+        _builder.append("\t");
         _builder.append("mPhase2Timer = new QTimer(this);");
+        _builder.newLine();
+        _builder.append("\t");
+        _builder.append("// setting interval to zero: QTimer gets timeout if nothing in event queue");
         _builder.newLine();
         _builder.append("\t");
         _builder.append("mPhase2Timer->setInterval(0);");
