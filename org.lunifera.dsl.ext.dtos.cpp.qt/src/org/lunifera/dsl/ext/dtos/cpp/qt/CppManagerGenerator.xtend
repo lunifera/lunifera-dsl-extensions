@@ -198,6 +198,7 @@ void DataManager::onPhase2TimerTimeout()
 		«ENDIF»
 	«ENDFOR»
     qWarning() << "nothing more to process from onPhase2TimerTimeout";
+    mPhase2Timer->stop();
 }
 «ENDIF»
 
@@ -526,17 +527,15 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     }
     QSqlRecord record = «IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».record();
     «dto.toName»::fillSqlQueryPos(record);
-    while («IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF».next())
+    «IF dto.is2PhaseInit»
+    mPhase2Timer->start();
+    «ELSE»
+    while (query.next())
     	{
-    		«IF dto.is2PhaseInit»
-    		if («dto.toName»::isPreloaded(mPhase2Query, m«dto.toName»2PhaseInit)) {
-    			continue;
-    		}
-    		«ENDIF»
     		«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
     		// Important: DataManager must be parent of all root DTOs
     		«dto.toName.toFirstLower»->setParent(this);
-    		«dto.toName.toFirstLower»->fillFromSqlQuery(«IF dto.is2PhaseInit»mPhase2Query«ELSE»query«ENDIF»);
+    		«dto.toName.toFirstLower»->fillFromSqlQuery(query);
     		mAll«dto.toName».append(«dto.toName.toFirstLower»);
     		«IF dto.isTree»
     		mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
@@ -549,17 +548,37 @@ void DataManager::init«dto.toName»FromSqlCache«IF dto.is2PhaseInit»2«ENDIF�
     «ELSE»
     qDebug() << "read from SQLite and created «dto.toName»* #" << mAll«dto.toName».size();
     «ENDIF»
-    «IF dto.is2PhaseInit»
-    m«dto.toName»2PhaseInit.clear();
-    m«dto.toName»Init2Done = true;
-    mPhase2Query.clear();
-    init2();
     «ENDIF»
 }
 	«IF dto.is2PhaseInit»
 void DataManager::process«dto.toName»Query2()
 {
-	//
+    if (mPhase2Query.next()) {
+    	if («dto.toName»::isPreloaded(mPhase2Query, m«dto.toName»2PhaseInit)) {
+    		return;
+    	}
+    	«dto.toName»* «dto.toName.toFirstLower» = new «dto.toName»();
+    	// Important: DataManager must be parent of all root DTOs
+    	«dto.toName.toFirstLower»->setParent(this);
+    	«dto.toName.toFirstLower»->fillFromSqlQuery(mPhase2Query);
+    	mAll«dto.toName».append(«dto.toName.toFirstLower»);
+    	«IF dto.isTree»
+    	mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
+    	mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»->all«dto.toName»Children());
+    	«ENDIF»
+    } else {
+    	mPhase2Timer->stop();
+    	«IF dto.isTree»
+    	qDebug() << "read from SQLite and created Tree of «dto.toName»* #" << mAll«dto.toName».size();
+    	qDebug() << "read from SQLite and created Flat list of «dto.toName»* #" << mAll«dto.toName»Flat.size();
+    	«ELSE»
+    	qDebug() << "read from SQLite and created «dto.toName»* #" << mAll«dto.toName».size();
+    	«ENDIF»
+    	m«dto.toName»2PhaseInit.clear();
+    	m«dto.toName»Init2Done = true;
+    	mPhase2Query.clear();
+    	init2();
+    }
 }
 	«ENDIF»
 «ENDIF»
