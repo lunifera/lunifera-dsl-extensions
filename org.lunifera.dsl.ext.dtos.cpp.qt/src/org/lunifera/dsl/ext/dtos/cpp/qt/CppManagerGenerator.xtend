@@ -784,7 +784,7 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
     «FOR feature : dto.allFeatures.filter[isLazyArray]»
     if (!«dto.toName.toFirstLower»->are«feature.toName.toFirstUpper»KeysResolved()) {
         «dto.toName.toFirstLower»->resolve«feature.toName.toFirstUpper»Keys(
-                listOf«dto.toName.toFirstUpper»ForKeys(«dto.toName.toFirstLower»->«feature.toName»Keys()));
+                listOf«feature.toTypeName.toFirstUpper»ForKeys(«dto.toName.toFirstLower»->«feature.toName»Keys()));
     }
     «ENDFOR»
 }
