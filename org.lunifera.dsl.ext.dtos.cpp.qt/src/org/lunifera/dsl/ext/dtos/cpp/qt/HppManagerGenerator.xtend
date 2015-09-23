@@ -38,6 +38,7 @@ class HppManagerGenerator {
 #define DATAMANAGER_HPP_
 
 #include <qobject.h>
+#include <QStringList>
 «IF pkg.hasSqlCache»
 #include <QtSql/QtSql>
 	«IF pkg.has2PhaseInit»
@@ -50,7 +51,7 @@ class HppManagerGenerator {
 #include "«dto.toName».hpp"
 «ENDFOR»
 «IF pkg.hasGeoCoordinate»
-#include  "GeoCoordinate.hpp"
+#include "GeoCoordinate.hpp"
 «ENDIF»
 «IF pkg.hasGeoAddress»
 #include  "GeoAddress.hpp"

@@ -59,6 +59,8 @@ public class HppManagerGenerator {
     _builder.newLine();
     _builder.append("#include <qobject.h>");
     _builder.newLine();
+    _builder.append("#include <QStringList>");
+    _builder.newLine();
     {
       boolean _hasSqlCache = this._managerExtensions.hasSqlCache(pkg);
       if (_hasSqlCache) {
@@ -101,7 +103,7 @@ public class HppManagerGenerator {
     {
       boolean _hasGeoCoordinate = this._managerExtensions.hasGeoCoordinate(pkg);
       if (_hasGeoCoordinate) {
-        _builder.append("#include  \"GeoCoordinate.hpp\"");
+        _builder.append("#include \"GeoCoordinate.hpp\"");
         _builder.newLine();
       }
     }
