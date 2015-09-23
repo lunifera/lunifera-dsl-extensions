@@ -287,6 +287,18 @@ class CppExtensions {
 		}
 		return false
 	}
+	
+	def dispatch boolean isReferencing(LDtoAbstractAttribute target, LDto source) {
+		if (target.type instanceof LDto) {
+			val LDto targetDto = target.type as LDto
+			for (feature : targetDto.allFeatures) {
+				if (feature.toTypeName == source.toName) {
+					return true
+				}
+			}
+		}
+		return false
+	}
 
 	def dispatch boolean isTypeOfDataObject(LDtoAbstractAttribute att) {
 		if (att.type instanceof LDto) {
@@ -719,6 +731,15 @@ class CppExtensions {
 	def dispatch boolean referenceHasUuid(LDtoReference reference) {
 		return (reference.type as LDto).hasUuid
 	}
+	
+	def dispatch String attributeDomainKeyType(LFeature feature) {
+		return ""
+	}
+
+	def dispatch String attributeDomainKeyType(LDtoAttribute attribute) {
+		return (attribute.type as LDto).domainKeyType
+	}
+	
 
 	def dispatch String attributeDomainKey(LFeature feature) {
 		return ""

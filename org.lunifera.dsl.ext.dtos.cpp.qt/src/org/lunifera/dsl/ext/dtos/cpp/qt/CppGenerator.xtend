@@ -557,7 +557,11 @@ QVariantMap «dto.toName»::toMap()
 			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
 				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
 				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				«IF feature.attributeDomainKeyType == "int"»
+				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+				«ELSE»
 				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+				«ENDIF»
 			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
@@ -627,7 +631,11 @@ QVariantMap «dto.toName»::toForeignMap()
 			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
 				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
 				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				«IF feature.attributeDomainKeyType == "int"»
+				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+				«ELSE»
 				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+				«ENDIF»
 			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
@@ -701,7 +709,11 @@ QVariantMap «dto.toName»::toCacheMap()
 			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
 				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
 				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				«IF feature.attributeDomainKeyType == "int"»
+				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+				«ELSE»
 				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+				«ENDIF»
 			}
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
@@ -1549,7 +1561,11 @@ void «dto.toName»::toSqlCache(«FOR feature : dto.features SEPARATOR", "»QVar
 			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
 				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
 				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+				«IF feature.attributeDomainKeyType == "int"»
+				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+				«ELSE»
 				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+				«ENDIF»
 			}
 		}
 		«feature.toName.toFirstLower»List << m«feature.toName.toFirstUpper»Keys.join(";");

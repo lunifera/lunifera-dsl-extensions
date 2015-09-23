@@ -413,6 +413,24 @@ public class CppExtensions {
     return false;
   }
   
+  protected boolean _isReferencing(final LDtoAbstractAttribute target, final LDto source) {
+    LScalarType _type = target.getType();
+    if ((_type instanceof LDto)) {
+      LScalarType _type_1 = target.getType();
+      final LDto targetDto = ((LDto) _type_1);
+      List<? extends LFeature> _allFeatures = targetDto.getAllFeatures();
+      for (final LFeature feature : _allFeatures) {
+        String _typeName = this.toTypeName(feature);
+        String _name = this.toName(source);
+        boolean _equals = Objects.equal(_typeName, _name);
+        if (_equals) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   protected boolean _isTypeOfDataObject(final LDtoAbstractAttribute att) {
     LScalarType _type = att.getType();
     if ((_type instanceof LDto)) {
@@ -1289,6 +1307,15 @@ public class CppExtensions {
     return this.hasUuid(((LDto) _type));
   }
   
+  protected String _attributeDomainKeyType(final LFeature feature) {
+    return "";
+  }
+  
+  protected String _attributeDomainKeyType(final LDtoAttribute attribute) {
+    LScalarType _type = attribute.getType();
+    return this.domainKeyType(((LDto) _type));
+  }
+  
   protected String _attributeDomainKey(final LFeature feature) {
     return "";
   }
@@ -1872,7 +1899,9 @@ public class CppExtensions {
   }
   
   public boolean isReferencing(final LFeature target, final LDto source) {
-    if (target instanceof LDtoAbstractReference) {
+    if (target instanceof LDtoAbstractAttribute) {
+      return _isReferencing((LDtoAbstractAttribute)target, source);
+    } else if (target instanceof LDtoAbstractReference) {
       return _isReferencing((LDtoAbstractReference)target, source);
     } else if (target != null) {
       return _isReferencing(target, source);
@@ -1958,6 +1987,17 @@ public class CppExtensions {
     } else {
       throw new IllegalArgumentException("Unhandled parameter types: " +
         Arrays.<Object>asList(reference).toString());
+    }
+  }
+  
+  public String attributeDomainKeyType(final LFeature attribute) {
+    if (attribute instanceof LDtoAttribute) {
+      return _attributeDomainKeyType((LDtoAttribute)attribute);
+    } else if (attribute != null) {
+      return _attributeDomainKeyType(attribute);
+    } else {
+      throw new IllegalArgumentException("Unhandled parameter types: " +
+        Arrays.<Object>asList(attribute).toString());
     }
   }
   
