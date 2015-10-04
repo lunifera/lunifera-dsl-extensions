@@ -78,7 +78,11 @@ class HppGenerator {
 			// forward declaration (target references to this)
 			class «reference.toTypeName.toFirstUpper»;
 			«ELSE»
+			«IF reference.toTypeName == "GeoCoordinate" || reference.toTypeName == "GeoAddress"»
+			#include "../«reference.toTypeName».hpp"
+			«ELSE»
 			#include "«reference.toTypeName».hpp"
+			«ENDIF»
 			«ENDIF»
 		«ENDIF»
 	«ELSE»

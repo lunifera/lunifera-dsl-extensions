@@ -51,10 +51,10 @@ class HppManagerGenerator {
 #include "«dto.toName».hpp"
 «ENDFOR»
 «IF pkg.hasGeoCoordinate»
-#include "GeoCoordinate.hpp"
+#include "../GeoCoordinate.hpp"
 «ENDIF»
 «IF pkg.hasGeoAddress»
-#include  "GeoAddress.hpp"
+#include  "../GeoAddress.hpp"
 «ENDIF»
 
 class DataManager: public QObject

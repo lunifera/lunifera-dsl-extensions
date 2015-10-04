@@ -103,14 +103,14 @@ public class HppManagerGenerator {
     {
       boolean _hasGeoCoordinate = this._managerExtensions.hasGeoCoordinate(pkg);
       if (_hasGeoCoordinate) {
-        _builder.append("#include \"GeoCoordinate.hpp\"");
+        _builder.append("#include \"../GeoCoordinate.hpp\"");
         _builder.newLine();
       }
     }
     {
       boolean _hasGeoAddress = this._managerExtensions.hasGeoAddress(pkg);
       if (_hasGeoAddress) {
-        _builder.append("#include  \"GeoAddress.hpp\"");
+        _builder.append("#include  \"../GeoAddress.hpp\"");
         _builder.newLine();
       }
     }
