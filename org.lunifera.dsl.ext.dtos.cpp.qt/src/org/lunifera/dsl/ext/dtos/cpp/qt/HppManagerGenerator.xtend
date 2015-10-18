@@ -38,6 +38,7 @@ class HppManagerGenerator {
 #define DATAMANAGER_HPP_
 
 #include <qobject.h>
+#include <QtDeclarative>
 #include <QStringList>
 «IF pkg.hasSqlCache»
 #include <QtSql/QtSql>

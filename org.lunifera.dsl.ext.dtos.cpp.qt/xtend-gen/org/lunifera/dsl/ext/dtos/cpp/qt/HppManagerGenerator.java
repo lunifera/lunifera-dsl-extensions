@@ -59,6 +59,8 @@ public class HppManagerGenerator {
     _builder.newLine();
     _builder.append("#include <qobject.h>");
     _builder.newLine();
+    _builder.append("#include <QtDeclarative>");
+    _builder.newLine();
     _builder.append("#include <QStringList>");
     _builder.newLine();
     {
