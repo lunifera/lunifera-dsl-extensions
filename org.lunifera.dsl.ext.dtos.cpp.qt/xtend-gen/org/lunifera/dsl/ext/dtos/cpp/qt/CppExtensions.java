@@ -41,6 +41,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.CachePolicy;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.DateFormatString;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.EnumValues;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.ForeignPropertyName;
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.FriendsClass;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index;
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SqlCache;
 import org.lunifera.dsl.semantic.common.helper.Bounds;
@@ -1251,6 +1252,15 @@ public class CppExtensions {
     return true;
   }
   
+  public boolean hasFriendsClassPropertyName(final LDto dto) {
+    String _friendsClassValue = this.getFriendsClassValue(dto);
+    boolean _equals = Objects.equal(_friendsClassValue, null);
+    if (_equals) {
+      return false;
+    }
+    return true;
+  }
+  
   public boolean hasEnumValues(final LEnum en) {
     String _enumValues = this.getEnumValues(en);
     boolean _equals = Objects.equal(_enumValues, null);
@@ -1647,6 +1657,24 @@ public class CppExtensions {
   public String getSqlCacheValue(final LDto member) {
     EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
     final LAnnotationDef annoDef = this._annotationExtension.getRedefined(SqlCache.class, _resolvedAnnotations);
+    boolean _notEquals = (!Objects.equal(annoDef, null));
+    if (_notEquals) {
+      XAnnotation _annotation = annoDef.getAnnotation();
+      XExpression _value = _annotation.getValue();
+      JvmAnnotationValue _jvmAnnotationValue = this._jvmTypesBuilder.toJvmAnnotationValue(_value);
+      final JvmCustomAnnotationValue annotationValue = ((JvmCustomAnnotationValue) _jvmAnnotationValue);
+      EList<Object> _values = annotationValue.getValues();
+      Object _get = _values.get(0);
+      final XStringLiteral lit = ((XStringLiteral) _get);
+      return lit.getValue();
+    } else {
+      return null;
+    }
+  }
+  
+  public String getFriendsClassValue(final LDto member) {
+    EList<LAnnotationDef> _resolvedAnnotations = member.getResolvedAnnotations();
+    final LAnnotationDef annoDef = this._annotationExtension.getRedefined(FriendsClass.class, _resolvedAnnotations);
     boolean _notEquals = (!Objects.equal(annoDef, null));
     if (_notEquals) {
       XAnnotation _annotation = annoDef.getAnnotation();

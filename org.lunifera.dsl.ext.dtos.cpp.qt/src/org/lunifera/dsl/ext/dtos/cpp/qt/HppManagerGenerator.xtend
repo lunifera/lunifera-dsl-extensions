@@ -71,6 +71,13 @@ Q_PROPERTY(QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»P
 
 public:
     DataManager(QObject *parent = 0);
+	«FOR dto : pkg.types.filter[it instanceof LDto && it.name == "SettingsData"].map[it as LDto]»
+		«IF dto.hasFriendsClassPropertyName»
+		
+		friend class «dto.friendsClassValue»;
+		
+		«ENDIF»
+	«ENDFOR»
     virtual ~DataManager();
     Q_INVOKABLE
     void init();
