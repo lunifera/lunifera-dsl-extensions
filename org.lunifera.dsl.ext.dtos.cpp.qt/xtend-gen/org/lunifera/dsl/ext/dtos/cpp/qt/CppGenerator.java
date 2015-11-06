@@ -3903,14 +3903,22 @@ public class CppGenerator {
       final Function1<LFeature, Boolean> _function_28 = new Function1<LFeature, Boolean>() {
         public Boolean apply(final LFeature it) {
           boolean _and = false;
+          boolean _and_1 = false;
           boolean _isLazy = CppGenerator.this._cppExtensions.isLazy(it);
           boolean _not = (!_isLazy);
           if (!_not) {
-            _and = false;
+            _and_1 = false;
           } else {
             boolean _isLazyArray = CppGenerator.this._cppExtensions.isLazyArray(it);
             boolean _not_1 = (!_isLazyArray);
-            _and = _not_1;
+            _and_1 = _not_1;
+          }
+          if (!_and_1) {
+            _and = false;
+          } else {
+            boolean _isTransient = CppGenerator.this._cppExtensions.isTransient(it);
+            boolean _not_2 = (!_isTransient);
+            _and = _not_2;
           }
           return Boolean.valueOf(_and);
         }

@@ -640,7 +640,7 @@ QVariantMap «dto.toName»::toForeignMap()
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
-	«FOR feature : dto.allFeatures.filter[!isLazy && !isLazyArray]»
+	«FOR feature : dto.allFeatures.filter[!isLazy && !isLazyArray && !isTransient]»
 		«IF feature.isTypeOfDataObject»
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
