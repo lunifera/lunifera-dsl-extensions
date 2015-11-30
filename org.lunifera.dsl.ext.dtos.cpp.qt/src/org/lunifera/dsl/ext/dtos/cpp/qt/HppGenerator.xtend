@@ -229,6 +229,9 @@ class HppGenerator {
 		
 		Q_INVOKABLE
 		QVariantList «feature.toName»AsQVariantList();
+		
+		Q_INVOKABLE
+		QVariantList «feature.toName»AsForeignQVariantList();
 
 		«IF !feature.isTypeRootDataObject»
 		Q_INVOKABLE

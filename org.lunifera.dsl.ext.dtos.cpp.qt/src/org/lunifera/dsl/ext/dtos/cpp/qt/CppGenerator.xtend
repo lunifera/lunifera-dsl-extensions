@@ -552,17 +552,22 @@ QVariantMap «dto.toName»::toMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+		//
+		// if keys alreadyy resolved: clear them
+		// otherwise reuse the keys and add objects from mPositions
+		// this can happen if added to objects without resolving keys before
+		if(m«feature.toName.toFirstUpper»KeysResolved) {
 			m«feature.toName.toFirstUpper»Keys.clear();
-			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-				«IF feature.attributeDomainKeyType == "int"»
-				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
-				«ELSE»
-				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
-				«ENDIF»
-			}
+		}
+		// add objects from mPositions
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			«IF feature.attributeDomainKeyType == "int"»
+			m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+			«ELSE»
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			«ENDIF»
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -626,17 +631,22 @@ QVariantMap «dto.toName»::toForeignMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+		//
+		// if keys alreadyy resolved: clear them
+		// otherwise reuse the keys and add objects from mPositions
+		// this can happen if added to objects without resolving keys before
+		if(m«feature.toName.toFirstUpper»KeysResolved) {
 			m«feature.toName.toFirstUpper»Keys.clear();
-			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-				«IF feature.attributeDomainKeyType == "int"»
-				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
-				«ELSE»
-				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
-				«ENDIF»
-			}
+		}
+		// add objects from mPositions
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			«IF feature.attributeDomainKeyType == "int"»
+			m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+			«ELSE»
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			«ENDIF»
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -645,7 +655,7 @@ QVariantMap «dto.toName»::toForeignMap()
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»AsQVariantList());
+			«dto.toName.toFirstLower»Map.insert(«feature.toName»ForeignKey, «feature.toName»AsForeignQVariantList());
 			«ELSE»
 			if (m«feature.toName.toFirstUpper») {
 				«IF feature.toTypeName == "GeoCoordinate"»
@@ -704,17 +714,22 @@ QVariantMap «dto.toName»::toCacheMap()
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
-		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
+		//
+		// if keys alreadyy resolved: clear them
+		// otherwise reuse the keys and add objects from mPositions
+		// this can happen if added to objects without resolving keys before
+		if(m«feature.toName.toFirstUpper»KeysResolved) {
 			m«feature.toName.toFirstUpper»Keys.clear();
-			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-				«IF feature.attributeDomainKeyType == "int"»
-				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
-				«ELSE»
-				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
-				«ENDIF»
-			}
+		}
+		// add objects from mPositions
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			«IF feature.attributeDomainKeyType == "int"»
+			m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+			«ELSE»
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			«ENDIF»
 		}
 		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
@@ -1183,6 +1198,14 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
     }
 	return «feature.toName»List;
 }
+QVariantList «dto.toName»::«feature.toName»AsForeignQVariantList()
+{
+	QVariantList «feature.toName»List;
+	for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        «feature.toName»List.append((m«feature.toName.toFirstUpper».at(i))->toForeignMap());
+    }
+	return «feature.toName»List;
+}
 «IF !feature.isTypeRootDataObject»
 /**
  * creates a new «feature.toTypeName»
@@ -1217,6 +1240,11 @@ void «dto.toName»::undoCreateElementOf«feature.toName.toFirstUpper»(«featur
 // no create() or undoCreate() because dto is root object
 // see methods in DataManager
 «ENDIF»
+/**
+ * you can add «feature.toName» without resolving existing keys before
+ * attention: before looping through the objects
+ * you must resolve«feature.toName.toFirstUpper»Keys
+ */
 void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
@@ -1328,12 +1356,17 @@ QStringList «dto.toName»::«feature.toName.toFirstLower»Keys()
     return m«feature.toName.toFirstUpper»Keys;
 }
 
+/**
+ * Objects from «feature.toName»Keys will be added to existing «feature.toName»
+ * This enables to use addTo«feature.toName.toFirstUpper»() without resolving before
+ * Hint: it's your responsibility to resolve before looping thru «feature.toName»
+ */
 void «dto.toName»::resolve«feature.toName.toFirstUpper»Keys(QList<«feature.toTypeName»*> «feature.toName.toFirstLower»)
 {
     if(m«feature.toName.toFirstUpper»KeysResolved){
         return;
     }
-    m«feature.toName.toFirstUpper».clear();
+    // don't clear m«feature.toName.toFirstUpper» (see above)
     for (int i = 0; i < «feature.toName.toFirstLower».size(); ++i) {
         addTo«feature.toName.toFirstUpper»(«feature.toName.toFirstLower».at(i));
     }
@@ -1556,17 +1589,22 @@ void «dto.toName»::toSqlCache(«FOR feature : dto.features SEPARATOR", "»QVar
 	«FOR feature : dto.allFeatures.filter[isLazyArray]»
 		// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 		// lazy array: persist only keys
+		//
+		// if keys alreadyy resolved: clear them
+		// otherwise reuse the keys and add objects from mPositions
+		// this can happen if added to objects without resolving keys before
 		if(m«feature.toName.toFirstUpper»KeysResolved || (m«feature.toName.toFirstUpper»Keys.size() == 0 && m«feature.toName.toFirstUpper».size() != 0)) {
 			m«feature.toName.toFirstUpper»Keys.clear();
-			for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
-				«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
-				«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
-				«IF feature.attributeDomainKeyType == "int"»
-				m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
-				«ELSE»
-				m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
-				«ENDIF»
-			}
+		}
+		// add objects from mPositions
+		for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»;
+			«feature.toTypeName.toFirstLower» = m«feature.toName.toFirstUpper».at(i);
+			«IF feature.attributeDomainKeyType == "int"»
+			m«feature.toName.toFirstUpper»Keys << QString::number(«feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»());
+			«ELSE»
+			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
+			«ENDIF»
 		}
 		«feature.toName.toFirstLower»List << m«feature.toName.toFirstUpper»Keys.join(";");
 	«ENDFOR»
