@@ -286,8 +286,8 @@ private:
 	«ENDIF»
 «ENDIF»
 
-	QVariantList readFromCache(QString& fileName);
-	void writeToCache(QString& fileName, QVariantList& data);
+	QVariantList readFromCache(const QString& fileName);
+	void writeToCache(const QString& fileName, QVariantList& data);
 	void finish();
 };
 

@@ -57,11 +57,22 @@ class CppManagerGenerator {
 static QString dbName = "sqlcache.db";
 «ENDIF»
 
+static const QString PRODUCTION_ENVIRONMENT = "prod/";
+static const QString TEST_ENVIRONMENT = "test/";
+static bool isProductionEnvironment = true;
 static QString dataAssetsPath(const QString& fileName)
+{
+    return QDir::currentPath() + "/app/native/assets/datamodel/" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
+}
+static QString dataPath(const QString& fileName)
+{
+    return QDir::currentPath() + "/data/" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
+}
+static QString settingsAssetsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/app/native/assets/datamodel/" + fileName;
 }
-static QString dataPath(const QString& fileName)
+static QString settingsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/data/" + fileName;
 }
@@ -71,7 +82,7 @@ static QString dataPath(const QString& fileName)
 // there's also a flat list (in memory only) useful for easy filtering
 		«ENDIF»
     	«IF dto.isRootDataObject»
-static QString cache«dto.toName» = "cache«dto.toName».json";
+static const QString cache«dto.toName» = "cache«dto.toName».json";
 		«ENDIF»
 	«ENDFOR»
 
@@ -144,6 +155,18 @@ DataManager::DataManager(QObject *parent) :
  */
 void DataManager::init()
 {
+    // check directories
+    QDir dir;
+    bool exists;
+    exists = dir.exists(QDir::currentPath() + "/data/"+PRODUCTION_ENVIRONMENT);
+    if (!exists) {
+        dir.mkpath(QDir::currentPath() + "/data/"+PRODUCTION_ENVIRONMENT);
+    }
+    exists = dir.exists(QDir::currentPath() + "/data/"+TEST_ENVIRONMENT);
+        if (!exists) {
+        dir.mkpath(QDir::currentPath() + "/data/"+TEST_ENVIRONMENT);
+    }
+    // get all from cache
 	«IF pkg.hasSqlCache»
 	// SQL init the sqlite database
 	mDatabaseAvailable = initDatabase();
@@ -159,6 +182,11 @@ void DataManager::init()
     		«ELSE»
     		init«dto.toName»FromCache();
     		«ENDIF»
+    		«IF dto.toName.equals("SettingsData")»
+    		SettingsData* theSettings;
+    		theSettings = (SettingsData*) mAllSettingsData.first();
+    		isProductionEnvironment = theSettings->isProductionEnvironment();
+			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
 	«IF pkg.has2PhaseInit && pkg.hasSqlCache»
@@ -1269,16 +1297,25 @@ void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(Q
  * reads data in from stored cache
  * if no cache found tries to get data from assets/datamodel
  */
-QVariantList DataManager::readFromCache(QString& fileName)
+QVariantList DataManager::readFromCache(const QString& fileName)
 {
     JsonDataAccess jda;
     QVariantList cacheList;
-    QFile dataFile(dataPath(fileName));
+    QString cacheFilePath;
+    QString assetsFilePath;
+    if(fileName == cacheSettingsData) {
+        cacheFilePath = settingsPath(fileName);
+        assetsFilePath = settingsAssetsPath(fileName);
+    } else {
+        cacheFilePath = dataPath(fileName);
+        assetsFilePath = dataAssetsPath(fileName);
+    }
+    QFile dataFile(cacheFilePath);
     if (!dataFile.exists()) {
-        QFile assetDataFile(dataAssetsPath(fileName));
+        QFile assetDataFile(assetsFilePath);
         if (assetDataFile.exists()) {
             // copy file from assets to data
-            bool copyOk = assetDataFile.copy(dataPath(fileName));
+            bool copyOk = assetDataFile.copy(cacheFilePath);
             if (!copyOk) {
                 qDebug() << "cannot copy dataAssetsPath(fileName) to dataPath(fileName)";
                 // no cache, no assets - empty list
@@ -1289,14 +1326,18 @@ QVariantList DataManager::readFromCache(QString& fileName)
             return cacheList;
         }
     }
-    cacheList = jda.load(dataPath(fileName)).toList();
+    cacheList = jda.load(cacheFilePath).toList();
     return cacheList;
 }
 
-void DataManager::writeToCache(QString& fileName, QVariantList& data)
+void DataManager::writeToCache(const QString& fileName, QVariantList& data)
 {
     QString filePath;
-    filePath = dataPath(fileName);
+    if(fileName == cacheSettingsData) {
+        filePath = settingsPath(fileName);
+    } else {
+        filePath = dataPath(fileName);
+    }
     JsonDataAccess jda;
     jda.save(data, filePath);
 }

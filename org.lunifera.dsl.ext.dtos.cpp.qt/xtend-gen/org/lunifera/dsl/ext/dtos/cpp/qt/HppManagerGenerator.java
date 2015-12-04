@@ -1149,10 +1149,10 @@ public class HppManagerGenerator {
     }
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("QVariantList readFromCache(QString& fileName);");
+    _builder.append("QVariantList readFromCache(const QString& fileName);");
     _builder.newLine();
     _builder.append("\t");
-    _builder.append("void writeToCache(QString& fileName, QVariantList& data);");
+    _builder.append("void writeToCache(const QString& fileName, QVariantList& data);");
     _builder.newLine();
     _builder.append("\t");
     _builder.append("void finish();");
