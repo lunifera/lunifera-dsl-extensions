@@ -5758,6 +5758,9 @@ public class CppManagerGenerator {
     _builder.append("finish();");
     _builder.newLine();
     _builder.append("    ");
+    _builder.append("emit shuttingDown();");
+    _builder.newLine();
+    _builder.append("    ");
     _builder.append("bb::Application::instance()->exit(0);");
     _builder.newLine();
     _builder.append("}");

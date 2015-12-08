@@ -195,12 +195,17 @@ public class HppManagerGenerator {
           if (_hasFriendsClassPropertyName) {
             _builder.append("\t");
             _builder.newLine();
-            _builder.append("\t");
-            _builder.append("friend class ");
-            String _friendsClassValue = this._cppExtensions.getFriendsClassValue(dto_2);
-            _builder.append(_friendsClassValue, "\t");
-            _builder.append(";");
-            _builder.newLineIfNotEmpty();
+            {
+              String _friendsClassValue = this._cppExtensions.getFriendsClassValue(dto_2);
+              String[] _split = _friendsClassValue.split(",");
+              for(final String friend : _split) {
+                _builder.append("\t");
+                _builder.append("friend class ");
+                _builder.append(friend, "\t");
+                _builder.append(";");
+                _builder.newLineIfNotEmpty();
+              }
+            }
             _builder.append("\t");
             _builder.newLine();
           }
@@ -759,6 +764,9 @@ public class HppManagerGenerator {
     _builder.newLine();
     _builder.append("Q_SIGNALS:");
     _builder.newLine();
+    _builder.newLine();
+    _builder.append("\t");
+    _builder.append("void shuttingDown();");
     _builder.newLine();
     {
       EList<LType> _types_5 = pkg.getTypes();

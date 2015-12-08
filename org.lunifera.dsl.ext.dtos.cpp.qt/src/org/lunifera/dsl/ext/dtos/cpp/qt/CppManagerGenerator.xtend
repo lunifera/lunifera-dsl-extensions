@@ -1346,6 +1346,7 @@ void DataManager::onManualExit()
 {
     qDebug() << "## DataManager ## MANUAL EXIT";
     finish();
+    emit shuttingDown();
     bb::Application::instance()->exit(0);
 }
 

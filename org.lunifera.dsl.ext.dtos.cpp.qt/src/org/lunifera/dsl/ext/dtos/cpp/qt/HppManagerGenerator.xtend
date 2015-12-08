@@ -74,7 +74,9 @@ public:
 	«FOR dto : pkg.types.filter[it instanceof LDto && it.name == "SettingsData"].map[it as LDto]»
 		«IF dto.hasFriendsClassPropertyName»
 		
-		friend class «dto.friendsClassValue»;
+		«FOR friend : dto.friendsClassValue.split(",")»
+		friend class «friend»;
+		«ENDFOR»
 		
 		«ENDIF»
 	«ENDFOR»
@@ -206,6 +208,7 @@ public:
 
 Q_SIGNALS:
 
+	void shuttingDown();
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
 	void addedToAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
