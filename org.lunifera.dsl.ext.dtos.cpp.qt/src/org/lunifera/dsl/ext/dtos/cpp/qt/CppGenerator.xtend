@@ -205,15 +205,9 @@ void «dto.toName»::fillFromMap(const QVariantMap& «dto.toName.toFirstLower»M
 			}
 			«ELSEIF feature.isEnum»
 			// ENUM
+			// always as int, TODO first test if value is string
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
-				bool* ok;
-				ok = false;
-				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
-				if (ok) {
-					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
-				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
-				}
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
@@ -321,15 +315,9 @@ void «dto.toName»::fillFromForeignMap(const QVariantMap& «dto.toName.toFirstL
 			}
 			«ELSEIF feature.isEnum»
 			// ENUM
+			// always as int, TODO first test if value is string
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»ForeignKey)) {
-				bool* ok;
-				ok = false;
-				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toInt(ok);
-				if (ok) {
-					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toInt();
-				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toString());
-				}
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»ForeignKey).toInt();
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
@@ -432,15 +420,9 @@ void «dto.toName»::fillFromCacheMap(const QVariantMap& «dto.toName.toFirstLow
 			// m«feature.toName.toFirstUpper» is transient - don't forget to initialize
 			«ELSEIF feature.isEnum»
 			// ENUM
+			// always as int, TODO first test if value is string
 			if («dto.toName.toFirstLower»Map.contains(«feature.toName.toFirstLower»Key)) {
-				bool* ok;
-				ok = false;
-				«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt(ok);
-				if (ok) {
-					m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
-				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(«dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toString());
-				}
+				m«feature.toName.toFirstUpper» = «dto.toName.toFirstLower»Map.value(«feature.toName.toFirstLower»Key).toInt();
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
@@ -1728,15 +1710,9 @@ void «dto.toName»::fillFromSqlQuery(const QSqlQuery& sqlQuery)
 			// m«feature.toName.toFirstUpper» is transient - don't forget to initialize
 			«ELSEIF feature.isEnum»
 			// ENUM
+			// always as int, TODO first test if value is string
 			if (sqlQuery.value(«feature.toName.toFirstLower»QueryPos).isValid()) {
-				bool* ok;
-				ok = false;
-				sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toInt(ok);
-				if (ok) {
-					m«feature.toName.toFirstUpper» = sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toInt();
-				} else {
-					m«feature.toName.toFirstUpper» = «feature.toName.toFirstLower»StringToInt(sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toString());
-				}
+				m«feature.toName.toFirstUpper» = sqlQuery.value(«feature.toName.toFirstLower»QueryPos).toInt();
 			} else {
 				m«feature.toName.toFirstUpper» = «feature.toTypeName»::NO_VALUE;
 			}
