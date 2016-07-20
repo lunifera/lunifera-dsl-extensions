@@ -849,6 +849,77 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»PropertyList()
     m«feature.toName.toFirstUpper»AsPropertyList.clear();
     mIs«feature.toName.toFirstUpper»AsPropertyListInitialized = false;
 }
+
+«IF dto.hasTargetOSPropertyName»
+/**
+ * to access lists from QML we're using QQmlListProperty
+ * and implement methods to count and clear
+ * because it's a special list of a hierarchy there's no append function
+ * now from QML we can use
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList.length to get the size
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2] to get «dto.toName»* at position 2
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList = [] to clear the list
+ * or get easy access to properties like
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2].myPropertyName
+ */
+QQmlListProperty<«dto.toName»> «dto.toName»::«feature.toName»PropertyList()
+{
+    return QQmlListProperty<«dto.toName»>(this, 0,
+            &«dto.toName»::appendTo«feature.toName.toFirstUpper»Property, &«dto.toName»::«feature.toName»PropertyCount,
+            &«dto.toName»::at«feature.toName.toFirstUpper»Property, &«dto.toName»::clear«feature.toName.toFirstUpper»Property);
+}
+void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(
+        QQmlListProperty<«dto.toName»> *«feature.toName»List,
+        «dto.toName»* «dto.toName.toFirstLower»)
+{
+    qWarning() << "Not allowed to APPEND to hierarchy of «feature.toName», m«feature.toName.toFirstUpper»AsPropertyList is only a mirror of existing structures";
+}
+// implementation for QQmlListProperty to use
+// QML functions for hierarchy of «dto.toName»*
+int «dto.toName»::«feature.toName»PropertyCount(
+        QQmlListProperty<«dto.toName»> *«feature.toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size();
+    } else {
+        qWarning() << "cannot get size «feature.toName» hierarchy "
+                << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+«dto.toName»* «dto.toName»::at«feature.toName.toFirstUpper»Property(
+        QQmlListProperty<«dto.toName»> *«feature.toName»List, int pos)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        if («dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size() > pos) {
+            return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.at(pos);
+        }
+        qWarning() << "cannot get «dto.toName»* at pos " << pos << " size is "
+                << «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.size();
+    } else {
+        qWarning() << "cannot get «dto.toName»* at pos " << pos
+                << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+void «dto.toName»::clear«feature.toName.toFirstUpper»Property(
+        QQmlListProperty<«dto.toName»> *«feature.toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(
+            «feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        // nothing contained - so nothing must be deleted
+        «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper»AsPropertyList.clear();
+    } else {
+        qWarning() << "cannot clear «feature.toName» hierarchy "
+                << "Object is not of type «dto.toName»*";
+    }
+}
+«ELSE»
 /**
  * to access lists from QML we're using QDeclarativeListProperty
  * and implement methods to count and clear
@@ -917,6 +988,8 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(
                 << "Object is not of type «dto.toName»*";
     }
 }
+«ENDIF»
+
 «ENDIF»
 «ENDFOR»
 «FOR feature : dto.allFeatures.filter[!isToMany && !isLazy]»
@@ -1120,6 +1193,7 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»List(const «feature.to
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»Value);
     emit addedTo«feature.toName.toFirstUpper»List(«feature.toTypeName.toFirstLower»Value);
+    emit «feature.toName»PropertyListChanged();
 }
 
 bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»List(const «feature.toTypeName»& «feature.toTypeName.
@@ -1132,6 +1206,7 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»List(const «featu
     	return false;
     }
     emit removedFrom«feature.toName.toFirstUpper»List(«feature.toTypeName.toFirstLower»Value);
+    emit «feature.toName»PropertyListChanged();
     return true;
 }
 int «dto.toName»::«feature.toName.toFirstLower»Count()
@@ -1231,6 +1306,7 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»(«feature.toTypeName»
 {
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
     emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
+    emit «feature.toName»PropertyListChanged();
 }
 
 bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeName»* «feature.toTypeName.toFirstLower»)
@@ -1246,6 +1322,7 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»(«feature.toTypeN
     «ELSEIF feature.referenceHasDomainKey»
     emit removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»());
     «ENDIF»
+    emit «feature.toName»PropertyListChanged();
     «IF feature.hasOpposite»
     // «feature.toName» are contained - so we must delete them
     «feature.toTypeName.toFirstLower»->deleteLater();
@@ -1269,6 +1346,7 @@ void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantM
     «feature.toTypeName.toFirstLower»->fillFromMap(«feature.toTypeName.toFirstLower»Map);
     m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
     emit addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
+    emit «feature.toName»PropertyListChanged();
 }
 «ENDIF»
 «IF feature.referenceHasUuid»
@@ -1280,6 +1358,7 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»ByUuid(const QStri
         if («feature.toTypeName.toFirstLower»->uuid() == uuid) {
         	m«feature.toName.toFirstUpper».removeAt(i);
         	emit removedFrom«feature.toName.toFirstUpper»ByUuid(uuid);
+        	emit «feature.toName»PropertyListChanged();
         	«IF feature.hasOpposite»
         	// «feature.toName» are contained - so we must delete them
         	«feature.toTypeName.toFirstLower»->deleteLater();
@@ -1304,6 +1383,7 @@ bool «dto.toName»::removeFrom«feature.toName.toFirstUpper»By«feature.refere
         if («feature.toTypeName.toFirstLower»->«feature.referenceDomainKey»() == «feature.referenceDomainKey») {
         	m«feature.toName.toFirstUpper».removeAt(i);
         	emit removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.referenceDomainKey»);
+        	emit «feature.toName»PropertyListChanged();
         	«IF feature.hasOpposite»
         	// «feature.toName» are contained - so we must delete them
         	«feature.toTypeName.toFirstLower»->deleteLater();
@@ -1371,6 +1451,83 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<«feature.toTypeNa
 		emit «feature.toName»Changed(«feature.toName»);
 	}
 }
+
+«IF dto.hasTargetOSPropertyName»
+/**
+ * to access lists from QML we're using QQmlListProperty
+ * and implement methods to append, count and clear
+ * now from QML we can use
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList.length to get the size
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2] to get «feature.toTypeName»* at position 2
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList = [] to clear the list
+ * or get easy access to properties like
+ * «dto.toName.toFirstLower».«feature.toName»PropertyList[2].myPropertyName
+ */
+QQmlListProperty<«feature.toTypeName»> «dto.toName»::«feature.toName»PropertyList()
+{
+    return QQmlListProperty<«feature.toTypeName»>(this, 0, &«dto.toName»::appendTo«feature.toName.toFirstUpper»Property,
+            &«dto.toName»::«feature.toName»PropertyCount, &«dto.toName»::at«feature.toName.toFirstUpper»Property,
+            &«dto.toName»::clear«feature.toName.toFirstUpper»Property);
+}
+void «dto.toName»::appendTo«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.toTypeName»> *«feature.
+		toName»List,
+        «feature.toTypeName»* «feature.toTypeName.toFirstLower»)
+{
+    «dto.toName» *«dto.toName.toFirstLower»Object = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower»Object) {
+		«IF !feature.isTypeRootDataObject»
+		«feature.toTypeName.toFirstLower»->setParent(«dto.toName.toFirstLower»Object);
+		«ENDIF»
+        «dto.toName.toFirstLower»Object->m«feature.toName.toFirstUpper».append(«feature.toTypeName.toFirstLower»);
+        emit «dto.toName.toFirstLower»Object->addedTo«feature.toName.toFirstUpper»(«feature.toTypeName.toFirstLower»);
+    } else {
+        qWarning() << "cannot append «feature.toTypeName»* to «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
+}
+int «dto.toName»::«feature.toName»PropertyCount(QQmlListProperty<«feature.toTypeName»> *«feature.toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size();
+    } else {
+        qWarning() << "cannot get size «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+«feature.toTypeName»* «dto.toName»::at«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.
+		toTypeName»> *«feature.toName»List, int pos)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        if («dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size() > pos) {
+            return «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».at(pos);
+        }
+        qWarning() << "cannot get «feature.toTypeName»* at pos " << pos << " size is "
+                << «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size();
+    } else {
+        qWarning() << "cannot get «feature.toTypeName»* at pos " << pos << "Object is not of type «dto.toName»*";
+    }
+    return 0;
+}
+void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.toTypeName»> *«feature.
+		toName»List)
+{
+    «dto.toName» *«dto.toName.toFirstLower» = qobject_cast<«dto.toName» *>(«feature.toName»List->object);
+    if («dto.toName.toFirstLower») {
+        «IF feature.hasOpposite»
+        // «feature.toName» are contained - so we must delete them
+        for (int i = 0; i < «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».size(); ++i) {
+            «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».at(i)->deleteLater();
+        }
+        «ELSE»
+        // «feature.toName» are independent - DON'T delete them
+        «ENDIF»
+        «dto.toName.toFirstLower»->m«feature.toName.toFirstUpper».clear();
+    } else {
+        qWarning() << "cannot clear «feature.toName» " << "Object is not of type «dto.toName»*";
+    }
+}
+«ELSE»
 /**
  * to access lists from QML we're using QDeclarativeListProperty
  * and implement methods to append, count and clear
@@ -1445,6 +1602,8 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»Property(QDeclarativeLi
         qWarning() << "cannot clear «feature.toName» " << "Object is not of type «dto.toName»*";
     }
 }
+«ENDIF»
+
 «ENDFOR»
 
 «IF dto.isTree»
