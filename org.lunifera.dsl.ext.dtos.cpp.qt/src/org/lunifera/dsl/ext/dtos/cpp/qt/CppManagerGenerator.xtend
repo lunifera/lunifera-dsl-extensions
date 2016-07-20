@@ -1184,6 +1184,7 @@ void DataManager::delete«dto.toName»()
         emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
 		«ENDIF»
 		emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
+		emit «dto.toName.toFirstLower»PropertyListChanged();
         «dto.toName.toFirstLower»->deleteLater();
         «dto.toName.toFirstLower» = 0;
      }
@@ -1231,6 +1232,7 @@ void DataManager::insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower
     mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
     «ENDIF»
     emit addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+    emit «dto.toName.toFirstLower»PropertyListChanged();
 }
 
 void DataManager::insert«dto.toName»FromMap(const QVariantMap& «dto.toName.toFirstLower»Map,
@@ -1248,6 +1250,7 @@ void DataManager::insert«dto.toName»FromMap(const QVariantMap& «dto.toName.to
     mAll«dto.toName»Flat.append(«dto.toName.toFirstLower»);
     «ENDIF»
     emit addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+    «dto.toName.toFirstLower»PropertyListChanged();
 }
 
 bool DataManager::delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
@@ -1266,6 +1269,7 @@ bool DataManager::delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower
     emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
     «ENDIF»
     emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
+    emit «dto.toName.toFirstLower»PropertyListChanged();
     «dto.toName.toFirstLower»->deleteLater();
     «dto.toName.toFirstLower» = 0;
     return ok;
@@ -1288,6 +1292,7 @@ bool DataManager::delete«dto.toName»ByUuid(const QString& uuid)
             «ENDIF»
             emit deletedFromAll«dto.toName»ByUuid(uuid);
             emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
+            emit «dto.toName.toFirstLower»PropertyListChanged();
             «dto.toName.toFirstLower»->deleteLater();
             «dto.toName.toFirstLower» = 0;
             return true;
@@ -1310,6 +1315,7 @@ bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «d
             «ENDIF»
             emit deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKey»);
             emit deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
+            emit «dto.toName.toFirstLower»PropertyListChanged();
             «dto.toName.toFirstLower»->deleteLater();
             «dto.toName.toFirstLower» = 0;
             return true;
