@@ -38,7 +38,11 @@ class HppManagerGenerator {
 #define DATAMANAGER_HPP_
 
 #include <qobject.h>
+«IF pkg.hasTargetOS»
+#include <QQmlListProperty>
+«ELSE»
 #include <QtDeclarative>
+«ENDIF»
 #include <QStringList>
 «IF pkg.hasSqlCache»
 #include <QtSql/QtSql>
@@ -62,10 +66,20 @@ class DataManager: public QObject
 {
 Q_OBJECT
 
+«IF pkg.hasTargetOS»
+// QQmlListProperty to get easy access from QML
+«ELSE»
 // QDeclarativeListProperty to get easy access from QML
+«ENDIF»
 «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 «IF dto.isRootDataObject»
-Q_PROPERTY(QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList READ «dto.toName.toFirstLower»PropertyList CONSTANT)
+«IF pkg.hasTargetOS»
+«IF dto.name != "SettingsData"»
+Q_PROPERTY(QQmlListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList READ «dto.toName.toFirstLower»PropertyList NOTIFY «dto.toName.toFirstLower»PropertyListChanged)
+«ENDIF»
+«ELSE»
+Q_PROPERTY(QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList READ «dto.toName.toFirstLower»PropertyList NOTIFY «dto.toName.toFirstLower»PropertyListChanged)
+«ENDIF»
 «ENDIF»
 «ENDFOR»
 
@@ -87,10 +101,13 @@ public:
 	Q_INVOKABLE
 	void init2();
 	«ENDIF»
+	«IF pkg.hasTargetOS»
+	bool checkDirs();
+	«ENDIF»
 
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
-	
+	«IF !pkg.hasTargetOS»
 	«IF dto.isTree»
 	Q_INVOKABLE
 	void fill«dto.toName»TreeDataModel(QString objectName);
@@ -119,6 +136,8 @@ public:
 	void fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(QString objectName, const «feature.toTypeName»& «feature.toName»);
 	«ENDIF»
 	«ENDFOR»
+	«ENDIF»
+	
 	«IF dto.existsLazy»
 	«FOR feature : dto.allFeatures.filter[isLazy]»
 	«IF isHierarchy(dto, feature)»
@@ -135,7 +154,8 @@ public:
 	Q_INVOKABLE
 	void resolveReferencesForAll«dto.toName»();
 	«ENDIF»
-
+	
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	Q_INVOKABLE
 	QList<«dto.toName»*> listOf«dto.toName»ForKeys(QStringList keyList);
 
@@ -149,7 +169,12 @@ public:
 	void delete«dto.toName»();
 
 	// access from QML to list of all «dto.toName»
+	«IF pkg.hasTargetOS»
+	QQmlListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList();
+	«ELSE»
 	QDeclarativeListProperty<«dto.toName»> «dto.toName.toFirstLower»PropertyList();
+	«ENDIF»
+	«ENDIF»
 
 	Q_INVOKABLE
 	«dto.toName»* create«dto.toName»();
@@ -157,11 +182,13 @@ public:
 	Q_INVOKABLE
 	void undoCreate«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	Q_INVOKABLE
 	void insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 
 	Q_INVOKABLE
 	void insert«dto.toName»FromMap(const QVariantMap& «dto.toName.toFirstLower»Map, const bool& useForeignProperties);
+	«ENDIF»
 
 	Q_INVOKABLE
 	bool delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
@@ -175,11 +202,14 @@ public:
 	«ENDIF»
 	«IF dto.hasDomainKey && dto.domainKey != "uuid"»
 
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	Q_INVOKABLE
 	bool delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
 
 	Q_INVOKABLE
     «dto.toName»* find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»);
+	«ENDIF»
+
     «ENDIF»
 	«ENDIF»
 	«ENDFOR»
@@ -195,6 +225,7 @@ public:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
+    	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
     	void init«dto.toName»FromCache();
     	«IF dto.hasSqlCachePropertyName»
     		«IF dto.is2PhaseInit»
@@ -203,14 +234,22 @@ public:
     		void init«dto.toName»FromSqlCache();
     		«ENDIF»
     	«ENDIF»
+    	«ENDIF»
 		«ENDIF»
 	«ENDFOR»
+	«IF pkg.hasTargetOS»
+	Q_INVOKABLE
+	SettingsData* settingsData();
+	
+	void finish();
+	«ENDIF»
 
 Q_SIGNALS:
 
 	void shuttingDown();
 	«FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
 	«IF dto.isRootDataObject»
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	void addedToAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
 	«IF dto.hasUuid»
 	void deletedFromAll«dto.toName»ByUuid(QString uuid);
@@ -219,6 +258,8 @@ Q_SIGNALS:
 	void deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.domainKeyType» «dto.domainKey»);
 	«ENDIF»
 	void deletedFromAll«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
+	void «dto.toName.toFirstLower»PropertyListChanged();
+	«ENDIF»
 	«ENDIF»
     «ENDFOR»
     «IF pkg.hasSqlCache && pkg.has2PhaseInit»
@@ -234,17 +275,46 @@ private Q_SLOTS:
 
 «ENDIF»
 private:
+	«IF pkg.hasTargetOS»
+	QString mDataRoot;
+	QString mDataPath;
+	QString mSettingsPath;
+	QString mDataAssetsPath;
+	QString dataAssetsPath(const QString& fileName);
+	QString dataPath(const QString& fileName);
 
+	SettingsData* mSettingsData;
+	void readSettings();
+	void saveSettings();
+	bool mCompactJson;
+	«ENDIF»
 	// DataObject stored in List of QObject*
 	// GroupDataModel only supports QObject*
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
+    	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
     	QList<QObject*> mAll«dto.toName»;
+    	«ENDIF»
     	«IF dto.is2PhaseInit»
     	// collects data for priority loading
     	QVariantMap m«dto.toName»2PhaseInit;
     	bool m«dto.toName»Init2Done;
     	«ENDIF»
+    	«IF pkg.hasTargetOS»
+    	«IF dto.name != "SettingsData"»
+    	// implementation for QQmlListProperty to use
+    	// QML functions for List of All «dto.toName»*
+    	static void appendTo«dto.toName»Property(
+    		QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List,
+    		«dto.toName»* «dto.toName.toFirstLower»);
+    	static int «dto.toName.toFirstLower»PropertyCount(
+    		QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List);
+    	static «dto.toName»* at«dto.toName»Property(
+    		QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List, int pos);
+    	static void clear«dto.toName»Property(
+    		QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List);
+    	«ENDIF»
+    	«ELSE»
     	// implementation for QDeclarativeListProperty to use
     	// QML functions for List of All «dto.toName»*
     	static void appendTo«dto.toName»Property(
@@ -256,6 +326,8 @@ private:
     		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List, int pos);
     	static void clear«dto.toName»Property(
     		QDeclarativeListProperty<«dto.toName»> *«dto.toName.toFirstLower»List);
+    	«ENDIF»
+    		
 		«ENDIF»
     	«IF dto.isTree»
     	QList<QObject*> mAll«dto.toName»Flat;
@@ -264,6 +336,7 @@ private:
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
+    	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
     	void save«dto.toName»ToCache();
     		«IF dto.hasSqlCachePropertyName»
     		void save«dto.toName»ToSqlCache();
@@ -271,6 +344,7 @@ private:
     			void init«dto.toName»FromSqlCache2();
     			void process«dto.toName»Query2();
     			«ENDIF»
+			«ENDIF»
 			«ENDIF»
 		«ENDIF»
 	«ENDFOR»
@@ -291,7 +365,9 @@ private:
 
 	QVariantList readFromCache(const QString& fileName);
 	void writeToCache(const QString& fileName, QVariantList& data);
+	«IF !pkg.hasTargetOS»
 	void finish();
+	«ENDIF»
 };
 
 #endif /* DATAMANAGER_HPP_ */

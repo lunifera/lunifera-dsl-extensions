@@ -46,6 +46,7 @@ import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.Index
 import org.lunifera.dsl.semantic.dto.LDtoAttribute
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.SqlCache
 import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.FriendsClass
+import org.lunifera.dsl.ext.cpp.qt.lib.types.annotation.TargetOS
 
 class CppExtensions {
 
@@ -288,7 +289,7 @@ class CppExtensions {
 		}
 		return false
 	}
-	
+
 	def dispatch boolean isReferencing(LDtoAbstractAttribute target, LDto source) {
 		if (target.type instanceof LDto) {
 			val LDto targetDto = target.type as LDto
@@ -686,6 +687,13 @@ class CppExtensions {
 		return true
 	}
 	
+	def boolean hasTargetOSPropertyName(LDto dto) {
+		if (dto.targetOSValue == null) {
+			return false
+		}
+		return true
+	}
+
 	def boolean hasFriendsClassPropertyName(LDto dto) {
 		if (dto.friendsClassValue == null) {
 			return false
@@ -739,7 +747,7 @@ class CppExtensions {
 	def dispatch boolean referenceHasUuid(LDtoReference reference) {
 		return (reference.type as LDto).hasUuid
 	}
-	
+
 	def dispatch String attributeDomainKeyType(LFeature feature) {
 		return ""
 	}
@@ -747,7 +755,6 @@ class CppExtensions {
 	def dispatch String attributeDomainKeyType(LDtoAttribute attribute) {
 		return (attribute.type as LDto).domainKeyType
 	}
-	
 
 	def dispatch String attributeDomainKey(LFeature feature) {
 		return ""
@@ -939,7 +946,7 @@ class CppExtensions {
 		}
 		return feature.toTypeName
 	}
-	
+
 	def toTypeOrQObjectName(LFeature feature) {
 		if (feature.isTypeOfDataObject) {
 			return '''«feature.toTypeName»'''.toString
@@ -975,9 +982,20 @@ class CppExtensions {
 			return null
 		}
 	}
-	
+
 	def String getFriendsClassValue(LDto member) {
 		val annoDef = typeof(FriendsClass).getRedefined(member.resolvedAnnotations)
+		if (annoDef != null) {
+			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
+			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral
+			return lit.value
+		} else {
+			return null
+		}
+	}
+
+	def String getTargetOSValue(LDto member) {
+		val annoDef = typeof(TargetOS).getRedefined(member.resolvedAnnotations)
 		if (annoDef != null) {
 			val JvmCustomAnnotationValue annotationValue = toJvmAnnotationValue(annoDef.annotation.value) as JvmCustomAnnotationValue;
 			val XStringLiteral lit = annotationValue.values.get(0) as XStringLiteral

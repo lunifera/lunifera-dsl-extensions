@@ -43,10 +43,16 @@ class CppManagerGenerator {
 
 #include "DataManager.hpp"
 
+«IF pkg.hasTargetOS»
+#include <QtQml>
+#include <QJsonObject>
+#include <QFile>
+«ELSE»
 #include <bb/cascades/Application>
 #include <bb/cascades/AbstractPane>
 #include <bb/data/JsonDataAccess>
 #include <bb/cascades/GroupDataModel>
+«ENDIF»
 
 «IF pkg.hasSqlCache»
 	«IF !pkg.has2PhaseInit»
@@ -60,6 +66,9 @@ static QString dbName = "sqlcache.db";
 static const QString PRODUCTION_ENVIRONMENT = "prod/";
 static const QString TEST_ENVIRONMENT = "test/";
 static bool isProductionEnvironment = true;
+
+«IF pkg.hasTargetOS»
+«ELSE»
 static QString dataAssetsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/app/native/assets/datamodel/" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
@@ -76,6 +85,8 @@ static QString settingsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/data/" + fileName;
 }
+«ENDIF»
+
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isTree»
 // cache«dto.toName» is tree of  «dto.toName»
@@ -86,8 +97,11 @@ static const QString cache«dto.toName» = "cache«dto.toName».json";
 		«ENDIF»
 	«ENDFOR»
 
+«IF pkg.hasTargetOS»
+«ELSE»
 using namespace bb::cascades;
 using namespace bb::data;
+«ENDIF»
 
 DataManager::DataManager(QObject *parent) :
         QObject(parent)

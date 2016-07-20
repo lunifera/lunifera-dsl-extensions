@@ -61,6 +61,19 @@ public class ManagerExtensions {
     return false;
   }
   
+  public boolean hasTargetOS(final LTypedPackage pkg) {
+    EList<LType> _types = pkg.getTypes();
+    for (final LType lt : _types) {
+      if ((lt instanceof LDto)) {
+        boolean _hasTargetOSPropertyName = this._cppExtensions.hasTargetOSPropertyName(((LDto)lt));
+        if (_hasTargetOSPropertyName) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
   public boolean has2PhaseInit(final LTypedPackage pkg) {
     EList<LType> _types = pkg.getTypes();
     for (final LType lt : _types) {

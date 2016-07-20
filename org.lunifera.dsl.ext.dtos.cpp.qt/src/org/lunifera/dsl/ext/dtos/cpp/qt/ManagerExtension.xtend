@@ -57,6 +57,17 @@ class ManagerExtensions {
 		return false
 	}
 	
+	def boolean hasTargetOS(LTypedPackage pkg) {
+		for (lt : pkg.types) {
+			if (lt instanceof LDto) {
+				if (lt.hasTargetOSPropertyName) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+	
 	def boolean has2PhaseInit(LTypedPackage pkg) {
 		for (lt : pkg.types) {
 			if (lt instanceof LDto) {

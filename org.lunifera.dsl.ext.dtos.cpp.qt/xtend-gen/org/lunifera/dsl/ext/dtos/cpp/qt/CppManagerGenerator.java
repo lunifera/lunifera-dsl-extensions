@@ -60,14 +60,26 @@ public class CppManagerGenerator {
     _builder.append("#include \"DataManager.hpp\"");
     _builder.newLine();
     _builder.newLine();
-    _builder.append("#include <bb/cascades/Application>");
-    _builder.newLine();
-    _builder.append("#include <bb/cascades/AbstractPane>");
-    _builder.newLine();
-    _builder.append("#include <bb/data/JsonDataAccess>");
-    _builder.newLine();
-    _builder.append("#include <bb/cascades/GroupDataModel>");
-    _builder.newLine();
+    {
+      boolean _hasTargetOS = this._managerExtensions.hasTargetOS(pkg);
+      if (_hasTargetOS) {
+        _builder.append("#include <QtQml>");
+        _builder.newLine();
+        _builder.append("#include <QJsonObject>");
+        _builder.newLine();
+        _builder.append("#include <QFile>");
+        _builder.newLine();
+      } else {
+        _builder.append("#include <bb/cascades/Application>");
+        _builder.newLine();
+        _builder.append("#include <bb/cascades/AbstractPane>");
+        _builder.newLine();
+        _builder.append("#include <bb/data/JsonDataAccess>");
+        _builder.newLine();
+        _builder.append("#include <bb/cascades/GroupDataModel>");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       boolean _hasSqlCache = this._managerExtensions.hasSqlCache(pkg);
@@ -94,41 +106,49 @@ public class CppManagerGenerator {
     _builder.newLine();
     _builder.append("static bool isProductionEnvironment = true;");
     _builder.newLine();
-    _builder.append("static QString dataAssetsPath(const QString& fileName)");
     _builder.newLine();
-    _builder.append("{");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("return QDir::currentPath() + \"/app/native/assets/datamodel/\" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
-    _builder.append("static QString dataPath(const QString& fileName)");
-    _builder.newLine();
-    _builder.append("{");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("return QDir::currentPath() + \"/data/\" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
-    _builder.append("static QString settingsAssetsPath(const QString& fileName)");
-    _builder.newLine();
-    _builder.append("{");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("return QDir::currentPath() + \"/app/native/assets/datamodel/\" + fileName;");
-    _builder.newLine();
-    _builder.append("}");
-    _builder.newLine();
-    _builder.append("static QString settingsPath(const QString& fileName)");
-    _builder.newLine();
-    _builder.append("{");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("return QDir::currentPath() + \"/data/\" + fileName;");
-    _builder.newLine();
-    _builder.append("}");
+    {
+      boolean _hasTargetOS_1 = this._managerExtensions.hasTargetOS(pkg);
+      if (_hasTargetOS_1) {
+      } else {
+        _builder.append("static QString dataAssetsPath(const QString& fileName)");
+        _builder.newLine();
+        _builder.append("{");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("return QDir::currentPath() + \"/app/native/assets/datamodel/\" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        _builder.append("static QString dataPath(const QString& fileName)");
+        _builder.newLine();
+        _builder.append("{");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("return QDir::currentPath() + \"/data/\" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        _builder.append("static QString settingsAssetsPath(const QString& fileName)");
+        _builder.newLine();
+        _builder.append("{");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("return QDir::currentPath() + \"/app/native/assets/datamodel/\" + fileName;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+        _builder.append("static QString settingsPath(const QString& fileName)");
+        _builder.newLine();
+        _builder.append("{");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("return QDir::currentPath() + \"/data/\" + fileName;");
+        _builder.newLine();
+        _builder.append("}");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       EList<LType> _types = pkg.getTypes();
@@ -175,10 +195,16 @@ public class CppManagerGenerator {
       }
     }
     _builder.newLine();
-    _builder.append("using namespace bb::cascades;");
-    _builder.newLine();
-    _builder.append("using namespace bb::data;");
-    _builder.newLine();
+    {
+      boolean _hasTargetOS_2 = this._managerExtensions.hasTargetOS(pkg);
+      if (_hasTargetOS_2) {
+      } else {
+        _builder.append("using namespace bb::cascades;");
+        _builder.newLine();
+        _builder.append("using namespace bb::data;");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     _builder.append("DataManager::DataManager(QObject *parent) :");
     _builder.newLine();
