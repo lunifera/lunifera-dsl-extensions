@@ -270,9 +270,11 @@ Q_SIGNALS:
     «IF pkg.hasSqlCache && pkg.has2PhaseInit»
     void finished2PhaseInit();
     «ENDIF»
-    
+
+«IF !pkg.hasTargetOS»    
 public slots:
     void onManualExit();
+«ENDIF»
 
 «IF pkg.hasSqlCache && pkg.has2PhaseInit»
 private Q_SLOTS:

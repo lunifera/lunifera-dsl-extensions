@@ -562,16 +562,22 @@ public class CppManagerGenerator {
         _builder.newLine();
       }
     }
+    _builder.append("\t");
     _builder.newLine();
-    _builder.append("    ");
-    _builder.append("Q_UNUSED(res);");
-    _builder.newLine();
+    {
+      boolean _hasTargetOS_5 = this._managerExtensions.hasTargetOS(pkg);
+      boolean _not_4 = (!_hasTargetOS_5);
+      if (_not_4) {
+        _builder.append("Q_UNUSED(res);");
+        _builder.newLine();
+      }
+    }
     _builder.append("}");
     _builder.newLine();
     _builder.newLine();
     {
-      boolean _hasTargetOS_5 = this._managerExtensions.hasTargetOS(pkg);
-      if (_hasTargetOS_5) {
+      boolean _hasTargetOS_6 = this._managerExtensions.hasTargetOS(pkg);
+      if (_hasTargetOS_6) {
         _builder.append("QString DataManager::dataAssetsPath(const QString& fileName)");
         _builder.newLine();
         _builder.append("{");
@@ -741,9 +747,9 @@ public class CppManagerGenerator {
     _builder.append("{");
     _builder.newLine();
     {
-      boolean _hasTargetOS_6 = this._managerExtensions.hasTargetOS(pkg);
-      boolean _not_4 = (!_hasTargetOS_6);
-      if (_not_4) {
+      boolean _hasTargetOS_7 = this._managerExtensions.hasTargetOS(pkg);
+      boolean _not_5 = (!_hasTargetOS_7);
+      if (_not_5) {
         _builder.append("    ");
         _builder.append("// check directories");
         _builder.newLine();
@@ -820,9 +826,9 @@ public class CppManagerGenerator {
           if (_isRootDataObject_3) {
             {
               boolean _or = false;
-              boolean _hasTargetOS_7 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_5 = (!_hasTargetOS_7);
-              if (_not_5) {
+              boolean _hasTargetOS_8 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_6 = (!_hasTargetOS_8);
+              if (_not_6) {
                 _or = true;
               } else {
                 String _name_10 = dto_4.getName();
@@ -835,8 +841,8 @@ public class CppManagerGenerator {
                   if (_hasSqlCachePropertyName) {
                     {
                       boolean _is2PhaseInit_1 = this._cppExtensions.is2PhaseInit(dto_4);
-                      boolean _not_6 = (!_is2PhaseInit_1);
-                      if (_not_6) {
+                      boolean _not_7 = (!_is2PhaseInit_1);
+                      if (_not_7) {
                         _builder.append("    ");
                         _builder.append("init");
                         String _name_11 = this._cppExtensions.toName(dto_4);
@@ -863,9 +869,9 @@ public class CppManagerGenerator {
               if (!_equals) {
                 _and_2 = false;
               } else {
-                boolean _hasTargetOS_8 = this._managerExtensions.hasTargetOS(pkg);
-                boolean _not_7 = (!_hasTargetOS_8);
-                _and_2 = _not_7;
+                boolean _hasTargetOS_9 = this._managerExtensions.hasTargetOS(pkg);
+                boolean _not_8 = (!_hasTargetOS_9);
+                _and_2 = _not_8;
               }
               if (_and_2) {
                 _builder.append("    ");
@@ -1632,9 +1638,9 @@ public class CppManagerGenerator {
                 _builder.newLineIfNotEmpty();
               } else {
                 {
-                  boolean _hasTargetOS_9 = this._managerExtensions.hasTargetOS(pkg);
-                  boolean _not_8 = (!_hasTargetOS_9);
-                  if (_not_8) {
+                  boolean _hasTargetOS_10 = this._managerExtensions.hasTargetOS(pkg);
+                  boolean _not_9 = (!_hasTargetOS_10);
+                  if (_not_9) {
                     _builder.append("    ");
                     _builder.append("save");
                     String _name_20 = this._cppExtensions.toName(dto_8);
@@ -1689,9 +1695,9 @@ public class CppManagerGenerator {
           if (_isRootDataObject_8) {
             {
               boolean _or_1 = false;
-              boolean _hasTargetOS_10 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_9 = (!_hasTargetOS_10);
-              if (_not_9) {
+              boolean _hasTargetOS_11 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_10 = (!_hasTargetOS_11);
+              if (_not_10) {
                 _or_1 = true;
               } else {
                 String _name_23 = dto_9.getName();
@@ -2237,8 +2243,8 @@ public class CppManagerGenerator {
                 _builder.newLineIfNotEmpty();
                 {
                   boolean _is2PhaseInit_9 = this._cppExtensions.is2PhaseInit(dto_9);
-                  boolean _not_10 = (!_is2PhaseInit_9);
-                  if (_not_10) {
+                  boolean _not_11 = (!_is2PhaseInit_9);
+                  if (_not_11) {
                     _builder.append("\t");
                     _builder.append("mAll");
                     String _name_88 = this._cppExtensions.toName(dto_9);
@@ -2283,8 +2289,8 @@ public class CppManagerGenerator {
                 _builder.newLineIfNotEmpty();
                 {
                   boolean _is2PhaseInit_10 = this._cppExtensions.is2PhaseInit(dto_9);
-                  boolean _not_11 = (!_is2PhaseInit_10);
-                  if (_not_11) {
+                  boolean _not_12 = (!_is2PhaseInit_10);
+                  if (_not_12) {
                     _builder.append("    ");
                     _builder.append("QSqlQuery query (mDatabase);");
                     _builder.newLine();
@@ -2676,9 +2682,9 @@ public class CppManagerGenerator {
             _builder.newLine();
             {
               boolean _or_2 = false;
-              boolean _hasTargetOS_11 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_12 = (!_hasTargetOS_11);
-              if (_not_12) {
+              boolean _hasTargetOS_12 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_13 = (!_hasTargetOS_12);
+              if (_not_13) {
                 _or_2 = true;
               } else {
                 String _name_139 = dto_9.getName();
@@ -3715,9 +3721,9 @@ public class CppManagerGenerator {
                 _builder.newLine();
                 {
                   boolean _or_3 = false;
-                  boolean _hasTargetOS_12 = this._managerExtensions.hasTargetOS(pkg);
-                  boolean _not_13 = (!_hasTargetOS_12);
-                  if (_not_13) {
+                  boolean _hasTargetOS_13 = this._managerExtensions.hasTargetOS(pkg);
+                  boolean _not_14 = (!_hasTargetOS_13);
+                  if (_not_14) {
                     _or_3 = true;
                   } else {
                     String _name_259 = dto_9.getName();
@@ -3782,9 +3788,9 @@ public class CppManagerGenerator {
             _builder.newLine();
             {
               boolean _or_4 = false;
-              boolean _hasTargetOS_13 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_14 = (!_hasTargetOS_13);
-              if (_not_14) {
+              boolean _hasTargetOS_14 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_15 = (!_hasTargetOS_14);
+              if (_not_15) {
                 _or_4 = true;
               } else {
                 String _name_269 = dto_9.getName();
@@ -4042,9 +4048,9 @@ public class CppManagerGenerator {
             }
             _builder.newLine();
             {
-              boolean _hasTargetOS_14 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_15 = (!_hasTargetOS_14);
-              if (_not_15) {
+              boolean _hasTargetOS_15 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_16 = (!_hasTargetOS_15);
+              if (_not_16) {
                 _builder.append("QDeclarativeListProperty<");
                 String _name_295 = this._cppExtensions.toName(dto_9);
                 _builder.append(_name_295, "");
@@ -4843,9 +4849,9 @@ public class CppManagerGenerator {
             _builder.newLine();
             {
               boolean _or_5 = false;
-              boolean _hasTargetOS_15 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_16 = (!_hasTargetOS_15);
-              if (_not_16) {
+              boolean _hasTargetOS_16 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_17 = (!_hasTargetOS_16);
+              if (_not_17) {
                 _or_5 = true;
               } else {
                 String _name_412 = dto_9.getName();
@@ -5132,9 +5138,9 @@ public class CppManagerGenerator {
             _builder.newLine();
             {
               boolean _or_6 = false;
-              boolean _hasTargetOS_16 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_17 = (!_hasTargetOS_16);
-              if (_not_17) {
+              boolean _hasTargetOS_17 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_18 = (!_hasTargetOS_17);
+              if (_not_18) {
                 _or_6 = true;
               } else {
                 String _name_455 = dto_9.getName();
@@ -5720,9 +5726,9 @@ public class CppManagerGenerator {
             }
             _builder.newLine();
             {
-              boolean _hasTargetOS_17 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_18 = (!_hasTargetOS_17);
-              if (_not_18) {
+              boolean _hasTargetOS_18 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_19 = (!_hasTargetOS_18);
+              if (_not_19) {
                 {
                   boolean _isTree_17 = this._cppExtensions.isTree(dto_9);
                   if (_isTree_17) {
@@ -6516,9 +6522,9 @@ public class CppManagerGenerator {
     }
     _builder.newLine();
     {
-      boolean _hasTargetOS_18 = this._managerExtensions.hasTargetOS(pkg);
-      boolean _not_19 = (!_hasTargetOS_18);
-      if (_not_19) {
+      boolean _hasTargetOS_19 = this._managerExtensions.hasTargetOS(pkg);
+      boolean _not_20 = (!_hasTargetOS_19);
+      if (_not_20) {
         _builder.append("/*");
         _builder.newLine();
         _builder.append(" ");

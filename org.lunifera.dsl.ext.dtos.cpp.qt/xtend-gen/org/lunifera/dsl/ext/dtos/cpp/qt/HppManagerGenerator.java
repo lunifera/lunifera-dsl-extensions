@@ -1075,13 +1075,18 @@ public class HppManagerGenerator {
         _builder.newLine();
       }
     }
-    _builder.append("    ");
     _builder.newLine();
-    _builder.append("public slots:");
-    _builder.newLine();
-    _builder.append("    ");
-    _builder.append("void onManualExit();");
-    _builder.newLine();
+    {
+      boolean _hasTargetOS_14 = this._managerExtensions.hasTargetOS(pkg);
+      boolean _not_8 = (!_hasTargetOS_14);
+      if (_not_8) {
+        _builder.append("public slots:");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("void onManualExit();");
+        _builder.newLine();
+      }
+    }
     _builder.newLine();
     {
       boolean _and_4 = false;
@@ -1104,8 +1109,8 @@ public class HppManagerGenerator {
     _builder.append("private:");
     _builder.newLine();
     {
-      boolean _hasTargetOS_14 = this._managerExtensions.hasTargetOS(pkg);
-      if (_hasTargetOS_14) {
+      boolean _hasTargetOS_15 = this._managerExtensions.hasTargetOS(pkg);
+      if (_hasTargetOS_15) {
         _builder.append("\t");
         _builder.append("QString mDataRoot;");
         _builder.newLine();
@@ -1165,9 +1170,9 @@ public class HppManagerGenerator {
           if (_isRootDataObject_4) {
             {
               boolean _or_7 = false;
-              boolean _hasTargetOS_15 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_8 = (!_hasTargetOS_15);
-              if (_not_8) {
+              boolean _hasTargetOS_16 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_9 = (!_hasTargetOS_16);
+              if (_not_9) {
                 _or_7 = true;
               } else {
                 String _name_83 = dto_6.getName();
@@ -1204,8 +1209,8 @@ public class HppManagerGenerator {
               }
             }
             {
-              boolean _hasTargetOS_16 = this._managerExtensions.hasTargetOS(pkg);
-              if (_hasTargetOS_16) {
+              boolean _hasTargetOS_17 = this._managerExtensions.hasTargetOS(pkg);
+              if (_hasTargetOS_17) {
                 {
                   String _name_87 = dto_6.getName();
                   boolean _notEquals_11 = (!Objects.equal(_name_87, "SettingsData"));
@@ -1436,9 +1441,9 @@ public class HppManagerGenerator {
           if (_isRootDataObject_5) {
             {
               boolean _or_8 = false;
-              boolean _hasTargetOS_17 = this._managerExtensions.hasTargetOS(pkg);
-              boolean _not_9 = (!_hasTargetOS_17);
-              if (_not_9) {
+              boolean _hasTargetOS_18 = this._managerExtensions.hasTargetOS(pkg);
+              boolean _not_10 = (!_hasTargetOS_18);
+              if (_not_10) {
                 _or_8 = true;
               } else {
                 String _name_121 = dto_7.getName();
@@ -1536,9 +1541,9 @@ public class HppManagerGenerator {
     _builder.append("void writeToCache(const QString& fileName, QVariantList& data);");
     _builder.newLine();
     {
-      boolean _hasTargetOS_18 = this._managerExtensions.hasTargetOS(pkg);
-      boolean _not_10 = (!_hasTargetOS_18);
-      if (_not_10) {
+      boolean _hasTargetOS_19 = this._managerExtensions.hasTargetOS(pkg);
+      boolean _not_11 = (!_hasTargetOS_19);
+      if (_not_11) {
         _builder.append("\t");
         _builder.append("void finish();");
         _builder.newLine();

@@ -41,7 +41,7 @@ class HppGenerator {
 	#include <qvariant.h>
 	«IF dto.allFeatures.filter[isToMany && toTypeName != "QString"].size > 0»
 	«IF dto.hasTargetOSPropertyName»
-	#include QQmlListProperty
+	#include <QQmlListProperty>
 	«ELSE»
 	#include <QDeclarativeListProperty>
 	«ENDIF»

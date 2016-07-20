@@ -203,8 +203,10 @@ DataManager::DataManager(QObject *parent) :
 	res = QObject::connect(mPhase2Timer, SIGNAL(timeout()), this, SLOT(onPhase2TimerTimeout()));
 	Q_ASSERT(res);
 	«ENDIF»
-
+	
+	«IF !pkg.hasTargetOS»
     Q_UNUSED(res);
+    «ENDIF»
 }
 
 «IF pkg.hasTargetOS»

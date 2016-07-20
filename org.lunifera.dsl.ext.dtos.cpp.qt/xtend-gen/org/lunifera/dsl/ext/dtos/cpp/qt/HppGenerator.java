@@ -93,7 +93,7 @@ public class HppGenerator {
         {
           boolean _hasTargetOSPropertyName = this._cppExtensions.hasTargetOSPropertyName(dto);
           if (_hasTargetOSPropertyName) {
-            _builder.append("#include QQmlListProperty");
+            _builder.append("#include <QQmlListProperty>");
             _builder.newLine();
           } else {
             _builder.append("#include <QDeclarativeListProperty>");
