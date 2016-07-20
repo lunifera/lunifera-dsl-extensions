@@ -67,8 +67,7 @@ static const QString PRODUCTION_ENVIRONMENT = "prod/";
 static const QString TEST_ENVIRONMENT = "test/";
 static bool isProductionEnvironment = true;
 
-«IF pkg.hasTargetOS»
-«ELSE»
+«IF !pkg.hasTargetOS»
 static QString dataAssetsPath(const QString& fileName)
 {
     return QDir::currentPath() + "/app/native/assets/datamodel/" + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
@@ -97,8 +96,7 @@ static const QString cache«dto.toName» = "cache«dto.toName».json";
 		«ENDIF»
 	«ENDFOR»
 
-«IF pkg.hasTargetOS»
-«ELSE»
+«IF !pkg.hasTargetOS»
 using namespace bb::cascades;
 using namespace bb::data;
 «ENDIF»
@@ -106,6 +104,51 @@ using namespace bb::data;
 DataManager::DataManager(QObject *parent) :
         QObject(parent)
 {
+«IF pkg.hasTargetOS»
+   // Android: HomeLocation works, iOS: not writable
+    // Android: AppDataLocation works out of the box, iOS you must create the DIR first !!
+    mDataRoot = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation).value(0);
+    mDataPath = mDataRoot+"/data/";
+    mDataAssetsPath = ":/data-assets/";
+    qDebug() << "Data Path: " << mDataPath << " data-assets: " << mDataAssetsPath;
+    // guarantee that dirs exist
+    bool ok = checkDirs();
+    if(!ok) {
+        qFatal("App won't work - cannot create data directory");
+    }
+
+    // at first read settingsData (always from Sandbox)
+    mSettingsPath = mDataRoot+"/"+cacheSettingsData;
+    qDebug() << "Settings Path: " << mSettingsPath;
+    readSettings();
+
+#ifdef QT_DEBUG
+    qDebug() << "Running a DEBUG BUILD";
+    // DEBUG MODE ?
+    // now check if public cache is used
+    if (mSettingsData->hasPublicCache()) {
+        // great while testing: access files from file explorer
+        mDataRoot = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).value(0);
+        mDataRoot += "/data/ekkescorner/biz_data_x";
+        mDataPath = mDataRoot+"/data/";
+        ok = checkDirs();
+        if(!ok) {
+            qFatal("App won't work - cannot create data directory");
+        }
+        qDebug() << "Data Path redirected to PUBLIC CCHE: " << mDataPath;
+        // tip: copy settingsData to public cache to see the content
+        // but settings will always be used from AppDataLocation
+    }
+#else
+    qDebug() << "Running a RELEASE BUILD";
+    // check if JSON is compact
+    mSettingsData->setUseCompactJsonFormat(true);
+#endif
+    // now set the compact or indent mode for JSON Documents
+    mCompactJson = mSettingsData->useCompactJsonFormat();
+	isProductionEnvironment = mSettingsData->isProductionEnvironment();
+«ENDIF»
+
     // ApplicationUI is parent of DataManager
     // DataManager is parent of all root DataObjects
     // ROOT DataObjects are parent of contained DataObjects
@@ -133,6 +176,8 @@ DataManager::DataManager(QObject *parent) :
 	«FOR en : pkg.types.filter[it instanceof LEnum].map[it as LEnum]»
 		qmlRegisterType<«en.toName»>("org.ekkescorner.enums", 1, 0, "«en.toName»");
 	«ENDFOR»
+	
+	«IF !pkg.hasTargetOS»
 	// useful Types for all APPs dealing with data
 	// QTimer
 	qmlRegisterType<QTimer>("org.ekkescorner.common", 1, 0, "QTimer");
@@ -141,7 +186,8 @@ DataManager::DataManager(QObject *parent) :
     bb::Application::instance()->setAutoExit(false);
     bool res = QObject::connect(bb::Application::instance(), SIGNAL(manualExit()), this, SLOT(onManualExit()));
     Q_ASSERT(res);
-
+	«ENDIF»
+	
 	«IF pkg.hasSqlCache && pkg.has2PhaseInit»
 	m2PhaseInitDone = false;
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
@@ -161,6 +207,62 @@ DataManager::DataManager(QObject *parent) :
     Q_UNUSED(res);
 }
 
+«IF pkg.hasTargetOS»
+QString DataManager::dataAssetsPath(const QString& fileName)
+{
+    return mDataAssetsPath + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
+}
+QString DataManager::dataPath(const QString& fileName)
+{
+    return mDataPath + (isProductionEnvironment?PRODUCTION_ENVIRONMENT:TEST_ENVIRONMENT) + fileName;
+}
+
+bool DataManager::checkDirs()
+{
+    QDir myDir;
+    bool exists;
+    exists = myDir.exists(mDataRoot);
+    if (!exists) {
+        bool ok = myDir.mkpath(mDataRoot);
+        if(!ok) {
+            qWarning() << "Couldn't create mDataRoot " << mDataRoot;
+            return false;
+        }
+        qDebug() << "created directory mDataRoot " << mDataRoot;
+    }
+
+    exists = myDir.exists(mDataPath);
+    if (!exists) {
+        bool ok = myDir.mkpath(mDataPath);
+        if(!ok) {
+            qWarning() << "Couldn't create mDataPath " << mDataPath;
+            return false;
+        }
+        qDebug() << "created directory mDataPath"  << mDataRoot;
+    }
+
+    exists = myDir.exists(mDataPath+PRODUCTION_ENVIRONMENT);
+    if (!exists) {
+        bool ok = myDir.mkpath(mDataPath+PRODUCTION_ENVIRONMENT);
+        if(!ok) {
+            qWarning() << "Couldn't create /data/prod " << mDataPath+PRODUCTION_ENVIRONMENT;
+            return false;
+        }
+        qDebug() << "created directory /data/prod " << mDataPath+PRODUCTION_ENVIRONMENT;
+    }
+    exists = myDir.exists(mDataPath+TEST_ENVIRONMENT);
+    if (!exists) {
+        bool ok = myDir.mkpath(mDataPath+TEST_ENVIRONMENT);
+        if(!ok) {
+            qWarning() << "Couldn't create /data/test " << mDataPath+TEST_ENVIRONMENT;
+            return false;
+        }
+        qDebug() << "created directory /data/test " << mDataPath+TEST_ENVIRONMENT;
+    }
+    return true;
+}
+«ENDIF»
+
 /*
  * loads all data from cache.
  * called from main.qml with delay using QTimer
@@ -169,6 +271,7 @@ DataManager::DataManager(QObject *parent) :
  */
 void DataManager::init()
 {
+    «IF !pkg.hasTargetOS»
     // check directories
     QDir dir;
     bool exists;
@@ -180,6 +283,7 @@ void DataManager::init()
         if (!exists) {
         dir.mkpath(QDir::currentPath() + "/data/"+TEST_ENVIRONMENT);
     }
+    «ENDIF»
     // get all from cache
 	«IF pkg.hasSqlCache»
 	// SQL init the sqlite database
@@ -189,6 +293,7 @@ void DataManager::init()
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
+    		«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
     		«IF dto.hasSqlCachePropertyName»
     		«IF !dto.is2PhaseInit»
     		init«dto.toName»FromSqlCache();
@@ -196,7 +301,8 @@ void DataManager::init()
     		«ELSE»
     		init«dto.toName»FromCache();
     		«ENDIF»
-    		«IF dto.toName.equals("SettingsData")»
+    		«ENDIF»
+    		«IF dto.toName.equals("SettingsData") && !pkg.hasTargetOS»
     		SettingsData* theSettings;
     		theSettings = (SettingsData*) mAllSettingsData.first();
     		isProductionEnvironment = theSettings->isProductionEnvironment();
@@ -431,7 +537,15 @@ void DataManager::finish()
     		«IF dto.isReadOnlyCache»
     		// «dto.toName» is read-only - not saved to cache
     		«ELSE»
+    		«IF !pkg.hasTargetOS»
     		save«dto.toName»ToCache();
+    		«ELSE»
+    			«IF dto.name != "SettingsData"»
+    			save«dto.toName»ToCache();
+    			«ELSE»
+    			saveSettings();
+    			«ENDIF»
+    		«ENDIF»
     		«ENDIF»
 		«ENDIF»
 	«ENDFOR»
@@ -439,6 +553,7 @@ void DataManager::finish()
 
     «FOR dto : pkg.types.filter[it instanceof LDto].map[it as LDto]»
     	«IF dto.isRootDataObject»
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 /*
  * reads Maps of «dto.toName» in from JSON cache
  * creates List of «dto.toName»*  from QVariantList
@@ -483,6 +598,7 @@ void DataManager::init«dto.toName»FromCache()
     qDebug() << "created «dto.toName»* #" << mAll«dto.toName».size();
     «ENDIF»
 }
+«ENDIF»
 
 «IF dto.hasSqlCachePropertyName»
 	«IF dto.is2PhaseInit»
@@ -638,6 +754,7 @@ void DataManager::process«dto.toName»Query2()
 	«ENDIF»
 «ENDIF»
 
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 /*
  * save List of «dto.toName»* to JSON cache
  * convert list of «dto.toName»* to QVariantList
@@ -800,6 +917,7 @@ void DataManager::init«feature.toName.toFirstUpper»HierarchyList(«dto.toName�
 
 	«ENDIF»
 	«ENDFOR»
+«ENDIF»
 
 void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»)
 {
@@ -830,6 +948,8 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
     }
     «ENDFOR»
 }
+
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 void DataManager::resolveReferencesForAll«dto.toName»()
 {
     for (int i = 0; i < mAll«dto.toName».size(); ++i) {
@@ -839,6 +959,10 @@ void DataManager::resolveReferencesForAll«dto.toName»()
     }
 }
 «ENDIF»
+
+«ENDIF»
+
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 /**
 * converts a list of keys in to a list of DataObjects
 * per ex. used to resolve lazy arrays
@@ -892,7 +1016,9 @@ QList<QObject*> DataManager::all«dto.toName»()
 {
     return mAll«dto.toName»;
 }
+«ENDIF»
 
+«IF !pkg.hasTargetOS»
 QDeclarativeListProperty<«dto.toName»> DataManager::«dto.toName.toFirstLower»PropertyList()
 {
     return QDeclarativeListProperty<«dto.toName»>(this, 0,
@@ -965,7 +1091,84 @@ void DataManager::clear«dto.toName»Property(
         qWarning() << "cannot clear mAll«dto.toName» " << "Object is not of type DataManager*";
     }
 }
+«ELSE»
+«IF dto.name != "SettingsData"»
+QQmlListProperty<«dto.toName»> DataManager::«dto.toName.toFirstLower»PropertyList()
+{
+    return QQmlListProperty<«dto.toName»>(this, 0,
+            &DataManager::appendTo«dto.toName»Property, &DataManager::«dto.toName.toFirstLower»PropertyCount,
+            &DataManager::at«dto.toName»Property, &DataManager::clear«dto.toName»Property);
+}
 
+// implementation for QQmlListProperty to use
+// QML functions for List of «dto.toName»*
+void DataManager::appendTo«dto.toName»Property(
+        QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List,
+        «dto.toName»* «dto.toName.toFirstLower»)
+{
+    DataManager *dataManagerObject = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManagerObject) {
+        «dto.toName.toFirstLower»->setParent(dataManagerObject);
+        dataManagerObject->mAll«dto.toName».append(«dto.toName.toFirstLower»);
+        emit dataManagerObject->addedToAll«dto.toName»(«dto.toName.toFirstLower»);
+    } else {
+        qWarning() << "cannot append «dto.toName»* to mAll«dto.toName» "
+                << "Object is not of type DataManager*";
+    }
+}
+int DataManager::«dto.toName.toFirstLower»PropertyCount(
+        QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        return dataManager->mAll«dto.toName».size();
+    } else {
+        qWarning() << "cannot get size mAll«dto.toName» " << "Object is not of type DataManager*";
+    }
+    return 0;
+}
+«dto.toName»* DataManager::at«dto.toName»Property(
+        QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List, int pos)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        if (dataManager->mAll«dto.toName».size() > pos) {
+            return («dto.toName»*) dataManager->mAll«dto.toName».at(pos);
+        }
+        qWarning() << "cannot get «dto.toName»* at pos " << pos << " size is "
+                << dataManager->mAll«dto.toName».size();
+    } else {
+        qWarning() << "cannot get «dto.toName»* at pos " << pos
+                << "Object is not of type DataManager*";
+    }
+    return 0;
+}
+void DataManager::clear«dto.toName»Property(
+        QQmlListProperty<«dto.toName»> *«dto.toName.toFirstLower»List)
+{
+    DataManager *dataManager = qobject_cast<DataManager *>(«dto.toName.toFirstLower»List->object);
+    if (dataManager) {
+        for (int i = 0; i < dataManager->mAll«dto.toName».size(); ++i) {
+            «dto.toName»* «dto.toName.toFirstLower»;
+            «dto.toName.toFirstLower» = («dto.toName»*) dataManager->mAll«dto.toName».at(i);
+			«IF dto.hasUuid»
+			emit dataManager->deletedFromAll«dto.toName»ByUuid(«dto.toName.toFirstLower»->uuid());
+			«ELSEIF dto.hasDomainKey»
+			emit dataManager->deletedFromAll«dto.toName»By«dto.domainKey.toFirstUpper»(«dto.toName.toFirstLower»->«dto.domainKey»());
+			«ENDIF»
+			emit dataManager->deletedFromAll«dto.toName»(«dto.toName.toFirstLower»);
+            «dto.toName.toFirstLower»->deleteLater();
+            «dto.toName.toFirstLower» = 0;
+        }
+        dataManager->mAll«dto.toName».clear();
+    } else {
+        qWarning() << "cannot clear mAll«dto.toName» " << "Object is not of type DataManager*";
+    }
+}
+«ENDIF»
+«ENDIF»
+
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 /**
  * deletes all «dto.toName»
  * and clears the list
@@ -986,6 +1189,7 @@ void DataManager::delete«dto.toName»()
      }
      mAll«dto.toName».clear();
 }
+«ENDIF»
 
 /**
  * creates a new «dto.toName»
@@ -1017,6 +1221,7 @@ void DataManager::undoCreate«dto.toName»(«dto.toName»* «dto.toName.toFirstL
     }
 }
 
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 void DataManager::insert«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
 {
     // Important: DataManager must be parent of all root DTOs
@@ -1113,7 +1318,9 @@ bool DataManager::delete«dto.toName»By«dto.domainKey.toFirstUpper»(const «d
     return false;
 }
 «ENDIF»
+«ENDIF»
 
+«IF !pkg.hasTargetOS»
 «IF dto.isTree»
 void DataManager::fill«dto.toName»TreeDataModel(QString objectName)
 {
@@ -1305,8 +1512,10 @@ void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(Q
 }
 «ENDIF»
 		«ENDIF»
+«ENDIF»
 	«ENDFOR»
 
+«IF !pkg.hasTargetOS»
 /*
  * reads data in from stored cache
  * if no cache found tries to get data from assets/datamodel
@@ -1363,6 +1572,141 @@ void DataManager::onManualExit()
     emit shuttingDown();
     bb::Application::instance()->exit(0);
 }
+«ELSE»
+SettingsData* DataManager::settingsData()
+{
+    return mSettingsData;
+}
+
+void DataManager::readSettings()
+{
+    qDebug() << "Read the Settings File";
+    mSettingsData = new SettingsData();
+    mSettingsData->setParent(this);
+    //
+    QString assetsFilePath;
+
+    QFile readFile(mSettingsPath);
+    if(!readFile.exists()) {
+        qDebug() << "settings cache doesn't exist: " << mSettingsPath;
+        assetsFilePath = mDataAssetsPath+cacheSettingsData;
+        QFile assetDataFile(assetsFilePath);
+        if(assetDataFile.exists()) {
+            // copy file from assets to data
+            bool copyOk = assetDataFile.copy(mSettingsPath);
+            if (!copyOk) {
+                qDebug() << "cannot copy settings from data-assets to cache";
+                return;
+            }
+            // IMPORTANT !!! copying from RESOURCES ":/data-assets/" to AppDataLocation
+            // makes the target file READ ONLY - you must set PERMISSIONS
+            // copying from RESOURCES ":/data-assets/" to GenericDataLocation the target is READ-WRITE
+            copyOk = readFile.setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser);
+            if (!copyOk) {
+                qDebug() << "cannot set Permissions to read / write settings";
+                return;
+            }
+        } else {
+            qDebug() << "no settings from data-assets: " << assetsFilePath;
+            return;
+        }
+    }
+    if (!readFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "Couldn't open file: " << mSettingsPath;
+        return;
+    }
+    // create JSON Document from settings file
+    QJsonDocument jda = QJsonDocument::fromJson(readFile.readAll());
+    readFile.close();
+    if(!jda.isObject()) {
+        qWarning() << "Couldn't create JSON from file: " << mSettingsPath;
+        return;
+    }
+    // create SettingsData* from JSON
+    mSettingsData->fillFromMap(jda.toVariant().toMap());
+    qDebug() << "Settings* created";
+}
+
+void DataManager::saveSettings()
+{
+    qDebug() << "Save the Settings";
+    // convert Settings* into JSONDocument and store to app data
+    QJsonDocument jda = QJsonDocument::fromVariant(mSettingsData->toMap());
+    // save JSON to data directory
+    QFile saveFile(mSettingsPath);
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning() << "Couldn't open file to write " << mSettingsPath;
+        return;
+    }
+    qint64 bytesWritten = saveFile.write(jda.toJson());
+    saveFile.close();
+    qDebug() << "SettingsData Bytes written: " << bytesWritten;
+}
+
+/*
+ * reads data in from stored cache
+ * if no cache found tries to get data from assets/datamodel
+ */
+QVariantList DataManager::readFromCache(const QString& fileName)
+{
+    QJsonDocument jda;
+    QVariantList cacheList;
+    QString cacheFilePath = dataPath(fileName);
+    QFile dataFile(cacheFilePath);
+    // check if already something cached
+    if (!dataFile.exists()) {
+        // check if there are some pre-defined data in data-assets
+        QString dataAssetsFilePath = dataAssetsPath(fileName);
+        QFile dataAssetsFile(dataAssetsFilePath);
+        if (dataAssetsFile.exists()) {
+            // copy file from data-assets to cached data
+            bool copyOk = dataAssetsFile.copy(cacheFilePath);
+            if (!copyOk) {
+                qDebug() << "cannot copy " << dataAssetsFilePath << " to " << cacheFilePath;
+                return cacheList;
+            }
+            // IMPORTANT !!! copying from RESOURCES ":/data-assets/" to AppDataLocation
+            // makes the target file READ ONLY - you must set PERMISSIONS
+            // copying from RESOURCES ":/data-assets/" to GenericDataLocation the target is READ-WRITE
+            copyOk = dataFile.setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser);
+            if (!copyOk) {
+                qDebug() << "cannot set Permissions to read / write settings";
+                return cacheList;
+            }
+        } else {
+            // no cache, no prefilled data-assets - empty list
+            return cacheList;
+        }
+    }
+    if (!dataFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "Couldn't open file: " << cacheFilePath;
+        return cacheList;
+    }
+    jda = QJsonDocument::fromJson(dataFile.readAll());
+    dataFile.close();
+    if(!jda.isArray()) {
+        qWarning() << "Couldn't create JSON Array from file: " << cacheFilePath;
+        return cacheList;
+    }
+    cacheList = jda.toVariant().toList();
+    return cacheList;
+}
+
+void DataManager::writeToCache(const QString& fileName, QVariantList& data)
+{
+    QString cacheFilePath = dataPath(fileName);
+    QJsonDocument jda = QJsonDocument::fromVariant(data);
+
+    QFile saveFile(cacheFilePath);
+    if (!saveFile.open(QIODevice::WriteOnly)) {
+        qWarning() << "Couldn't open file to write " << cacheFilePath;
+        return;
+    }
+    qint64 bytesWritten = saveFile.write(jda.toJson(mCompactJson?QJsonDocument::Compact:QJsonDocument::Indented));
+    saveFile.close();
+    qDebug() << "Data Bytes written: " << bytesWritten << " to: " << cacheFilePath;
+}
+«ENDIF»
 
 DataManager::~DataManager()
 {

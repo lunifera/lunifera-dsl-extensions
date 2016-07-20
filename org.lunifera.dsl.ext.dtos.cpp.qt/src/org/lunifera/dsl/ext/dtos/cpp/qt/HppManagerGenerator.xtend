@@ -165,8 +165,10 @@ public:
 	Q_INVOKABLE
 	QList<QObject*> all«dto.toName»();
 
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	Q_INVOKABLE
 	void delete«dto.toName»();
+	«ENDIF»
 
 	// access from QML to list of all «dto.toName»
 	«IF pkg.hasTargetOS»
@@ -190,8 +192,11 @@ public:
 	void insert«dto.toName»FromMap(const QVariantMap& «dto.toName.toFirstLower»Map, const bool& useForeignProperties);
 	«ENDIF»
 
+	«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 	Q_INVOKABLE
 	bool delete«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»);
+	«ENDIF»	
+	
 	«IF dto.hasUuid»
 
 	Q_INVOKABLE
