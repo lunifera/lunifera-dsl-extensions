@@ -40,9 +40,17 @@ class HppGenerator {
 	#include <QObject>
 	#include <qvariant.h>
 	«IF dto.allFeatures.filter[isToMany && toTypeName != "QString"].size > 0»
+	«IF dto.hasTargetOSPropertyName»
+	#include QQmlListProperty
+	«ELSE»
 	#include <QDeclarativeListProperty>
+	«ENDIF»
 	«ELSEIF dto.existsHierarchy»
+	«IF dto.hasTargetOSPropertyName»
+	#include QQmlListProperty
+	«ELSE»
 	#include <QDeclarativeListProperty>
+	«ENDIF»
 	«ENDIF»
 	«IF dto.allFeatures.filter[isToMany && (isLazyArray || toTypeName == "QString")].size > 0»
 	#include <QStringList>
@@ -107,10 +115,17 @@ class HppGenerator {
 		Q_PROPERTY(«feature.referenceDomainKeyType» «feature.toName» READ «feature.toName» WRITE set«feature.toName.toFirstUpper» NOTIFY «feature.toName»Changed FINAL)
 		Q_PROPERTY(«feature.toTypeOrQObject» «feature.toName»AsDataObject READ «feature.toName»AsDataObject WRITE resolve«feature.toName.toFirstUpper»AsDataObject NOTIFY «feature.toName»AsDataObjectChanged FINAL)
 		«IF isHierarchy(dto, feature)»
+		«IF dto.hasTargetOSPropertyName»
+		// QQmlListProperty to get easy access to hierarchy of «feature.toName» property from QML
+		// Must always be initialized from DataManager before
+		// DataManager::init«feature.toName.toFirstUpper»HierarchyList
+		Q_PROPERTY(QQmlListProperty<«dto.name»> «feature.toName»PropertyList READ «feature.toName»PropertyList NOTIFY «feature.toName»PropertyListChanged)
+		«ELSE»
 		// QDeclarativeListProperty to get easy access to hierarchy of «feature.toName» property from QML
 		// Must always be initialized from DataManager before
 		// DataManager::init«feature.toName.toFirstUpper»HierarchyList
 		Q_PROPERTY(QDeclarativeListProperty<«dto.name»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
+		«ENDIF»
 		«ENDIF»
 		«ELSEIF feature.isEnum»
 		// int ENUM «feature.toTypeName»
@@ -121,8 +136,13 @@ class HppGenerator {
 		«ENDFOR»
 
 		«FOR feature : dto.allFeatures.filter[isToMany && !isArrayList]»
+		«IF dto.hasTargetOSPropertyName»
+		// QQmlListProperty to get easy access from QML
+		Q_PROPERTY(QQmlListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList NOTIFY «feature.toName»PropertyListChanged)
+		«ELSE»
 		// QDeclarativeListProperty to get easy access from QML
-		Q_PROPERTY(QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList CONSTANT)
+		Q_PROPERTY(QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList READ «feature.toName»PropertyList NOTIFY «feature.toName»PropertyListChanged)
+		«ENDIF»
 		«ENDFOR»
 		«FOR feature : dto.allFeatures.filter[isToMany && isArrayList]»
 		«IF feature.toTypeName == "QString"»
@@ -166,7 +186,11 @@ class HppGenerator {
 		void init«feature.toName.toFirstUpper»PropertyList(QList<«dto.name»*> «feature.toName»PropertyList);
 		// if list should be cleared from C++ - from QML use QDeclarativeList function
 		void clear«feature.toName.toFirstUpper»PropertyList();
+		«IF dto.hasTargetOSPropertyName»
+		QQmlListProperty<«dto.name»> «feature.toName»PropertyList();
+		«ELSE»
 		QDeclarativeListProperty<«dto.name»> «feature.toName»PropertyList();
+		«ENDIF»
 		«ENDIF»
 		
 		Q_INVOKABLE
@@ -300,7 +324,11 @@ class HppGenerator {
 		QList<«feature.toTypeName»*> «feature.toName»();
 		void set«feature.toName.toFirstUpper»(QList<«feature.toTypeName»*> «feature.toName»);
 		// access from QML to «feature.toName»
+		«IF dto.hasTargetOSPropertyName»
+		QQmlListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
+		«ELSE»
 		QDeclarativeListProperty<«feature.toTypeName»> «feature.toName»PropertyList();
+		«ENDIF»
 		 «ELSE»
 		 	«IF feature.toTypeName == "QString"»
 		 	QStringList «feature.toName»StringList();
@@ -365,6 +393,7 @@ class HppGenerator {
 		«IF feature.referenceHasDomainKey && feature.referenceDomainKey != "uuid"»
 		void removedFrom«feature.toName.toFirstUpper»By«feature.referenceDomainKey.toFirstUpper»(«feature.referenceDomainKeyType» «feature.referenceDomainKey»);
 		«ENDIF»
+		void «feature.toName»PropertyListChanged();
 		
 		«ELSE»
 			«IF feature.toTypeName == "QString"»
@@ -393,6 +422,16 @@ class HppGenerator {
 		// hierarchy of «dto.toName»*
 		bool mIs«feature.toName.toFirstUpper»AsPropertyListInitialized;
 		QList<«dto.toName»*> m«feature.toName.toFirstUpper»AsPropertyList;
+		«IF dto.hasTargetOSPropertyName»
+		// implementation for QQmlListProperty to use
+		// QML functions for hierarchy of «dto.toName»*
+		static void appendTo«feature.toName.toFirstUpper»Property(QQmlListProperty<«dto.toName»> *«feature.toName»List,
+			«dto.toName»* «dto.toName.toFirstLower»);
+		static int «feature.toName»PropertyCount(QQmlListProperty<«dto.toName»> *«feature.toName»List);
+		static «dto.toName»* at«feature.toName.toFirstUpper»Property(QQmlListProperty<«dto.toName»> *«feature.toName»List,
+		int pos);
+		static void clear«feature.toName.toFirstUpper»Property(QQmlListProperty<«dto.toName»> *«feature.toName»List);
+		«ELSE»
 		// implementation for QDeclarativeListProperty to use
 		// QML functions for hierarchy of «dto.toName»*
 		static void appendTo«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
@@ -401,6 +440,8 @@ class HppGenerator {
 		static «dto.toName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List,
 		int pos);
 		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«dto.toName»> *«feature.toName»List);
+		«ENDIF»
+		
 		«ENDIF»
 		«ELSEIF feature.isEnum»
 		int m«feature.toName.toFirstUpper»;
@@ -416,6 +457,16 @@ class HppGenerator {
 		bool m«feature.toName.toFirstUpper»KeysResolved;
 		«ENDIF»
 		«IF !(feature.isArrayList)»
+		«IF dto.hasTargetOSPropertyName»
+		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
+		// implementation for QQmlListProperty to use
+		// QML functions for List of «feature.toTypeName»*
+		static void appendTo«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.toTypeName»> *«feature.toName»List,
+			«feature.toTypeName»* «feature.toTypeName.toFirstLower»);
+		static int «feature.toName»PropertyCount(QQmlListProperty<«feature.toTypeName»> *«feature.toName»List);
+		static «feature.toTypeName»* at«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.toTypeName»> *«feature.toName»List, int pos);
+		static void clear«feature.toName.toFirstUpper»Property(QQmlListProperty<«feature.toTypeName»> *«feature.toName»List);
+		«ELSE»
 		QList<«feature.toTypeName»*> m«feature.toName.toFirstUpper»;
 		// implementation for QDeclarativeListProperty to use
 		// QML functions for List of «feature.toTypeName»*
@@ -424,6 +475,8 @@ class HppGenerator {
 		static int «feature.toName»PropertyCount(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
 		static «feature.toTypeName»* at«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List, int pos);
 		static void clear«feature.toName.toFirstUpper»Property(QDeclarativeListProperty<«feature.toTypeName»> *«feature.toName»List);
+		«ENDIF»
+		
 		«ELSE»
 			«IF feature.toTypeName == "QString"»
 			QStringList m«feature.toName.toFirstUpper»StringList;
