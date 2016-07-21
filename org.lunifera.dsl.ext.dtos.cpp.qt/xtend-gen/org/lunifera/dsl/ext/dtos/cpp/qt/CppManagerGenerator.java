@@ -284,7 +284,10 @@ public class CppManagerGenerator {
         _builder.append("mDataRoot = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).value(0);");
         _builder.newLine();
         _builder.append("        ");
-        _builder.append("mDataRoot += \"/data/ekkescorner/biz_data_x\";");
+        _builder.append("// per ex. /data/ekkescorner/theAppName");
+        _builder.newLine();
+        _builder.append("        ");
+        _builder.append("mDataRoot += mSettingsData->publicRoot4Dev();");
         _builder.newLine();
         _builder.append("        ");
         _builder.append("mDataPath = mDataRoot+\"/data/\";");
