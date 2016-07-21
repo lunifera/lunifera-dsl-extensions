@@ -919,7 +919,6 @@ void DataManager::init«feature.toName.toFirstUpper»HierarchyList(«dto.toName�
 
 	«ENDIF»
 	«ENDFOR»
-«ENDIF»
 
 void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.toFirstLower»)
 {
@@ -951,7 +950,6 @@ void DataManager::resolve«dto.toName»References(«dto.toName»* «dto.toName.t
     «ENDFOR»
 }
 
-«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 void DataManager::resolveReferencesForAll«dto.toName»()
 {
     for (int i = 0; i < mAll«dto.toName».size(); ++i) {
@@ -1487,6 +1485,7 @@ void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(Q
     qDebug() << "NO GRP DATA FOUND «dto.toName» for " << objectName;
 }
 «ENDFOR»
+«ENDIF»
 «IF dto.hasUuid»
 «dto.toName»* DataManager::find«dto.toName»ByUuid(const QString& uuid){
     if (uuid.isNull() || uuid.isEmpty()) {
@@ -1505,6 +1504,7 @@ void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(Q
 }
 «ENDIF»
 
+«IF !pkg.hasTargetOS || dto.name != "SettingsData"»
 «IF dto.hasDomainKey && dto.domainKey != "uuid"»
 // nr is DomainKey
 «dto.toName»* DataManager::find«dto.toName»By«dto.domainKey.toFirstUpper»(const «dto.domainKeyType»& «dto.domainKey»){
@@ -1519,9 +1519,11 @@ void DataManager::fill«dto.toName»DataModelBy«feature.toName.toFirstUpper»(Q
     return 0;
 }
 «ENDIF»
-		«ENDIF»
 «ENDIF»
+
+		«ENDIF»
 	«ENDFOR»
+	
 
 «IF !pkg.hasTargetOS»
 /*
