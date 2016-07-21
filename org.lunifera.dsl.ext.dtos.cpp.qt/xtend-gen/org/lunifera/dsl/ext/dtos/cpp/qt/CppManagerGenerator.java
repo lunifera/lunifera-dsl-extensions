@@ -305,7 +305,7 @@ public class CppManagerGenerator {
         _builder.append("}");
         _builder.newLine();
         _builder.append("        ");
-        _builder.append("qDebug() << \"Data Path redirected to PUBLIC CCHE: \" << mDataPath;");
+        _builder.append("qDebug() << \"Data Path redirected to PUBLIC CACHE: \" << mDataPath;");
         _builder.newLine();
         _builder.append("        ");
         _builder.append("// tip: copy settingsData to public cache to see the content");
