@@ -1449,6 +1449,7 @@ void «dto.toName»::set«feature.toName.toFirstUpper»(QList<«feature.toTypeNa
 	if («feature.toName» != m«feature.toName.toFirstUpper») {
 		m«feature.toName.toFirstUpper» = «feature.toName»;
 		emit «feature.toName»Changed(«feature.toName»);
+		emit «feature.toName»PropertyListChanged();
 	}
 }
 

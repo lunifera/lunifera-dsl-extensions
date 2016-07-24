@@ -281,6 +281,9 @@ public class CppManagerGenerator {
         _builder.append("// great while testing: access files from file explorer");
         _builder.newLine();
         _builder.append("        ");
+        _builder.append("// only works on Android - on iOS it helps to use a 2nd cache for dev");
+        _builder.newLine();
+        _builder.append("        ");
         _builder.append("mDataRoot = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation).value(0);");
         _builder.newLine();
         _builder.append("        ");
@@ -322,10 +325,16 @@ public class CppManagerGenerator {
         _builder.append("qDebug() << \"Running a RELEASE BUILD\";");
         _builder.newLine();
         _builder.append("    ");
-        _builder.append("// check if JSON is compact");
+        _builder.append("// always use compact JSON in release builds");
         _builder.newLine();
         _builder.append("    ");
         _builder.append("mSettingsData->setUseCompactJsonFormat(true);");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("// never use public data path in releae build");
+        _builder.newLine();
+        _builder.append("    ");
+        _builder.append("mSettingsData->setPublicRoot4Dev(false);");
         _builder.newLine();
         _builder.append("#endif");
         _builder.newLine();
