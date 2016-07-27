@@ -1337,6 +1337,7 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»()
     for (int i = m«feature.toName.toFirstUpper».size(); i > 0; --i) {
         removeFrom«feature.toName.toFirstUpper»(m«feature.toName.toFirstUpper».last());
     }
+    m«feature.toName.toFirstUpper»Keys.clear();
 }
 «IF !feature.isTypeRootDataObject»
 void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map)
