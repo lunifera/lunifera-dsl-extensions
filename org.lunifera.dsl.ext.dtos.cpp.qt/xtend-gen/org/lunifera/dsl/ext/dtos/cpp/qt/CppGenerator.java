@@ -3756,7 +3756,7 @@ public class CppGenerator {
         String _name_346 = this._cppExtensions.toName(feature_29);
         String _firstLower_134 = StringExtensions.toFirstLower(_name_346);
         _builder.append(_firstLower_134, "\t");
-        _builder.append("Key, m");
+        _builder.append("ForeignKey, m");
         String _name_347 = this._cppExtensions.toName(feature_29);
         String _firstUpper_136 = StringExtensions.toFirstUpper(_name_347);
         _builder.append(_firstUpper_136, "\t");
@@ -7807,13 +7807,18 @@ public class CppGenerator {
         _builder.append("    ");
         _builder.append("}");
         _builder.newLine();
-        _builder.append("    ");
-        _builder.append("m");
-        String _name_827 = this._cppExtensions.toName(feature_40);
-        String _firstUpper_315 = StringExtensions.toFirstUpper(_name_827);
-        _builder.append(_firstUpper_315, "    ");
-        _builder.append("Keys.clear();");
-        _builder.newLineIfNotEmpty();
+        {
+          boolean _isLazyArray = this._cppExtensions.isLazyArray(feature_40);
+          if (_isLazyArray) {
+            _builder.append("    ");
+            _builder.append("m");
+            String _name_827 = this._cppExtensions.toName(feature_40);
+            String _firstUpper_315 = StringExtensions.toFirstUpper(_name_827);
+            _builder.append(_firstUpper_315, "    ");
+            _builder.append("Keys.clear();");
+            _builder.newLineIfNotEmpty();
+          }
+        }
         _builder.append("}");
         _builder.newLine();
         {
@@ -8174,8 +8179,8 @@ public class CppGenerator {
           }
         }
         {
-          boolean _isLazyArray = this._cppExtensions.isLazyArray(feature_40);
-          if (_isLazyArray) {
+          boolean _isLazyArray_1 = this._cppExtensions.isLazyArray(feature_40);
+          if (_isLazyArray_1) {
             _builder.append("/**");
             _builder.newLine();
             _builder.append(" ");

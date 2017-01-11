@@ -799,6 +799,16 @@ class CppExtensions {
 		}
 		return false;
 	}
+	
+		// can be '-TR-' 
+	def boolean isTransientCache(LDto dto) {
+		if (dto.cachePolicyValue != null) {
+			if (dto.cachePolicyValue.contains("-T-")) {
+				return true
+			}
+		}
+		return false;
+	}
 
 	// can be '-2PI-' 
 	def boolean is2PhaseInit(LDto dto) {

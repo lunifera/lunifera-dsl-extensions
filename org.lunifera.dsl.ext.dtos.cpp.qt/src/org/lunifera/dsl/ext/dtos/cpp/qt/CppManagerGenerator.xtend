@@ -146,7 +146,7 @@ DataManager::DataManager(QObject *parent) :
     // always use compact JSON in release builds
     mSettingsData->setUseCompactJsonFormat(true);
     // never use public data path in releae build
-    mSettingsData->setPublicRoot4Dev(false);
+    mSettingsData->setHasPublicCache(false);
 #endif
     // now set the compact or indent mode for JSON Documents
     mCompactJson = mSettingsData->useCompactJsonFormat();
@@ -305,7 +305,11 @@ void DataManager::init()
     		init«dto.toName»FromSqlCache();
     		«ENDIF»
     		«ELSE»
+    		«IF dto.isTransientCache»
+    		// «dto.toName» is transient - not automatically read from cache
+    		«ELSE»
     		init«dto.toName»FromCache();
+    		«ENDIF»
     		«ENDIF»
     		«ENDIF»
     		«IF dto.toName.equals("SettingsData") && !pkg.hasTargetOS»

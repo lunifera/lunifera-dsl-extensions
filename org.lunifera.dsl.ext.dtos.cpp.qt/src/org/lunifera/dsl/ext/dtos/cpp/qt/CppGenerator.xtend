@@ -630,7 +630,7 @@ QVariantMap «dto.toName»::toForeignMap()
 			m«feature.toName.toFirstUpper»Keys << «feature.toTypeName.toFirstLower»->«feature.attributeDomainKey»();
 			«ENDIF»
 		}
-		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»Key, m«feature.toName.toFirstUpper»Keys);
+		«dto.toName.toFirstLower»Map.insert(«feature.toName.toFirstLower»ForeignKey, m«feature.toName.toFirstUpper»Keys);
 	«ENDFOR»
 	«FOR feature : dto.allFeatures.filter[!isLazy && !isLazyArray && !isTransient]»
 		«IF feature.isTypeOfDataObject»
@@ -1337,7 +1337,9 @@ void «dto.toName»::clear«feature.toName.toFirstUpper»()
     for (int i = m«feature.toName.toFirstUpper».size(); i > 0; --i) {
         removeFrom«feature.toName.toFirstUpper»(m«feature.toName.toFirstUpper».last());
     }
+    «IF feature.isLazyArray»
     m«feature.toName.toFirstUpper»Keys.clear();
+    «ENDIF»
 }
 «IF !feature.isTypeRootDataObject»
 void «dto.toName»::addTo«feature.toName.toFirstUpper»FromMap(const QVariantMap& «feature.toTypeName.toFirstLower»Map)
