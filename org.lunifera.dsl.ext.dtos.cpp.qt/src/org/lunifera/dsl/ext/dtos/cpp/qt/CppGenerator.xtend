@@ -720,7 +720,7 @@ QVariantMap «dto.toName»::toCacheMap()
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsQVariantList());
+				«dto.toName.toFirstLower»Map.insert(«feature.toName»Key, «feature.toName»AsCacheQVariantList());
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
 				«IF feature.toTypeName == "GeoCoordinate"»
@@ -1255,6 +1255,14 @@ QVariantList «dto.toName»::«feature.toName»AsQVariantList()
     }
 	return «feature.toName»List;
 }
+QVariantList «dto.toName»::«feature.toName»AsCacheQVariantList()
+{
+	QVariantList «feature.toName»List;
+	for (int i = 0; i < m«feature.toName.toFirstUpper».size(); ++i) {
+        «feature.toName»List.append((m«feature.toName.toFirstUpper».at(i))->toCacheMap());
+    }
+	return «feature.toName»List;
+}
 QVariantList «dto.toName»::«feature.toName»AsForeignQVariantList()
 {
 	QVariantList «feature.toName»List;
@@ -1758,7 +1766,7 @@ void «dto.toName»::toSqlCache(«FOR feature : dto.features SEPARATOR", "»QVar
 			«IF !feature.isContained»
 			// m«feature.toName.toFirstUpper» points to «feature.toTypeName»*
 			«IF feature.isToMany»
-				// NOT IMPL YET «feature.toName.toFirstLower»List << m«feature.toName.toFirstUpper»AsQVariantList();
+				// NOT IMPL YET «feature.toName.toFirstLower»List << m«feature.toName.toFirstUpper»AsCacheQVariantList();
 			«ELSE»
 				if (m«feature.toName.toFirstUpper») {
 					«IF feature.toTypeName == "GeoCoordinate"»
