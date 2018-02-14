@@ -1224,7 +1224,7 @@ void DataManager::delete«dto.toName»()
 void DataManager::undoCreate«dto.toName»(«dto.toName»* «dto.toName.toFirstLower»)
 {
     if («dto.toName.toFirstLower») {
-        qDebug() << "undoCreate«dto.toName» " << «dto.toName.toFirstLower»->«dto.domainKey»();
+        // qDebug() << "undoCreate«dto.toName» " << «dto.toName.toFirstLower»->«dto.domainKey»();
         «dto.toName.toFirstLower»->deleteLater();
         «dto.toName.toFirstLower» = 0;
     }
